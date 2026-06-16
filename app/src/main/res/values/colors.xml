@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="azul_principal">#0D47A1</color>
+    <color name="azul_secundario">#0288D1</color>
+    <color name="celeste_fondo">#E3F2FD</color>
+    <color name="blanco">#FFFFFF</color>
+    <color name="gris_texto">#555555</color>
+    <color name="azul_titulo">#083B7A</color>
+</resources>
