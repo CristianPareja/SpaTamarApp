@@ -117,7 +117,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="18dp"
             android:gravity="center"
-            android:text="Usuarios de prueba:\ncliente / 1234\nadmin / 1234"
+            android:text="Usuarios de prueba:\ncliente  1234\nadmin  1234"
             android:textColor="@color/gris_texto"
             android:textSize="13sp" />
 
