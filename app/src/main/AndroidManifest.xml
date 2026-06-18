@@ -12,6 +12,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.SpaTamarApp">
         <activity
+            android:name=".ClientesActivity"
+            android:exported="false" />
+        <activity
             android:name=".MenuAdministradorActivity"
             android:exported="false" />
         <activity
