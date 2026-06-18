@@ -9,7 +9,7 @@ import androidx.appcompat.widget.AppCompatButton;
 
 public class MenuAdministradorActivity extends AppCompatActivity {
 
-    AppCompatButton btnCerrarSesionAdmin, btnClientesAdmin;
+    AppCompatButton btnCerrarSesionAdmin, btnClientesAdmin, btnServiciosAdmin;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -18,6 +18,7 @@ public class MenuAdministradorActivity extends AppCompatActivity {
 
         btnCerrarSesionAdmin = findViewById(R.id.btnCerrarSesionAdmin);
         btnClientesAdmin = findViewById(R.id.btnClientesAdmin);
+        btnServiciosAdmin = findViewById(R.id.btnServiciosAdmin);
 
         btnCerrarSesionAdmin.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -32,6 +33,14 @@ public class MenuAdministradorActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(MenuAdministradorActivity.this, ClientesActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        btnServiciosAdmin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MenuAdministradorActivity.this, ServiciosActivity.class);
                 startActivity(intent);
             }
         });

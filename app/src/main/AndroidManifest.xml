@@ -12,6 +12,12 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.SpaTamarApp">
         <activity
+            android:name=".RegistroActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ServiciosActivity"
+            android:exported="false" />
+        <activity
             android:name=".ClientesActivity"
             android:exported="false" />
         <activity

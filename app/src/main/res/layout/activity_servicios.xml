@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/mainServicios"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/celeste_fondo"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:id="@+id/contenedorServicios"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:padding="28dp">
+
+        <TextView
+            android:id="@+id/txtTituloServicios"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Gestión de Servicios"
+            android:textColor="@color/azul_titulo"
+            android:textSize="28sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/txtSubtituloServicios"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:layout_marginBottom="24dp"
+            android:gravity="center"
+            android:text="Administración de servicios del Spa TAMAR"
+            android:textColor="@color/gris_texto"
+            android:textSize="15sp" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btnRegistrarServicio"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:layout_marginBottom="12dp"
+            android:background="@drawable/boton_principal"
+            android:text="Registrar servicio"
+            android:textAllCaps="false"
+            android:textColor="@color/blanco"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btnConsultarServicios"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:layout_marginBottom="12dp"
+            android:background="@drawable/boton_principal"
+            android:text="Consultar servicios"
+            android:textAllCaps="false"
+            android:textColor="@color/blanco"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btnEditarServicio"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:layout_marginBottom="12dp"
+            android:background="@drawable/boton_principal"
+            android:text="Editar servicio"
+            android:textAllCaps="false"
+            android:textColor="@color/blanco"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btnDesactivarServicio"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:layout_marginBottom="20dp"
+            android:background="@drawable/boton_principal"
+            android:text="Desactivar servicio"
+            android:textAllCaps="false"
+            android:textColor="@color/blanco"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btnVolverServicios"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:background="@drawable/boton_principal"
+            android:text="Volver"
+            android:textAllCaps="false"
+            android:textColor="@color/blanco"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+    </LinearLayout>
+
+</ScrollView>

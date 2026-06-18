@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/mainRegistro"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/celeste_fondo"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:id="@+id/contenedorRegistro"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:padding="28dp">
+
+        <TextView
+            android:id="@+id/txtTituloRegistro"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Registro de Cliente"
+            android:textColor="@color/azul_titulo"
+            android:textSize="28sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/txtSubtituloRegistro"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:layout_marginBottom="24dp"
+            android:gravity="center"
+            android:text="Crea tu cuenta para agendar citas en Spa TAMAR"
+            android:textColor="@color/gris_texto"
+            android:textSize="15sp" />
+
+        <LinearLayout
+            android:id="@+id/cardRegistro"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/card_login"
+            android:elevation="6dp"
+            android:orientation="vertical"
+            android:padding="22dp">
+
+            <EditText
+                android:id="@+id/edtNombreRegistro"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginBottom="12dp"
+                android:background="@drawable/edittext_login"
+                android:hint="Nombre"
+                android:inputType="textPersonName"
+                android:paddingLeft="14dp"
+                android:paddingRight="14dp"
+                android:textColor="@color/texto_principal"
+                android:textColorHint="@color/gris_texto" />
+
+            <EditText
+                android:id="@+id/edtApellidoRegistro"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginBottom="12dp"
+                android:background="@drawable/edittext_login"
+                android:hint="Apellido"
+                android:inputType="textPersonName"
+                android:paddingLeft="14dp"
+                android:paddingRight="14dp"
+                android:textColor="@color/texto_principal"
+                android:textColorHint="@color/gris_texto" />
+
+            <EditText
+                android:id="@+id/edtTelefonoRegistro"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginBottom="12dp"
+                android:background="@drawable/edittext_login"
+                android:hint="Teléfono"
+                android:inputType="phone"
+                android:paddingLeft="14dp"
+                android:paddingRight="14dp"
+                android:textColor="@color/texto_principal"
+                android:textColorHint="@color/gris_texto" />
+
+            <EditText
+                android:id="@+id/edtCorreoRegistro"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginBottom="12dp"
+                android:background="@drawable/edittext_login"
+                android:hint="Correo electrónico"
+                android:inputType="textEmailAddress"
+                android:paddingLeft="14dp"
+                android:paddingRight="14dp"
+                android:textColor="@color/texto_principal"
+                android:textColorHint="@color/gris_texto" />
+
+            <EditText
+                android:id="@+id/edtUsuarioRegistro"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginBottom="12dp"
+                android:background="@drawable/edittext_login"
+                android:hint="Usuario"
+                android:inputType="text"
+                android:paddingLeft="14dp"
+                android:paddingRight="14dp"
+                android:textColor="@color/texto_principal"
+                android:textColorHint="@color/gris_texto" />
+
+            <EditText
+                android:id="@+id/edtClaveRegistro"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginBottom="12dp"
+                android:background="@drawable/edittext_login"
+                android:hint="Contraseña"
+                android:inputType="textPassword"
+                android:paddingLeft="14dp"
+                android:paddingRight="14dp"
+                android:textColor="@color/texto_principal"
+                android:textColorHint="@color/gris_texto" />
+
+            <EditText
+                android:id="@+id/edtConfirmarClaveRegistro"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginBottom="20dp"
+                android:background="@drawable/edittext_login"
+                android:hint="Confirmar contraseña"
+                android:inputType="textPassword"
+                android:paddingLeft="14dp"
+                android:paddingRight="14dp"
+                android:textColor="@color/texto_principal"
+                android:textColorHint="@color/gris_texto" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btnRegistrarUsuario"
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                android:layout_marginBottom="12dp"
+                android:background="@drawable/boton_principal"
+                android:text="Registrar"
+                android:textAllCaps="false"
+                android:textColor="@color/blanco"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btnVolverRegistro"
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                android:background="@drawable/boton_principal"
+                android:text="Volver al login"
+                android:textAllCaps="false"
+                android:textColor="@color/blanco"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</ScrollView>
