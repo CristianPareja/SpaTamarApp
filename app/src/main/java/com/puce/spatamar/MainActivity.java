@@ -1,5 +1,6 @@
 package com.puce.spatamar;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
@@ -59,10 +60,14 @@ public class MainActivity extends AppCompatActivity {
         if (usuario.equals("cliente") && clave.equals("1234")) {
             Toast.makeText(this, "Bienvenido cliente", Toast.LENGTH_SHORT).show();
 
+            Intent intent = new Intent(MainActivity.this, MenuClienteActivity.class);
+            startActivity(intent);
         } else if (usuario.equals("admin") && clave.equals("1234")) {
-            Toast.makeText(this, "Bienvenido administrador", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "Bienvenido administrador", Toast.LENGTH_SHORT).show();
 
-        } else {
+        Intent intent = new Intent(MainActivity.this, MenuAdministradorActivity.class);
+        startActivity(intent);
+    } else {
             Toast.makeText(this, "Usuario o contraseña incorrectos", Toast.LENGTH_SHORT).show();
         }
     }

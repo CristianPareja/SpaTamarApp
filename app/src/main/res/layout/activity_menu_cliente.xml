@@ -1,10 +1,118 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/mainCliente"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MenuClienteActivity">
+    android:background="@color/celeste_fondo"
+    android:fillViewport="true">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <LinearLayout
+        android:id="@+id/contenedorCliente"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:padding="28dp">
+        <TextView
+            android:id="@+id/txtTituloCliente"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Menú del Cliente"
+            android:textColor="@color/azul_titulo"
+            android:textSize="28sp"
+            android:textStyle="bold" />
+        <TextView
+            android:id="@+id/txtBienvenidaCliente"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:layout_marginBottom="24dp"
+            android:gravity="center"
+            android:text="Bienvenido al sistema Spa TAMAR"
+            android:textColor="@color/gris_texto"
+            android:textSize="15sp" />
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btnServiciosCliente"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:layout_marginBottom="12dp"
+            android:background="@drawable/boton_principal"
+            android:text="Servicios disponibles"
+            android:textAllCaps="false"
+            android:textColor="@color/blanco"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btnAgendarCitaCliente"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:layout_marginBottom="12dp"
+            android:background="@drawable/boton_principal"
+            android:text="Agendar cita"
+            android:textAllCaps="false"
+            android:textColor="@color/blanco"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btnMisCitasCliente"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:layout_marginBottom="12dp"
+            android:background="@drawable/boton_principal"
+            android:text="Mis citas"
+            android:textAllCaps="false"
+            android:textColor="@color/blanco"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btnHistorialCliente"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:layout_marginBottom="12dp"
+            android:background="@drawable/boton_principal"
+            android:text="Historial"
+            android:textAllCaps="false"
+            android:textColor="@color/blanco"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btnRecordatoriosCliente"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:layout_marginBottom="12dp"
+            android:background="@drawable/boton_principal"
+            android:text="Recordatorios"
+            android:textAllCaps="false"
+            android:textColor="@color/blanco"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btnCuentasPendientesCliente"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:layout_marginBottom="12dp"
+            android:background="@drawable/boton_principal"
+            android:text="Cuentas pendientes"
+            android:textAllCaps="false"
+            android:textColor="@color/blanco"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btnCerrarSesionCliente"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/boton_principal"
+            android:text="Cerrar sesión"
+            android:textAllCaps="false"
+            android:textColor="@color/blanco"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+    </LinearLayout>
+
+</ScrollView>
