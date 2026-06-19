@@ -9,7 +9,9 @@ import androidx.appcompat.widget.AppCompatButton;
 
 public class MenuClienteActivity extends AppCompatActivity {
 
-    AppCompatButton btnServiciosCliente, btnCerrarSesionCliente;
+    AppCompatButton btnServiciosCliente;
+    AppCompatButton btnAgendarCitaCliente;
+    AppCompatButton btnCerrarSesionCliente;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -17,12 +19,21 @@ public class MenuClienteActivity extends AppCompatActivity {
         setContentView(R.layout.activity_menu_cliente);
 
         btnServiciosCliente = findViewById(R.id.btnServiciosCliente);
+        btnAgendarCitaCliente = findViewById(R.id.btnAgendarCitaCliente);
         btnCerrarSesionCliente = findViewById(R.id.btnCerrarSesionCliente);
 
         btnServiciosCliente.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(MenuClienteActivity.this, ServiciosClienteActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        btnAgendarCitaCliente.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MenuClienteActivity.this, AgendarCitaActivity.class);
                 startActivity(intent);
             }
         });
