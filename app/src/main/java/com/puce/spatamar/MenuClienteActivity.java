@@ -11,6 +11,7 @@ public class MenuClienteActivity extends AppCompatActivity {
 
     AppCompatButton btnServiciosCliente;
     AppCompatButton btnAgendarCitaCliente;
+    AppCompatButton btnMisCitasCliente;
     AppCompatButton btnCerrarSesionCliente;
 
     @Override
@@ -20,6 +21,7 @@ public class MenuClienteActivity extends AppCompatActivity {
 
         btnServiciosCliente = findViewById(R.id.btnServiciosCliente);
         btnAgendarCitaCliente = findViewById(R.id.btnAgendarCitaCliente);
+        btnMisCitasCliente = findViewById(R.id.btnMisCitasCliente);
         btnCerrarSesionCliente = findViewById(R.id.btnCerrarSesionCliente);
 
         btnServiciosCliente.setOnClickListener(new View.OnClickListener() {
@@ -34,6 +36,14 @@ public class MenuClienteActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(MenuClienteActivity.this, AgendarCitaActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        btnMisCitasCliente.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MenuClienteActivity.this, MisCitasActivity.class);
                 startActivity(intent);
             }
         });

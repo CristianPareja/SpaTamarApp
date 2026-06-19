@@ -12,6 +12,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.SpaTamarApp">
         <activity
+            android:name=".MisCitasActivity"
+            android:exported="false" />
+        <activity
             android:name=".AgendarCitaActivity"
             android:exported="false" />
         <activity
