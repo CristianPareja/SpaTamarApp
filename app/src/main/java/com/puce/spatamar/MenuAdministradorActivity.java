@@ -3,6 +3,7 @@ package com.puce.spatamar;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -21,11 +22,12 @@ public class MenuAdministradorActivity extends AppCompatActivity {
     private TextView txtTotalCobroDashboard;
     private TextView txtResumenDashboard;
 
-    private AppCompatButton btnClientesAdmin;
+    private LinearLayout cardClientesDashboard;
+    private LinearLayout cardCitasHoyDashboard;
+    private LinearLayout cardCitasActivasDashboard;
+    private LinearLayout cardTotalCobroDashboard;
+
     private AppCompatButton btnServiciosAdmin;
-    private AppCompatButton btnCitasAdmin;
-    private AppCompatButton btnProveedoresAdmin;
-    private AppCompatButton btnCuentasCobrarAdmin;
     private AppCompatButton btnCuentasPagarAdmin;
     private AppCompatButton btnSimulacionProyeccionAdmin;
     private AppCompatButton btnCerrarSesionAdmin;
@@ -42,18 +44,19 @@ public class MenuAdministradorActivity extends AppCompatActivity {
         txtTotalCobroDashboard = findViewById(R.id.txtTotalCobroDashboard);
         txtResumenDashboard = findViewById(R.id.txtResumenDashboard);
 
-        btnClientesAdmin = findViewById(R.id.btnClientesAdmin);
+        cardClientesDashboard = findViewById(R.id.cardClientesDashboard);
+        cardCitasHoyDashboard = findViewById(R.id.cardCitasHoyDashboard);
+        cardCitasActivasDashboard = findViewById(R.id.cardCitasActivasDashboard);
+        cardTotalCobroDashboard = findViewById(R.id.cardTotalCobroDashboard);
+
         btnServiciosAdmin = findViewById(R.id.btnServiciosAdmin);
-        btnCitasAdmin = findViewById(R.id.btnCitasAdmin);
-        btnProveedoresAdmin = findViewById(R.id.btnProveedoresAdmin);
-        btnCuentasCobrarAdmin = findViewById(R.id.btnCuentasCobrarAdmin);
         btnCuentasPagarAdmin = findViewById(R.id.btnCuentasPagarAdmin);
         btnSimulacionProyeccionAdmin = findViewById(R.id.btnSimulacionProyeccionAdmin);
         btnCerrarSesionAdmin = findViewById(R.id.btnCerrarSesionAdmin);
 
         cargarDashboard();
 
-        btnClientesAdmin.setOnClickListener(new View.OnClickListener() {
+        cardClientesDashboard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(MenuAdministradorActivity.this, ClientesActivity.class);
@@ -61,15 +64,7 @@ public class MenuAdministradorActivity extends AppCompatActivity {
             }
         });
 
-        btnServiciosAdmin.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(MenuAdministradorActivity.this, ServiciosActivity.class);
-                startActivity(intent);
-            }
-        });
-
-        btnCitasAdmin.setOnClickListener(new View.OnClickListener() {
+        cardCitasHoyDashboard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Toast.makeText(
@@ -80,18 +75,18 @@ public class MenuAdministradorActivity extends AppCompatActivity {
             }
         });
 
-        btnProveedoresAdmin.setOnClickListener(new View.OnClickListener() {
+        cardCitasActivasDashboard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Toast.makeText(
                         MenuAdministradorActivity.this,
-                        "Módulo de proveedores en desarrollo.",
+                        "Módulo de citas del administrador en desarrollo.",
                         Toast.LENGTH_SHORT
                 ).show();
             }
         });
 
-        btnCuentasCobrarAdmin.setOnClickListener(new View.OnClickListener() {
+        cardTotalCobroDashboard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Toast.makeText(
@@ -99,6 +94,14 @@ public class MenuAdministradorActivity extends AppCompatActivity {
                         "Módulo de cuentas por cobrar en desarrollo.",
                         Toast.LENGTH_SHORT
                 ).show();
+            }
+        });
+
+        btnServiciosAdmin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MenuAdministradorActivity.this, ServiciosActivity.class);
+                startActivity(intent);
             }
         });
 
