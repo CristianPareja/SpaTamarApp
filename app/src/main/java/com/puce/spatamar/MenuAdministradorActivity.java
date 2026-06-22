@@ -67,22 +67,16 @@ public class MenuAdministradorActivity extends AppCompatActivity {
         cardCitasHoyDashboard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(
-                        MenuAdministradorActivity.this,
-                        "Módulo de citas del administrador en desarrollo.",
-                        Toast.LENGTH_SHORT
-                ).show();
+                Intent intent = new Intent(MenuAdministradorActivity.this, CitasAdminActivity.class);
+                startActivity(intent);
             }
         });
 
         cardCitasActivasDashboard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(
-                        MenuAdministradorActivity.this,
-                        "Módulo de citas del administrador en desarrollo.",
-                        Toast.LENGTH_SHORT
-                ).show();
+                Intent intent = new Intent(MenuAdministradorActivity.this, CitasAdminActivity.class);
+                startActivity(intent);
             }
         });
 

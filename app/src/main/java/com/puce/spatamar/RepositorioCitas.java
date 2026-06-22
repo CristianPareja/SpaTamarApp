@@ -51,6 +51,18 @@ public class RepositorioCitas {
         return citasPorFecha;
     }
 
+    public static ArrayList<Cita> obtenerCitasPorCliente(String nombreCliente) {
+        ArrayList<Cita> citasPorCliente = new ArrayList<>();
+
+        for (Cita cita : listaCitas) {
+            if (cita.getNombreCliente().toLowerCase().contains(nombreCliente.toLowerCase())) {
+                citasPorCliente.add(cita);
+            }
+        }
+
+        return citasPorCliente;
+    }
+
     public static int contarCitasPorFecha(String fecha) {
         int total = 0;
 
@@ -90,6 +102,15 @@ public class RepositorioCitas {
         for (Cita cita : listaCitas) {
             if (cita == citaSeleccionada) {
                 cita.setEstado("Cancelado");
+                return;
+            }
+        }
+    }
+
+    public static void finalizarCita(Cita citaSeleccionada) {
+        for (Cita cita : listaCitas) {
+            if (cita == citaSeleccionada) {
+                cita.setEstado("Finalizado");
                 return;
             }
         }

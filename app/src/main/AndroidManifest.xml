@@ -37,6 +37,7 @@
             android:name=".MenuClienteActivity"
             android:exported="false" />
         <activity android:name=".CuentasPendientesActivity" />
+        <activity android:name=".CitasAdminActivity" />
         <activity
             android:name=".MainActivity"
             android:exported="true">
