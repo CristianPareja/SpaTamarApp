@@ -39,6 +39,42 @@ public class RepositorioCitas {
         return historial;
     }
 
+    public static ArrayList<Cita> obtenerCitasPorFecha(String fecha) {
+        ArrayList<Cita> citasPorFecha = new ArrayList<>();
+
+        for (Cita cita : listaCitas) {
+            if (cita.getFecha().equals(fecha)) {
+                citasPorFecha.add(cita);
+            }
+        }
+
+        return citasPorFecha;
+    }
+
+    public static int contarCitasPorFecha(String fecha) {
+        int total = 0;
+
+        for (Cita cita : listaCitas) {
+            if (cita.getFecha().equals(fecha)) {
+                total++;
+            }
+        }
+
+        return total;
+    }
+
+    public static int contarCitasActivas() {
+        int total = 0;
+
+        for (Cita cita : listaCitas) {
+            if (cita.getEstado().equalsIgnoreCase("En curso")) {
+                total++;
+            }
+        }
+
+        return total;
+    }
+
     public static boolean existeCruceCita(String fecha, String hora) {
         for (Cita cita : listaCitas) {
             if (cita.getFecha().equals(fecha)

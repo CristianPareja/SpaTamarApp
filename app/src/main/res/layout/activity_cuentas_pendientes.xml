@@ -1,6 +1,120 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/mainCuentasPendientes"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/celeste_fondo"
+    android:fillViewport="true">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <LinearLayout
+        android:id="@+id/contenedorPrincipalCuentasPendientes"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="20dp">
+
+        <TextView
+            android:id="@+id/txtTituloCuentasPendientes"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="25dp"
+            android:text="Cuentas pendientes"
+            android:textAlignment="center"
+            android:textColor="@color/azul_titulo"
+            android:textSize="25sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/txtSubtituloCuentasPendientes"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:layout_marginBottom="18dp"
+            android:text="Consulte los valores pendientes registrados por administración"
+            android:textAlignment="center"
+            android:textColor="@color/gris_texto"
+            android:textSize="13sp" />
+
+        <LinearLayout
+            android:id="@+id/cardResumenPendiente"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="18dp"
+            android:background="@drawable/card_login"
+            android:orientation="vertical"
+            android:padding="18dp">
+
+            <TextView
+                android:id="@+id/txtClienteCuentaPendiente"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Cliente: no identificado"
+                android:textColor="@color/azul_titulo"
+                android:textSize="15sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/txtTotalPendiente"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="Total pendiente: $0.00"
+                android:textColor="@color/azul_titulo"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/txtNotaCuentasPendientes"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="Esta información es solo de consulta. Los valores son registrados y actualizados por administración."
+                android:textColor="@color/gris_texto"
+                android:textSize="13sp" />
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/txtSeccionDetalleCuentas"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Detalle de valores pendientes"
+            android:textColor="@color/azul_titulo"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="10dp" />
+
+        <TextView
+            android:id="@+id/txtSinCuentasPendientes"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/card_login"
+            android:padding="16dp"
+            android:text="No registra valores pendientes por cancelar."
+            android:textAlignment="center"
+            android:textColor="@color/azul_titulo"
+            android:textSize="15sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="14dp" />
+
+        <LinearLayout
+            android:id="@+id/contenedorCuentasPendientes"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btnVolverCuentasPendientes"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:layout_marginTop="18dp"
+            android:background="@drawable/boton_principal"
+            android:text="Volver"
+            android:textAllCaps="false"
+            android:textColor="@color/blanco"
+            android:textSize="15sp"
+            android:textStyle="bold" />
+
+    </LinearLayout>
+
+</ScrollView>

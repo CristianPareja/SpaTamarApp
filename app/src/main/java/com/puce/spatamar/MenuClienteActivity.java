@@ -92,11 +92,8 @@ public class MenuClienteActivity extends AppCompatActivity {
         btnCuentasPendientesCliente.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(
-                        MenuClienteActivity.this,
-                        "Módulo de cuentas pendientes en desarrollo.",
-                        Toast.LENGTH_SHORT
-                ).show();
+                Intent intent = new Intent(MenuClienteActivity.this, CuentasPendientesActivity.class);
+                startActivity(intent);
             }
         });
 

@@ -10,38 +10,205 @@
         android:id="@+id/contenedorAdministrador"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center"
         android:orientation="vertical"
-        android:padding="28dp">
+        android:padding="20dp">
+
         <TextView
             android:id="@+id/txtTituloAdministrador"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Menú Administrador"
+            android:layout_marginTop="20dp"
+            android:text="Panel de Administración"
+            android:textAlignment="center"
             android:textColor="@color/azul_titulo"
-            android:textSize="28sp"
+            android:textSize="26sp"
             android:textStyle="bold" />
 
         <TextView
-            android:id="@+id/txtBienvenidaAdministrador"
-            android:layout_width="wrap_content"
+            android:id="@+id/txtSubtituloAdministrador"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="6dp"
-            android:layout_marginBottom="24dp"
-            android:gravity="center"
-            android:text="Gestión general del Spa TAMAR"
+            android:text="Resumen general de la operación del Spa TAMAR"
+            android:textAlignment="center"
             android:textColor="@color/gris_texto"
-            android:textSize="15sp" />
-        <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/btnDashboardAdmin"
+            android:textSize="14sp" />
+
+        <TextView
+            android:id="@+id/txtFechaDashboard"
             android:layout_width="match_parent"
-            android:layout_height="52dp"
-            android:layout_marginBottom="12dp"
-            android:background="@drawable/boton_principal"
-            android:text="Dashboard"
-            android:textAllCaps="false"
-            android:textColor="@color/blanco"
-            android:textSize="16sp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:layout_marginBottom="16dp"
+            android:text="Fecha del panel: --/--/----"
+            android:textAlignment="center"
+            android:textColor="@color/azul_secundario"
+            android:textSize="14sp"
+            android:textStyle="bold" />
+
+        <LinearLayout
+            android:id="@+id/filaResumenUno"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:weightSum="2"
+            android:layout_marginBottom="12dp">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginEnd="6dp"
+                android:background="@drawable/card_login"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Clientes registrados"
+                    android:textColor="@color/gris_texto"
+                    android:textSize="13sp" />
+
+                <TextView
+                    android:id="@+id/txtTotalClientesDashboard"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="0"
+                    android:textColor="@color/azul_titulo"
+                    android:textSize="24sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginStart="6dp"
+                android:background="@drawable/card_login"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Citas de hoy"
+                    android:textColor="@color/gris_texto"
+                    android:textSize="13sp" />
+
+                <TextView
+                    android:id="@+id/txtCitasHoyDashboard"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="0"
+                    android:textColor="@color/azul_titulo"
+                    android:textSize="24sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/filaResumenDos"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:weightSum="2"
+            android:layout_marginBottom="16dp">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginEnd="6dp"
+                android:background="@drawable/card_login"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Citas activas"
+                    android:textColor="@color/gris_texto"
+                    android:textSize="13sp" />
+
+                <TextView
+                    android:id="@+id/txtCitasActivasDashboard"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="0"
+                    android:textColor="@color/azul_titulo"
+                    android:textSize="24sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginStart="6dp"
+                android:background="@drawable/card_login"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Total por cobrar"
+                    android:textColor="@color/gris_texto"
+                    android:textSize="13sp" />
+
+                <TextView
+                    android:id="@+id/txtTotalCobroDashboard"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="$0.00"
+                    android:textColor="@color/azul_titulo"
+                    android:textSize="24sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/cardResumenGeneral"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="18dp"
+            android:background="@drawable/card_login"
+            android:orientation="vertical"
+            android:padding="18dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Resumen del día"
+                android:textColor="@color/azul_titulo"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/txtResumenDashboard"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="Cargando resumen..."
+                android:textColor="@color/texto_principal"
+                android:textSize="14sp" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/txtSeccionModulosAdmin"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:text="Módulos administrativos"
+            android:textColor="@color/azul_titulo"
+            android:textSize="18sp"
             android:textStyle="bold" />
 
         <androidx.appcompat.widget.AppCompatButton
@@ -67,6 +234,7 @@
             android:textColor="@color/blanco"
             android:textSize="16sp"
             android:textStyle="bold" />
+
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btnCitasAdmin"
             android:layout_width="match_parent"
@@ -74,18 +242,6 @@
             android:layout_marginBottom="12dp"
             android:background="@drawable/boton_principal"
             android:text="Citas"
-            android:textAllCaps="false"
-            android:textColor="@color/blanco"
-            android:textSize="16sp"
-            android:textStyle="bold" />
-
-        <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/btnDisponibilidadAdmin"
-            android:layout_width="match_parent"
-            android:layout_height="52dp"
-            android:layout_marginBottom="12dp"
-            android:background="@drawable/boton_principal"
-            android:text="Disponibilidad"
             android:textAllCaps="false"
             android:textColor="@color/blanco"
             android:textSize="16sp"
@@ -102,6 +258,7 @@
             android:textColor="@color/blanco"
             android:textSize="16sp"
             android:textStyle="bold" />
+
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btnCuentasCobrarAdmin"
             android:layout_width="match_parent"
@@ -127,75 +284,17 @@
             android:textStyle="bold" />
 
         <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/btnIngresosAdmin"
+            android:id="@+id/btnSimulacionProyeccionAdmin"
             android:layout_width="match_parent"
             android:layout_height="52dp"
             android:layout_marginBottom="12dp"
             android:background="@drawable/boton_principal"
-            android:text="Ingresos"
+            android:text="Simulación y proyección"
             android:textAllCaps="false"
             android:textColor="@color/blanco"
             android:textSize="16sp"
             android:textStyle="bold" />
 
-        <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/btnEgresosAdmin"
-            android:layout_width="match_parent"
-            android:layout_height="52dp"
-            android:layout_marginBottom="12dp"
-            android:background="@drawable/boton_principal"
-            android:text="Egresos"
-            android:textAllCaps="false"
-            android:textColor="@color/blanco"
-            android:textSize="16sp"
-            android:textStyle="bold" />
-        <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/btnMetodosPagoAdmin"
-            android:layout_width="match_parent"
-            android:layout_height="52dp"
-            android:layout_marginBottom="12dp"
-            android:background="@drawable/boton_principal"
-            android:text="Métodos de pago"
-            android:textAllCaps="false"
-            android:textColor="@color/blanco"
-            android:textSize="16sp"
-            android:textStyle="bold" />
-
-        <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/btnReportesAdmin"
-            android:layout_width="match_parent"
-            android:layout_height="52dp"
-            android:layout_marginBottom="12dp"
-            android:background="@drawable/boton_principal"
-            android:text="Reportes"
-            android:textAllCaps="false"
-            android:textColor="@color/blanco"
-            android:textSize="16sp"
-            android:textStyle="bold" />
-
-        <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/btnSimulacionAdmin"
-            android:layout_width="match_parent"
-            android:layout_height="52dp"
-            android:layout_marginBottom="12dp"
-            android:background="@drawable/boton_principal"
-            android:text="Simulación de escenarios"
-            android:textAllCaps="false"
-            android:textColor="@color/blanco"
-            android:textSize="16sp"
-            android:textStyle="bold" />
-
-        <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/btnProyeccionAdmin"
-            android:layout_width="match_parent"
-            android:layout_height="52dp"
-            android:layout_marginBottom="12dp"
-            android:background="@drawable/boton_principal"
-            android:text="Proyección de ingresos"
-            android:textAllCaps="false"
-            android:textColor="@color/blanco"
-            android:textSize="16sp"
-            android:textStyle="bold" />
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btnCerrarSesionAdmin"
             android:layout_width="match_parent"
@@ -207,7 +306,6 @@
             android:textColor="@color/blanco"
             android:textSize="16sp"
             android:textStyle="bold" />
-
 
     </LinearLayout>
 

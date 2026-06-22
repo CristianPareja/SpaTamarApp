@@ -58,4 +58,28 @@ public class RepositorioUsuarios {
 
         return false;
     }
+
+    public static int contarClientesRegistrados() {
+        int total = 0;
+
+        for (Usuario usuario : listaUsuarios) {
+            if (usuario.getRol().equalsIgnoreCase("cliente")) {
+                total++;
+            }
+        }
+
+        return total;
+    }
+
+    public static ArrayList<Usuario> obtenerClientesRegistrados() {
+        ArrayList<Usuario> clientes = new ArrayList<>();
+
+        for (Usuario usuario : listaUsuarios) {
+            if (usuario.getRol().equalsIgnoreCase("cliente")) {
+                clientes.add(usuario);
+            }
+        }
+
+        return clientes;
+    }
 }
