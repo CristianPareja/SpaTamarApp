@@ -3,9 +3,12 @@ package com.puce.spatamar;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
@@ -16,7 +19,12 @@ import java.util.Calendar;
 
 public class AgendarCitaActivity extends AppCompatActivity {
 
-    private EditText edtNombreCliente;
+    private TextView txtClientePerfil;
+    private TextView txtNombreFamiliar;
+
+    private CheckBox chkAgendarFamiliar;
+
+    private EditText edtNombreFamiliar;
     private EditText edtTelefonoCliente;
     private EditText edtFechaCita;
     private EditText edtHoraCita;
@@ -27,12 +35,19 @@ public class AgendarCitaActivity extends AppCompatActivity {
     private AppCompatButton btnGuardarCita;
     private AppCompatButton btnVolverAgendar;
 
+    private String nombrePerfil = "";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_agendar_cita);
 
-        edtNombreCliente = findViewById(R.id.edtNombreCliente);
+        txtClientePerfil = findViewById(R.id.txtClientePerfil);
+        txtNombreFamiliar = findViewById(R.id.txtNombreFamiliar);
+
+        chkAgendarFamiliar = findViewById(R.id.chkAgendarFamiliar);
+
+        edtNombreFamiliar = findViewById(R.id.edtNombreFamiliar);
         edtTelefonoCliente = findViewById(R.id.edtTelefonoCliente);
         edtFechaCita = findViewById(R.id.edtFechaCita);
         edtHoraCita = findViewById(R.id.edtHoraCita);
@@ -43,14 +58,76 @@ public class AgendarCitaActivity extends AppCompatActivity {
         btnGuardarCita = findViewById(R.id.btnGuardarCita);
         btnVolverAgendar = findViewById(R.id.btnVolverAgendar);
 
+        cargarPerfilEnFormulario();
         cargarServicios();
 
-        edtFechaCita.setOnClickListener(v -> mostrarCalendario());
-        edtHoraCita.setOnClickListener(v -> mostrarSelectorHora());
+        chkAgendarFamiliar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mostrarOcultarCampoFamiliar();
+            }
+        });
 
-        btnGuardarCita.setOnClickListener(v -> guardarCitaTemporal());
+        edtFechaCita.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mostrarCalendario();
+            }
+        });
 
-        btnVolverAgendar.setOnClickListener(v -> finish());
+        edtHoraCita.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mostrarSelectorHora();
+            }
+        });
+
+        btnGuardarCita.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                guardarCitaTemporal();
+            }
+        });
+
+        btnVolverAgendar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
+    }
+
+    private void cargarPerfilEnFormulario() {
+        if (!RepositorioPerfil.existePerfil()) {
+            txtClientePerfil.setText("Cliente: perfil no registrado");
+
+            Toast.makeText(
+                    this,
+                    "Debe registrar o actualizar su perfil antes de agendar una cita",
+                    Toast.LENGTH_LONG
+            ).show();
+
+            btnGuardarCita.setEnabled(false);
+            return;
+        }
+
+        PerfilUsuario perfil = RepositorioPerfil.obtenerPerfil();
+
+        nombrePerfil = perfil.getNombre();
+        txtClientePerfil.setText("Cliente: " + nombrePerfil);
+        edtTelefonoCliente.setText(perfil.getTelefono());
+    }
+
+    private void mostrarOcultarCampoFamiliar() {
+        if (chkAgendarFamiliar.isChecked()) {
+            txtNombreFamiliar.setVisibility(View.VISIBLE);
+            edtNombreFamiliar.setVisibility(View.VISIBLE);
+            edtNombreFamiliar.requestFocus();
+        } else {
+            txtNombreFamiliar.setVisibility(View.GONE);
+            edtNombreFamiliar.setVisibility(View.GONE);
+            edtNombreFamiliar.setText("");
+        }
     }
 
     private void cargarServicios() {
@@ -114,16 +191,28 @@ public class AgendarCitaActivity extends AppCompatActivity {
     }
 
     private void guardarCitaTemporal() {
-        String nombre = edtNombreCliente.getText().toString().trim();
         String telefono = edtTelefonoCliente.getText().toString().trim();
         String servicio = spinnerServicio.getSelectedItem().toString();
         String fecha = edtFechaCita.getText().toString().trim();
         String hora = edtHoraCita.getText().toString().trim();
         String observaciones = edtObservaciones.getText().toString().trim();
 
-        if (nombre.isEmpty()) {
-            edtNombreCliente.setError("Ingrese el nombre del cliente");
-            edtNombreCliente.requestFocus();
+        String nombreParaCita = nombrePerfil;
+
+        if (chkAgendarFamiliar.isChecked()) {
+            String nombreFamiliar = edtNombreFamiliar.getText().toString().trim();
+
+            if (nombreFamiliar.isEmpty()) {
+                edtNombreFamiliar.setError("Ingrese el nombre del familiar");
+                edtNombreFamiliar.requestFocus();
+                return;
+            }
+
+            nombreParaCita = nombreFamiliar;
+        }
+
+        if (nombreParaCita.isEmpty()) {
+            Toast.makeText(this, "No se encontró el nombre del cliente", Toast.LENGTH_LONG).show();
             return;
         }
 
@@ -163,10 +252,10 @@ public class AgendarCitaActivity extends AppCompatActivity {
             return;
         }
 
-        String estado = "Pendiente";
+        String estado = "En curso";
 
         Cita nuevaCita = new Cita(
-                nombre,
+                nombreParaCita,
                 telefono,
                 servicio,
                 fecha,
@@ -177,7 +266,7 @@ public class AgendarCitaActivity extends AppCompatActivity {
 
         RepositorioCitas.agregarCita(nuevaCita);
 
-        String resumen = "Cliente: " + nombre + "\n"
+        String resumen = "Cliente: " + nombreParaCita + "\n"
                 + "Teléfono: " + telefono + "\n"
                 + "Servicio: " + servicio + "\n"
                 + "Fecha: " + fecha + "\n"
@@ -193,8 +282,11 @@ public class AgendarCitaActivity extends AppCompatActivity {
     }
 
     private void limpiarFormulario() {
-        edtNombreCliente.setText("");
-        edtTelefonoCliente.setText("");
+        chkAgendarFamiliar.setChecked(false);
+        txtNombreFamiliar.setVisibility(View.GONE);
+        edtNombreFamiliar.setVisibility(View.GONE);
+        edtNombreFamiliar.setText("");
+
         edtFechaCita.setText("");
         edtHoraCita.setText("");
         edtObservaciones.setText("");

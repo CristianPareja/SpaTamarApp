@@ -13,6 +13,17 @@
         android:gravity="center"
         android:orientation="vertical"
         android:padding="28dp">
+
+        <TextView
+            android:id="@+id/txtCampanitaRecordatorio"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="🔔"
+            android:textAlignment="textEnd"
+            android:textColor="@color/azul_titulo"
+            android:textSize="28sp"
+            android:textStyle="bold" />
+
         <TextView
             android:id="@+id/txtTituloCliente"
             android:layout_width="wrap_content"
@@ -21,6 +32,7 @@
             android:textColor="@color/azul_titulo"
             android:textSize="28sp"
             android:textStyle="bold" />
+
         <TextView
             android:id="@+id/txtBienvenidaCliente"
             android:layout_width="wrap_content"
@@ -31,6 +43,7 @@
             android:text="Bienvenido al sistema Spa TAMAR"
             android:textColor="@color/gris_texto"
             android:textSize="15sp" />
+
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btnServiciosCliente"
             android:layout_width="match_parent"
@@ -42,6 +55,19 @@
             android:textColor="@color/blanco"
             android:textSize="16sp"
             android:textStyle="bold" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btnPerfilCliente"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:layout_marginBottom="12dp"
+            android:background="@drawable/boton_principal"
+            android:text="Mi perfil"
+            android:textAllCaps="false"
+            android:textColor="@color/blanco"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btnAgendarCitaCliente"
             android:layout_width="match_parent"
@@ -60,30 +86,7 @@
             android:layout_height="52dp"
             android:layout_marginBottom="12dp"
             android:background="@drawable/boton_principal"
-            android:text="Mis citas"
-            android:textAllCaps="false"
-            android:textColor="@color/blanco"
-            android:textSize="16sp"
-            android:textStyle="bold" />
-
-        <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/btnHistorialCliente"
-            android:layout_width="match_parent"
-            android:layout_height="52dp"
-            android:layout_marginBottom="12dp"
-            android:background="@drawable/boton_principal"
-            android:text="Historial"
-            android:textAllCaps="false"
-            android:textColor="@color/blanco"
-            android:textSize="16sp"
-            android:textStyle="bold" />
-        <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/btnRecordatoriosCliente"
-            android:layout_width="match_parent"
-            android:layout_height="52dp"
-            android:layout_marginBottom="12dp"
-            android:background="@drawable/boton_principal"
-            android:text="Recordatorios"
+            android:text="Mis citas e historial"
             android:textAllCaps="false"
             android:textColor="@color/blanco"
             android:textSize="16sp"
@@ -99,17 +102,6 @@
             android:textAllCaps="false"
             android:textColor="@color/blanco"
             android:textSize="16sp"
-            android:textStyle="bold" />
-        <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/btnPerfilCliente"
-            android:layout_width="match_parent"
-            android:layout_height="52dp"
-            android:layout_marginBottom="10dp"
-            android:background="@drawable/boton_principal"
-            android:text="Mi perfil"
-            android:textAllCaps="false"
-            android:textColor="#FFFFFF"
-            android:textSize="15sp"
             android:textStyle="bold" />
 
         <androidx.appcompat.widget.AppCompatButton

@@ -3,16 +3,21 @@ package com.puce.spatamar;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
 
 public class MenuClienteActivity extends AppCompatActivity {
 
+    TextView txtCampanitaRecordatorio;
+
     AppCompatButton btnServiciosCliente;
     AppCompatButton btnPerfilCliente;
     AppCompatButton btnAgendarCitaCliente;
     AppCompatButton btnMisCitasCliente;
+    AppCompatButton btnCuentasPendientesCliente;
     AppCompatButton btnCerrarSesionCliente;
 
     @Override
@@ -20,11 +25,37 @@ public class MenuClienteActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_menu_cliente);
 
+        txtCampanitaRecordatorio = findViewById(R.id.txtCampanitaRecordatorio);
+
         btnServiciosCliente = findViewById(R.id.btnServiciosCliente);
         btnPerfilCliente = findViewById(R.id.btnPerfilCliente);
         btnAgendarCitaCliente = findViewById(R.id.btnAgendarCitaCliente);
         btnMisCitasCliente = findViewById(R.id.btnMisCitasCliente);
+        btnCuentasPendientesCliente = findViewById(R.id.btnCuentasPendientesCliente);
         btnCerrarSesionCliente = findViewById(R.id.btnCerrarSesionCliente);
+
+        actualizarCampanita();
+
+        txtCampanitaRecordatorio.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                int pendientes = RepositorioCitas.obtenerCitasActuales().size();
+
+                if (pendientes == 0) {
+                    Toast.makeText(
+                            MenuClienteActivity.this,
+                            "No tiene citas pendientes por recordar.",
+                            Toast.LENGTH_SHORT
+                    ).show();
+                } else {
+                    Toast.makeText(
+                            MenuClienteActivity.this,
+                            "Tiene " + pendientes + " cita(s) pendiente(s). Revise la sección Mis citas e historial.",
+                            Toast.LENGTH_LONG
+                    ).show();
+                }
+            }
+        });
 
         btnServiciosCliente.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -58,6 +89,17 @@ public class MenuClienteActivity extends AppCompatActivity {
             }
         });
 
+        btnCuentasPendientesCliente.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(
+                        MenuClienteActivity.this,
+                        "Módulo de cuentas pendientes en desarrollo.",
+                        Toast.LENGTH_SHORT
+                ).show();
+            }
+        });
+
         btnCerrarSesionCliente.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -66,5 +108,21 @@ public class MenuClienteActivity extends AppCompatActivity {
                 finish();
             }
         });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        actualizarCampanita();
+    }
+
+    private void actualizarCampanita() {
+        int pendientes = RepositorioCitas.obtenerCitasActuales().size();
+
+        if (pendientes > 0) {
+            txtCampanitaRecordatorio.setText("🔔 " + pendientes);
+        } else {
+            txtCampanitaRecordatorio.setText("🔔");
+        }
     }
 }

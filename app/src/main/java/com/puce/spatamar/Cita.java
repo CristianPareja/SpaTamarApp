@@ -19,6 +19,7 @@ public class Cita {
         this.estado = estado;
         this.observaciones = observaciones;
     }
+
     public String getNombreCliente() {
         return nombreCliente;
     }
@@ -47,4 +48,7 @@ public class Cita {
         return observaciones;
     }
 
+    public void setEstado(String estado) {
+        this.estado = estado;
+    }
 }
