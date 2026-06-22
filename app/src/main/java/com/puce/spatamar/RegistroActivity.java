@@ -75,6 +75,12 @@ public class RegistroActivity extends AppCompatActivity {
             return;
         }
 
+        if (telefono.length() < 10) {
+            edtTelefonoRegistro.setError("Ingrese un teléfono válido de 10 dígitos");
+            edtTelefonoRegistro.requestFocus();
+            return;
+        }
+
         if (correo.isEmpty()) {
             edtCorreoRegistro.setError("Ingrese el correo");
             edtCorreoRegistro.requestFocus();
@@ -110,6 +116,33 @@ public class RegistroActivity extends AppCompatActivity {
             edtConfirmarClaveRegistro.requestFocus();
             return;
         }
+
+        if (RepositorioUsuarios.existeUsuario(usuario, correo)) {
+            Toast.makeText(this, "El usuario o correo ya se encuentra registrado", Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        Usuario nuevoUsuario = new Usuario(
+                nombre,
+                apellido,
+                telefono,
+                correo,
+                usuario,
+                clave,
+                "cliente"
+        );
+
+        RepositorioUsuarios.agregarUsuario(nuevoUsuario);
+
+        String nombreCompleto = nombre + " " + apellido;
+
+        PerfilUsuario perfil = new PerfilUsuario(
+                nombreCompleto,
+                telefono,
+                correo
+        );
+
+        RepositorioPerfil.registrarPerfilInicial(perfil);
 
         Toast.makeText(this, "Registro realizado correctamente", Toast.LENGTH_SHORT).show();
 

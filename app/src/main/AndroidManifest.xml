@@ -11,6 +11,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.SpaTamarApp">
+        <activity android:name=".PerfilClienteActivity" />
         <activity
             android:name=".MisCitasActivity"
             android:exported="false" />

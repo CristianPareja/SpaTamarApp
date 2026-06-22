@@ -43,10 +43,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void validarLogin() {
-        String usuario = edtUsuario.getText().toString().trim();
+        String usuarioTexto = edtUsuario.getText().toString().trim();
         String clave = edtClave.getText().toString().trim();
 
-        if (usuario.isEmpty()) {
+        if (usuarioTexto.isEmpty()) {
             edtUsuario.setError("Ingrese usuario o correo");
             edtUsuario.requestFocus();
             return;
@@ -58,20 +58,34 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
 
-        if (usuario.equals("cliente") && clave.equals("1234")) {
-            Toast.makeText(this, "Bienvenido cliente", Toast.LENGTH_SHORT).show();
+        Usuario usuarioEncontrado = RepositorioUsuarios.validarLogin(usuarioTexto, clave);
 
-            Intent intent = new Intent(MainActivity.this, MenuClienteActivity.class);
-            startActivity(intent);
+        if (usuarioEncontrado == null) {
+            Toast.makeText(this, "Usuario o contraseña incorrectos", Toast.LENGTH_SHORT).show();
+            return;
+        }
 
-        } else if (usuario.equals("admin") && clave.equals("1234")) {
+        if (usuarioEncontrado.getRol().equalsIgnoreCase("administrador")) {
             Toast.makeText(this, "Bienvenido administrador", Toast.LENGTH_SHORT).show();
 
             Intent intent = new Intent(MainActivity.this, MenuAdministradorActivity.class);
             startActivity(intent);
+            finish();
 
         } else {
-            Toast.makeText(this, "Usuario o contraseña incorrectos", Toast.LENGTH_SHORT).show();
+            PerfilUsuario perfil = new PerfilUsuario(
+                    usuarioEncontrado.getNombreCompleto(),
+                    usuarioEncontrado.getTelefono(),
+                    usuarioEncontrado.getCorreo()
+            );
+
+            RepositorioPerfil.registrarPerfilInicial(perfil);
+
+            Toast.makeText(this, "Bienvenido " + usuarioEncontrado.getNombre(), Toast.LENGTH_SHORT).show();
+
+            Intent intent = new Intent(MainActivity.this, MenuClienteActivity.class);
+            startActivity(intent);
+            finish();
         }
     }
 }
