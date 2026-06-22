@@ -127,7 +127,7 @@ public class MenuAdministradorActivity extends AppCompatActivity {
         String fechaActual = obtenerFechaActual();
 
         int totalClientes = RepositorioUsuarios.contarClientesRegistrados();
-        int citasHoy = RepositorioCitas.contarCitasPorFecha(fechaActual);
+        int citasHoyEnCurso = RepositorioCitas.contarCitasEnCursoPorFecha(fechaActual);
         double totalCobro = RepositorioCuentasPendientes.calcularTotalGeneralPendiente();
 
         double totalIngresos = RepositorioFinanciero.calcularTotalIngresos();
@@ -135,7 +135,7 @@ public class MenuAdministradorActivity extends AppCompatActivity {
         double gananciaNeta = RepositorioFinanciero.calcularGananciaNeta();
 
         txtFechaDashboard.setText("Fecha del panel: " + fechaActual);
-        txtCitasHoyDashboard.setText(String.valueOf(citasHoy));
+        txtCitasHoyDashboard.setText(String.valueOf(citasHoyEnCurso));
         txtTotalCobroDashboard.setText("$" + String.format(Locale.US, "%.2f", totalCobro));
         txtTotalClientesDashboard.setText(String.valueOf(totalClientes));
 
@@ -147,8 +147,8 @@ public class MenuAdministradorActivity extends AppCompatActivity {
 
         String resumen;
 
-        if (citasHoy == 0) {
-            resumen = "Para hoy no existen citas registradas. La ganancia neta actual es de $"
+        if (citasHoyEnCurso == 0) {
+            resumen = "Para hoy no existen citas pendientes por atender. La ganancia neta actual es de $"
                     + String.format(Locale.US, "%.2f", gananciaNeta)
                     + ", con ingresos por $"
                     + String.format(Locale.US, "%.2f", totalIngresos)
@@ -156,7 +156,7 @@ public class MenuAdministradorActivity extends AppCompatActivity {
                     + String.format(Locale.US, "%.2f", totalEgresos)
                     + ".";
         } else {
-            resumen = "Para hoy existen " + citasHoy + " cita(s) programada(s). "
+            resumen = "Para hoy existen " + citasHoyEnCurso + " cita(s) pendientes por atender. "
                     + "La ganancia neta actual es de $"
                     + String.format(Locale.US, "%.2f", gananciaNeta)
                     + ", con ingresos por $"

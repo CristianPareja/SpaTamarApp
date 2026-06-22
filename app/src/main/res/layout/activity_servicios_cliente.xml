@@ -7,182 +7,63 @@
     android:fillViewport="true">
 
     <LinearLayout
-        android:id="@+id/contenedorServiciosCliente"
+        android:id="@+id/contenedorPrincipalServiciosCliente"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center"
         android:orientation="vertical"
-        android:padding="28dp">
+        android:padding="20dp">
 
         <TextView
             android:id="@+id/txtTituloServiciosCliente"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Servicios Disponibles"
+            android:layout_marginTop="25dp"
+            android:text="Servicios disponibles"
+            android:textAlignment="center"
             android:textColor="@color/azul_titulo"
-            android:textSize="28sp"
+            android:textSize="25sp"
             android:textStyle="bold" />
 
         <TextView
             android:id="@+id/txtSubtituloServiciosCliente"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="6dp"
-            android:layout_marginBottom="24dp"
-            android:gravity="center"
-            android:text="Consulta los servicios que ofrece Spa TAMAR"
+            android:layout_marginBottom="18dp"
+            android:text="Consulte los servicios activos del Spa TAMAR"
+            android:textAlignment="center"
             android:textColor="@color/gris_texto"
-            android:textSize="15sp" />
+            android:textSize="13sp" />
 
-        <LinearLayout
-            android:id="@+id/cardManicure"
+        <TextView
+            android:id="@+id/txtSinServiciosCliente"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="14dp"
             android:background="@drawable/card_login"
-            android:elevation="5dp"
-            android:orientation="vertical"
-            android:padding="18dp">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Manicure"
-                android:textColor="@color/azul_titulo"
-                android:textSize="20sp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="6dp"
-                android:text="Limpieza, cuidado y embellecimiento de uñas de las manos."
-                android:textColor="@color/gris_texto"
-                android:textSize="15sp" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:text="Duración aproximada: 45 minutos"
-                android:textColor="@color/texto_principal"
-                android:textSize="14sp" />
-        </LinearLayout>
+            android:padding="16dp"
+            android:text="No existen servicios disponibles por el momento."
+            android:textAlignment="center"
+            android:textColor="@color/azul_titulo"
+            android:textSize="15sp"
+            android:textStyle="bold" />
 
         <LinearLayout
-            android:id="@+id/cardPedicure"
+            android:id="@+id/contenedorServiciosCliente"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="14dp"
-            android:background="@drawable/card_login"
-            android:elevation="5dp"
-            android:orientation="vertical"
-            android:padding="18dp">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Pedicure"
-                android:textColor="@color/azul_titulo"
-                android:textSize="20sp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="6dp"
-                android:text="Cuidado estético de pies y uñas para mejorar la presentación personal."
-                android:textColor="@color/gris_texto"
-                android:textSize="15sp" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:text="Duración aproximada: 60 minutos"
-                android:textColor="@color/texto_principal"
-                android:textSize="14sp" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/cardUnasAcrilicas"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="14dp"
-            android:background="@drawable/card_login"
-            android:elevation="5dp"
-            android:orientation="vertical"
-            android:padding="18dp">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Uñas acrílicas"
-                android:textColor="@color/azul_titulo"
-                android:textSize="20sp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="6dp"
-                android:text="Aplicación y diseño de uñas acrílicas según el estilo del cliente."
-                android:textColor="@color/gris_texto"
-                android:textSize="15sp" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:text="Duración aproximada: 90 minutos"
-                android:textColor="@color/texto_principal"
-                android:textSize="14sp" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/cardMasajes"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="22dp"
-            android:background="@drawable/card_login"
-            android:elevation="5dp"
-            android:orientation="vertical"
-            android:padding="18dp">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Masajes relajantes"
-                android:textColor="@color/azul_titulo"
-                android:textSize="20sp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="6dp"
-                android:text="Servicio orientado a la relajación y bienestar del cliente."
-                android:textColor="@color/gris_texto"
-                android:textSize="15sp" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:text="Duración aproximada: 60 minutos"
-                android:textColor="@color/texto_principal"
-                android:textSize="14sp" />
-        </LinearLayout>
+            android:orientation="vertical" />
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btnVolverServiciosCliente"
             android:layout_width="match_parent"
             android:layout_height="52dp"
+            android:layout_marginTop="18dp"
             android:background="@drawable/boton_principal"
             android:text="Volver"
             android:textAllCaps="false"
             android:textColor="@color/blanco"
-            android:textSize="16sp"
+            android:textSize="15sp"
             android:textStyle="bold" />
 
     </LinearLayout>

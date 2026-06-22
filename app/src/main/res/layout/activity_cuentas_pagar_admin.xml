@@ -62,30 +62,6 @@
                 android:padding="10dp" />
 
             <EditText
-                android:id="@+id/edtProveedorDetalle"
-                android:layout_width="match_parent"
-                android:layout_height="52dp"
-                android:layout_marginBottom="12dp"
-                android:background="@drawable/edittext_login"
-                android:hint="Proveedor, arriendo o servicio básico"
-                android:inputType="text"
-                android:padding="14dp"
-                android:textColor="@color/texto_principal"
-                android:textColorHint="@color/gris_texto" />
-
-            <EditText
-                android:id="@+id/edtConceptoPagar"
-                android:layout_width="match_parent"
-                android:layout_height="52dp"
-                android:layout_marginBottom="12dp"
-                android:background="@drawable/edittext_login"
-                android:hint="Concepto del pago"
-                android:inputType="text"
-                android:padding="14dp"
-                android:textColor="@color/texto_principal"
-                android:textColorHint="@color/gris_texto" />
-
-            <EditText
                 android:id="@+id/edtFechaPagar"
                 android:layout_width="match_parent"
                 android:layout_height="52dp"

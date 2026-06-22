@@ -21,8 +21,6 @@ public class CuentasPagarAdminActivity extends AppCompatActivity {
 
     private Spinner spinnerTipoEgreso;
 
-    private EditText edtProveedorDetalle;
-    private EditText edtConceptoPagar;
     private EditText edtFechaPagar;
     private EditText edtValorPagar;
     private EditText edtObservacionPagar;
@@ -42,8 +40,6 @@ public class CuentasPagarAdminActivity extends AppCompatActivity {
 
         spinnerTipoEgreso = findViewById(R.id.spinnerTipoEgreso);
 
-        edtProveedorDetalle = findViewById(R.id.edtProveedorDetalle);
-        edtConceptoPagar = findViewById(R.id.edtConceptoPagar);
         edtFechaPagar = findViewById(R.id.edtFechaPagar);
         edtValorPagar = findViewById(R.id.edtValorPagar);
         edtObservacionPagar = findViewById(R.id.edtObservacionPagar);
@@ -118,6 +114,7 @@ public class CuentasPagarAdminActivity extends AppCompatActivity {
                 dia
         );
 
+        selectorFecha.getDatePicker().setMinDate(System.currentTimeMillis() - 1000);
         selectorFecha.show();
     }
 
@@ -125,26 +122,12 @@ public class CuentasPagarAdminActivity extends AppCompatActivity {
         int posicionTipo = spinnerTipoEgreso.getSelectedItemPosition();
 
         String tipoEgreso = spinnerTipoEgreso.getSelectedItem().toString();
-        String proveedorDetalle = edtProveedorDetalle.getText().toString().trim();
-        String concepto = edtConceptoPagar.getText().toString().trim();
         String fecha = edtFechaPagar.getText().toString().trim();
         String valorTexto = edtValorPagar.getText().toString().trim();
         String observacion = edtObservacionPagar.getText().toString().trim();
 
         if (posicionTipo == 0) {
             Toast.makeText(this, "Seleccione el tipo de egreso", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        if (proveedorDetalle.isEmpty()) {
-            edtProveedorDetalle.setError("Ingrese proveedor, arriendo o servicio básico");
-            edtProveedorDetalle.requestFocus();
-            return;
-        }
-
-        if (concepto.isEmpty()) {
-            edtConceptoPagar.setError("Ingrese el concepto del pago");
-            edtConceptoPagar.requestFocus();
             return;
         }
 
@@ -181,8 +164,8 @@ public class CuentasPagarAdminActivity extends AppCompatActivity {
 
         CuentaPagar nuevaCuenta = new CuentaPagar(
                 tipoEgreso,
-                proveedorDetalle,
-                concepto,
+                tipoEgreso,
+                tipoEgreso,
                 fecha,
                 valor,
                 "Registrado",
@@ -225,8 +208,6 @@ public class CuentasPagarAdminActivity extends AppCompatActivity {
         TextView tarjeta = new TextView(this);
 
         String informacion = "Tipo: " + cuenta.getTipoEgreso() + "\n"
-                + "Detalle: " + cuenta.getProveedorDetalle() + "\n"
-                + "Concepto: " + cuenta.getConcepto() + "\n"
                 + "Fecha: " + cuenta.getFecha() + "\n"
                 + "Valor: $" + String.format(Locale.US, "%.2f", cuenta.getValor()) + "\n"
                 + "Estado: " + cuenta.getEstado() + "\n"
@@ -251,8 +232,6 @@ public class CuentasPagarAdminActivity extends AppCompatActivity {
 
     private void limpiarFormulario() {
         spinnerTipoEgreso.setSelection(0);
-        edtProveedorDetalle.setText("");
-        edtConceptoPagar.setText("");
         edtFechaPagar.setText("");
         edtValorPagar.setText("");
         edtObservacionPagar.setText("");

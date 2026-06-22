@@ -75,6 +75,19 @@ public class RepositorioCitas {
         return total;
     }
 
+    public static int contarCitasEnCursoPorFecha(String fecha) {
+        int total = 0;
+
+        for (Cita cita : listaCitas) {
+            if (cita.getFecha().equals(fecha)
+                    && cita.getEstado().equalsIgnoreCase("En curso")) {
+                total++;
+            }
+        }
+
+        return total;
+    }
+
     public static int contarCitasActivas() {
         int total = 0;
 
@@ -95,6 +108,7 @@ public class RepositorioCitas {
                 return true;
             }
         }
+
         return false;
     }
 

@@ -15,6 +15,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 
 public class AgendarCitaActivity extends AppCompatActivity {
@@ -36,6 +37,12 @@ public class AgendarCitaActivity extends AppCompatActivity {
     private AppCompatButton btnVolverAgendar;
 
     private String nombrePerfil = "";
+
+    private int anioSeleccionado = -1;
+    private int mesSeleccionado = -1;
+    private int diaSeleccionado = -1;
+    private int horaSeleccionada = -1;
+    private int minutoSeleccionado = -1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -131,18 +138,19 @@ public class AgendarCitaActivity extends AppCompatActivity {
     }
 
     private void cargarServicios() {
-        String[] servicios = {
-                "Seleccione un servicio",
-                "Manicure",
-                "Pedicure",
-                "Uñas acrílicas",
-                "Masajes relajantes"
-        };
+        ArrayList<Servicio> serviciosActivos = RepositorioServicios.obtenerServiciosActivos();
+
+        ArrayList<String> nombresServicios = new ArrayList<>();
+        nombresServicios.add("Seleccione un servicio");
+
+        for (Servicio servicio : serviciosActivos) {
+            nombresServicios.add(servicio.getNombre());
+        }
 
         ArrayAdapter<String> adapter = new ArrayAdapter<>(
                 this,
                 android.R.layout.simple_spinner_item,
-                servicios
+                nombresServicios
         );
 
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -159,18 +167,32 @@ public class AgendarCitaActivity extends AppCompatActivity {
         DatePickerDialog selectorFecha = new DatePickerDialog(
                 this,
                 (view, year, month, dayOfMonth) -> {
+                    anioSeleccionado = year;
+                    mesSeleccionado = month;
+                    diaSeleccionado = dayOfMonth;
+
                     String fechaSeleccionada = dayOfMonth + "/" + (month + 1) + "/" + year;
                     edtFechaCita.setText(fechaSeleccionada);
+
+                    edtHoraCita.setText("");
+                    horaSeleccionada = -1;
+                    minutoSeleccionado = -1;
                 },
                 anio,
                 mes,
                 dia
         );
 
+        selectorFecha.getDatePicker().setMinDate(System.currentTimeMillis() - 1000);
         selectorFecha.show();
     }
 
     private void mostrarSelectorHora() {
+        if (edtFechaCita.getText().toString().trim().isEmpty()) {
+            Toast.makeText(this, "Primero seleccione la fecha de la cita", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         Calendar calendario = Calendar.getInstance();
 
         int hora = calendario.get(Calendar.HOUR_OF_DAY);
@@ -178,9 +200,12 @@ public class AgendarCitaActivity extends AppCompatActivity {
 
         TimePickerDialog selectorHora = new TimePickerDialog(
                 this,
-                (view, hourOfDay, minute) -> {
-                    String horaSeleccionada = String.format("%02d:%02d", hourOfDay, minute);
-                    edtHoraCita.setText(horaSeleccionada);
+                (view, hourOfDay, minuteSelected) -> {
+                    horaSeleccionada = hourOfDay;
+                    minutoSeleccionado = minuteSelected;
+
+                    String horaTexto = String.format("%02d:%02d", hourOfDay, minuteSelected);
+                    edtHoraCita.setText(horaTexto);
                 },
                 hora,
                 minuto,
@@ -243,6 +268,11 @@ public class AgendarCitaActivity extends AppCompatActivity {
             return;
         }
 
+        if (!fechaYHoraSonValidas()) {
+            Toast.makeText(this, "No puede agendar una cita en una fecha u hora pasada", Toast.LENGTH_LONG).show();
+            return;
+        }
+
         if (observaciones.isEmpty()) {
             observaciones = "Sin observaciones";
         }
@@ -281,6 +311,26 @@ public class AgendarCitaActivity extends AppCompatActivity {
                 .show();
     }
 
+    private boolean fechaYHoraSonValidas() {
+        if (anioSeleccionado == -1 || mesSeleccionado == -1 || diaSeleccionado == -1
+                || horaSeleccionada == -1 || minutoSeleccionado == -1) {
+            return false;
+        }
+
+        Calendar fechaHoraCita = Calendar.getInstance();
+        fechaHoraCita.set(Calendar.YEAR, anioSeleccionado);
+        fechaHoraCita.set(Calendar.MONTH, mesSeleccionado);
+        fechaHoraCita.set(Calendar.DAY_OF_MONTH, diaSeleccionado);
+        fechaHoraCita.set(Calendar.HOUR_OF_DAY, horaSeleccionada);
+        fechaHoraCita.set(Calendar.MINUTE, minutoSeleccionado);
+        fechaHoraCita.set(Calendar.SECOND, 0);
+        fechaHoraCita.set(Calendar.MILLISECOND, 0);
+
+        Calendar fechaHoraActual = Calendar.getInstance();
+
+        return fechaHoraCita.after(fechaHoraActual);
+    }
+
     private void limpiarFormulario() {
         chkAgendarFamiliar.setChecked(false);
         txtNombreFamiliar.setVisibility(View.GONE);
@@ -291,5 +341,11 @@ public class AgendarCitaActivity extends AppCompatActivity {
         edtHoraCita.setText("");
         edtObservaciones.setText("");
         spinnerServicio.setSelection(0);
+
+        anioSeleccionado = -1;
+        mesSeleccionado = -1;
+        diaSeleccionado = -1;
+        horaSeleccionada = -1;
+        minutoSeleccionado = -1;
     }
 }
