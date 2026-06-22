@@ -44,6 +44,12 @@ public class CuentasPendientesActivity extends AppCompatActivity {
         cargarCuentasPendientes();
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        cargarCuentasPendientes();
+    }
+
     private void cargarCuentasPendientes() {
         if (!RepositorioPerfil.existePerfil()) {
             Toast.makeText(
@@ -61,11 +67,12 @@ public class CuentasPendientesActivity extends AppCompatActivity {
 
         PerfilUsuario perfil = RepositorioPerfil.obtenerPerfil();
         String nombreCliente = perfil.getNombre();
+        String correoCliente = perfil.getCorreo();
 
         txtClienteCuentaPendiente.setText("Cliente: " + nombreCliente);
 
-        ArrayList<CuentaPendiente> cuentasCliente = RepositorioCuentasPendientes.obtenerCuentasPendientesPorCliente(nombreCliente);
-        double totalPendiente = RepositorioCuentasPendientes.calcularTotalPendientePorCliente(nombreCliente);
+        ArrayList<CuentaPendiente> cuentasCliente = RepositorioCuentasPendientes.obtenerCuentasPendientesPorCorreo(correoCliente);
+        double totalPendiente = RepositorioCuentasPendientes.calcularTotalPendientePorCorreo(correoCliente);
 
         txtTotalPendiente.setText(String.format("Total pendiente: $%.2f", totalPendiente));
 

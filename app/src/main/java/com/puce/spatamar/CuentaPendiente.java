@@ -3,14 +3,18 @@ package com.puce.spatamar;
 public class CuentaPendiente {
 
     private String nombreCliente;
+    private String usuarioCliente;
+    private String correoCliente;
     private String concepto;
     private String fecha;
     private double valorPendiente;
     private String estado;
     private String observacion;
 
-    public CuentaPendiente(String nombreCliente, String concepto, String fecha, double valorPendiente, String estado, String observacion) {
+    public CuentaPendiente(String nombreCliente, String usuarioCliente, String correoCliente, String concepto, String fecha, double valorPendiente, String estado, String observacion) {
         this.nombreCliente = nombreCliente;
+        this.usuarioCliente = usuarioCliente;
+        this.correoCliente = correoCliente;
         this.concepto = concepto;
         this.fecha = fecha;
         this.valorPendiente = valorPendiente;
@@ -20,6 +24,14 @@ public class CuentaPendiente {
 
     public String getNombreCliente() {
         return nombreCliente;
+    }
+
+    public String getUsuarioCliente() {
+        return usuarioCliente;
+    }
+
+    public String getCorreoCliente() {
+        return correoCliente;
     }
 
     public String getConcepto() {

@@ -18,13 +18,13 @@ public class MenuAdministradorActivity extends AppCompatActivity {
     private TextView txtFechaDashboard;
     private TextView txtTotalClientesDashboard;
     private TextView txtCitasHoyDashboard;
-    private TextView txtCitasActivasDashboard;
     private TextView txtTotalCobroDashboard;
+    private TextView txtGananciaNetaDashboard;
+    private TextView txtDetalleFinancieroDashboard;
     private TextView txtResumenDashboard;
 
     private LinearLayout cardClientesDashboard;
     private LinearLayout cardCitasHoyDashboard;
-    private LinearLayout cardCitasActivasDashboard;
     private LinearLayout cardTotalCobroDashboard;
 
     private AppCompatButton btnServiciosAdmin;
@@ -40,13 +40,13 @@ public class MenuAdministradorActivity extends AppCompatActivity {
         txtFechaDashboard = findViewById(R.id.txtFechaDashboard);
         txtTotalClientesDashboard = findViewById(R.id.txtTotalClientesDashboard);
         txtCitasHoyDashboard = findViewById(R.id.txtCitasHoyDashboard);
-        txtCitasActivasDashboard = findViewById(R.id.txtCitasActivasDashboard);
         txtTotalCobroDashboard = findViewById(R.id.txtTotalCobroDashboard);
+        txtGananciaNetaDashboard = findViewById(R.id.txtGananciaNetaDashboard);
+        txtDetalleFinancieroDashboard = findViewById(R.id.txtDetalleFinancieroDashboard);
         txtResumenDashboard = findViewById(R.id.txtResumenDashboard);
 
         cardClientesDashboard = findViewById(R.id.cardClientesDashboard);
         cardCitasHoyDashboard = findViewById(R.id.cardCitasHoyDashboard);
-        cardCitasActivasDashboard = findViewById(R.id.cardCitasActivasDashboard);
         cardTotalCobroDashboard = findViewById(R.id.cardTotalCobroDashboard);
 
         btnServiciosAdmin = findViewById(R.id.btnServiciosAdmin);
@@ -56,23 +56,7 @@ public class MenuAdministradorActivity extends AppCompatActivity {
 
         cargarDashboard();
 
-        cardClientesDashboard.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(MenuAdministradorActivity.this, ClientesActivity.class);
-                startActivity(intent);
-            }
-        });
-
         cardCitasHoyDashboard.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(MenuAdministradorActivity.this, CitasAdminActivity.class);
-                startActivity(intent);
-            }
-        });
-
-        cardCitasActivasDashboard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(MenuAdministradorActivity.this, CitasAdminActivity.class);
@@ -83,11 +67,16 @@ public class MenuAdministradorActivity extends AppCompatActivity {
         cardTotalCobroDashboard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(
-                        MenuAdministradorActivity.this,
-                        "Módulo de cuentas por cobrar en desarrollo.",
-                        Toast.LENGTH_SHORT
-                ).show();
+                Intent intent = new Intent(MenuAdministradorActivity.this, CuentasCobrarAdminActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        cardClientesDashboard.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MenuAdministradorActivity.this, ClientesActivity.class);
+                startActivity(intent);
             }
         });
 
@@ -102,11 +91,8 @@ public class MenuAdministradorActivity extends AppCompatActivity {
         btnCuentasPagarAdmin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(
-                        MenuAdministradorActivity.this,
-                        "Módulo de cuentas por pagar en desarrollo.",
-                        Toast.LENGTH_SHORT
-                ).show();
+                Intent intent = new Intent(MenuAdministradorActivity.this, CuentasPagarAdminActivity.class);
+                startActivity(intent);
             }
         });
 
@@ -139,29 +125,45 @@ public class MenuAdministradorActivity extends AppCompatActivity {
 
     private void cargarDashboard() {
         String fechaActual = obtenerFechaActual();
+
         int totalClientes = RepositorioUsuarios.contarClientesRegistrados();
         int citasHoy = RepositorioCitas.contarCitasPorFecha(fechaActual);
-        int citasActivas = RepositorioCitas.contarCitasActivas();
         double totalCobro = RepositorioCuentasPendientes.calcularTotalGeneralPendiente();
 
+        double totalIngresos = RepositorioFinanciero.calcularTotalIngresos();
+        double totalEgresos = RepositorioFinanciero.calcularTotalEgresos();
+        double gananciaNeta = RepositorioFinanciero.calcularGananciaNeta();
+
         txtFechaDashboard.setText("Fecha del panel: " + fechaActual);
-        txtTotalClientesDashboard.setText(String.valueOf(totalClientes));
         txtCitasHoyDashboard.setText(String.valueOf(citasHoy));
-        txtCitasActivasDashboard.setText(String.valueOf(citasActivas));
         txtTotalCobroDashboard.setText("$" + String.format(Locale.US, "%.2f", totalCobro));
+        txtTotalClientesDashboard.setText(String.valueOf(totalClientes));
+
+        txtGananciaNetaDashboard.setText("$" + String.format(Locale.US, "%.2f", gananciaNeta));
+        txtDetalleFinancieroDashboard.setText(
+                "Ingresos: $" + String.format(Locale.US, "%.2f", totalIngresos)
+                        + " | Egresos: $" + String.format(Locale.US, "%.2f", totalEgresos)
+        );
 
         String resumen;
 
         if (citasHoy == 0) {
-            resumen = "Para hoy no existen citas registradas. Actualmente el sistema registra "
-                    + totalClientes + " cliente(s), "
-                    + citasActivas + " cita(s) activa(s) y un total pendiente de cobro de $"
-                    + String.format(Locale.US, "%.2f", totalCobro) + ".";
+            resumen = "Para hoy no existen citas registradas. La ganancia neta actual es de $"
+                    + String.format(Locale.US, "%.2f", gananciaNeta)
+                    + ", con ingresos por $"
+                    + String.format(Locale.US, "%.2f", totalIngresos)
+                    + " y egresos por $"
+                    + String.format(Locale.US, "%.2f", totalEgresos)
+                    + ".";
         } else {
             resumen = "Para hoy existen " + citasHoy + " cita(s) programada(s). "
-                    + "Actualmente el sistema registra " + totalClientes + " cliente(s), "
-                    + citasActivas + " cita(s) activa(s) y un total pendiente de cobro de $"
-                    + String.format(Locale.US, "%.2f", totalCobro) + ".";
+                    + "La ganancia neta actual es de $"
+                    + String.format(Locale.US, "%.2f", gananciaNeta)
+                    + ", con ingresos por $"
+                    + String.format(Locale.US, "%.2f", totalIngresos)
+                    + " y egresos por $"
+                    + String.format(Locale.US, "%.2f", totalEgresos)
+                    + ".";
         }
 
         txtResumenDashboard.setText(resumen);

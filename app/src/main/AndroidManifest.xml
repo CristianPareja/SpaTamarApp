@@ -38,6 +38,8 @@
             android:exported="false" />
         <activity android:name=".CuentasPendientesActivity" />
         <activity android:name=".CitasAdminActivity" />
+        <activity android:name=".CuentasCobrarAdminActivity" />
+        <activity android:name=".CuentasPagarAdminActivity" />
         <activity
             android:name=".MainActivity"
             android:exported="true">

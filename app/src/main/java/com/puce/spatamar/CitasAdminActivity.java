@@ -2,6 +2,7 @@ package com.puce.spatamar;
 
 import android.app.DatePickerDialog;
 import android.os.Bundle;
+import android.text.InputType;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -262,19 +263,66 @@ public class CitasAdminActivity extends AppCompatActivity {
     }
 
     private void mostrarDialogoFinalizar(Cita cita) {
+        EditText inputValor = new EditText(this);
+        inputValor.setHint("Valor cobrado");
+        inputValor.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
+        inputValor.setPadding(40, 20, 40, 20);
+
         new AlertDialog.Builder(this)
                 .setTitle("Finalizar cita")
-                .setMessage("¿Está seguro de marcar esta cita como finalizada? Esta acción la moverá al historial del cliente.")
-                .setPositiveButton("Sí, finalizar", (dialog, which) -> {
+                .setMessage("Ingrese el valor cobrado por esta cita para registrarlo como ingreso.")
+                .setView(inputValor)
+                .setPositiveButton("Finalizar", (dialog, which) -> {
+                    String valorTexto = inputValor.getText().toString().trim();
+
+                    if (valorTexto.isEmpty()) {
+                        Toast.makeText(this, "Debe ingresar el valor cobrado", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+
+                    double valorCobrado;
+
+                    try {
+                        valorCobrado = Double.parseDouble(valorTexto);
+                    } catch (NumberFormatException e) {
+                        Toast.makeText(this, "Ingrese un valor válido", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+
+                    if (valorCobrado <= 0) {
+                        Toast.makeText(this, "El valor debe ser mayor a cero", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+
                     RepositorioCitas.finalizarCita(cita);
-                    Toast.makeText(this, "Cita finalizada correctamente", Toast.LENGTH_SHORT).show();
+
+                    RepositorioFinanciero.registrarIngreso(
+                            "Cita finalizada",
+                            cita.getServicio(),
+                            obtenerFechaActual(),
+                            valorCobrado,
+                            cita.getNombreCliente(),
+                            "Ingreso registrado al finalizar cita"
+                    );
+
+                    Toast.makeText(this, "Cita finalizada e ingreso registrado", Toast.LENGTH_SHORT).show();
                     cargarCitasPorFecha();
                 })
-                .setNegativeButton("No", null)
+                .setNegativeButton("Cancelar", null)
                 .show();
     }
 
     private String convertirFechaCalendario(Calendar calendario) {
+        int dia = calendario.get(Calendar.DAY_OF_MONTH);
+        int mes = calendario.get(Calendar.MONTH) + 1;
+        int anio = calendario.get(Calendar.YEAR);
+
+        return dia + "/" + mes + "/" + anio;
+    }
+
+    private String obtenerFechaActual() {
+        Calendar calendario = Calendar.getInstance();
+
         int dia = calendario.get(Calendar.DAY_OF_MONTH);
         int mes = calendario.get(Calendar.MONTH) + 1;
         int anio = calendario.get(Calendar.YEAR);
