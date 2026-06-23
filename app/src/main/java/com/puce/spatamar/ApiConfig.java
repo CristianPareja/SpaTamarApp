@@ -13,5 +13,5 @@ public class ApiConfig {
     public static final String URL_CITAS = BASE_URL + "/citas";
     public static final String URL_CITAS_FECHA = BASE_URL + "/citas/fecha/";
     public static final String URL_CITAS_CLIENTE = BASE_URL + "/citas/cliente/";
-
+    public static final String URL_CITAS_USUARIO = BASE_URL + "/citas/usuario/";
 }

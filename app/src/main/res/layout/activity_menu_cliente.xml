@@ -55,19 +55,6 @@
             android:textColor="@color/blanco"
             android:textSize="16sp"
             android:textStyle="bold" />
-
-        <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/btnPerfilCliente"
-            android:layout_width="match_parent"
-            android:layout_height="52dp"
-            android:layout_marginBottom="12dp"
-            android:background="@drawable/boton_principal"
-            android:text="Mi perfil"
-            android:textAllCaps="false"
-            android:textColor="@color/blanco"
-            android:textSize="16sp"
-            android:textStyle="bold" />
-
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btnMisCitasCliente"
             android:layout_width="match_parent"
@@ -79,7 +66,6 @@
             android:textColor="@color/blanco"
             android:textSize="16sp"
             android:textStyle="bold" />
-
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btnCuentasPendientesCliente"
             android:layout_width="match_parent"
@@ -87,6 +73,18 @@
             android:layout_marginBottom="12dp"
             android:background="@drawable/boton_principal"
             android:text="Cuentas pendientes"
+            android:textAllCaps="false"
+            android:textColor="@color/blanco"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btnPerfilCliente"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:layout_marginBottom="12dp"
+            android:background="@drawable/boton_principal"
+            android:text="Mi perfil"
             android:textAllCaps="false"
             android:textColor="@color/blanco"
             android:textSize="16sp"

@@ -4,10 +4,20 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
+
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 
@@ -20,6 +30,11 @@ public class MisCitasActivity extends AppCompatActivity {
     private LinearLayout contenedorHistorialCitas;
 
     private AppCompatButton btnVolverMisCitas;
+
+    private RequestQueue requestQueue;
+
+    private ArrayList<CitaApi> citasActuales;
+    private ArrayList<CitaApi> historialCitas;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,6 +49,11 @@ public class MisCitasActivity extends AppCompatActivity {
 
         btnVolverMisCitas = findViewById(R.id.btnVolverMisCitas);
 
+        requestQueue = Volley.newRequestQueue(this);
+
+        citasActuales = new ArrayList<>();
+        historialCitas = new ArrayList<>();
+
         btnVolverMisCitas.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -41,13 +61,73 @@ public class MisCitasActivity extends AppCompatActivity {
             }
         });
 
-        cargarCitasActuales();
-        cargarHistorialCitas();
+        cargarCitasDesdeApi();
+    }
+
+    private void cargarCitasDesdeApi() {
+        if (!SesionUsuario.haySesionActiva()) {
+            Toast.makeText(this, "Debe iniciar sesión para consultar sus citas", Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        String url = ApiConfig.URL_CITAS_USUARIO + SesionUsuario.getIdUsuario();
+
+        JsonObjectRequest request = new JsonObjectRequest(
+                Request.Method.GET,
+                url,
+                null,
+                response -> {
+                    try {
+                        JSONArray citasJson = response.getJSONArray("citas");
+
+                        citasActuales.clear();
+                        historialCitas.clear();
+
+                        for (int i = 0; i < citasJson.length(); i++) {
+                            JSONObject citaJson = citasJson.getJSONObject(i);
+
+                            CitaApi cita = new CitaApi(
+                                    citaJson.getInt("id_cita"),
+                                    citaJson.optString("nombre_cliente", ""),
+                                    citaJson.optString("telefono", ""),
+                                    citaJson.optString("servicio", ""),
+                                    formatearFecha(citaJson.optString("fecha", "")),
+                                    formatearHora(citaJson.optString("hora", "")),
+                                    citaJson.optString("estado", ""),
+                                    citaJson.optString("observaciones", "Sin observaciones")
+                            );
+
+                            if (cita.getEstado().equalsIgnoreCase("En curso")) {
+                                citasActuales.add(cita);
+                            } else {
+                                historialCitas.add(cita);
+                            }
+                        }
+
+                        cargarCitasActuales();
+                        cargarHistorialCitas();
+
+                    } catch (JSONException e) {
+                        Toast.makeText(
+                                MisCitasActivity.this,
+                                "Error al leer las citas del servidor",
+                                Toast.LENGTH_SHORT
+                        ).show();
+                    }
+                },
+                error -> {
+                    Toast.makeText(
+                            MisCitasActivity.this,
+                            "No se pudo conectar con la API para consultar sus citas",
+                            Toast.LENGTH_LONG
+                    ).show();
+                }
+        );
+
+        requestQueue.add(request);
     }
 
     private void cargarCitasActuales() {
-        ArrayList<Cita> citasActuales = RepositorioCitas.obtenerCitasActuales();
-
         contenedorCitasActuales.removeAllViews();
 
         if (citasActuales.isEmpty()) {
@@ -59,18 +139,16 @@ public class MisCitasActivity extends AppCompatActivity {
         txtSinCitasActuales.setVisibility(View.GONE);
         contenedorCitasActuales.setVisibility(View.VISIBLE);
 
-        for (Cita cita : citasActuales) {
+        for (CitaApi cita : citasActuales) {
             LinearLayout tarjeta = crearTarjetaCitaActual(cita);
             contenedorCitasActuales.addView(tarjeta);
         }
     }
 
     private void cargarHistorialCitas() {
-        ArrayList<Cita> historial = RepositorioCitas.obtenerHistorialCitas();
-
         contenedorHistorialCitas.removeAllViews();
 
-        if (historial.isEmpty()) {
+        if (historialCitas.isEmpty()) {
             txtSinHistorial.setVisibility(View.VISIBLE);
             contenedorHistorialCitas.setVisibility(View.GONE);
             return;
@@ -79,13 +157,13 @@ public class MisCitasActivity extends AppCompatActivity {
         txtSinHistorial.setVisibility(View.GONE);
         contenedorHistorialCitas.setVisibility(View.VISIBLE);
 
-        for (Cita cita : historial) {
+        for (CitaApi cita : historialCitas) {
             TextView tarjeta = crearTarjetaHistorial(cita);
             contenedorHistorialCitas.addView(tarjeta);
         }
     }
 
-    private LinearLayout crearTarjetaCitaActual(Cita cita) {
+    private LinearLayout crearTarjetaCitaActual(CitaApi cita) {
         LinearLayout tarjeta = new LinearLayout(this);
         tarjeta.setOrientation(LinearLayout.VERTICAL);
         tarjeta.setPadding(18, 18, 18, 18);
@@ -101,6 +179,7 @@ public class MisCitasActivity extends AppCompatActivity {
         TextView informacion = new TextView(this);
 
         String texto = "Cliente: " + cita.getNombreCliente() + "\n"
+                + "Teléfono: " + cita.getTelefono() + "\n"
                 + "Servicio: " + cita.getServicio() + "\n"
                 + "Fecha: " + cita.getFecha() + "\n"
                 + "Hora: " + cita.getHora() + "\n"
@@ -132,10 +211,11 @@ public class MisCitasActivity extends AppCompatActivity {
         return tarjeta;
     }
 
-    private TextView crearTarjetaHistorial(Cita cita) {
+    private TextView crearTarjetaHistorial(CitaApi cita) {
         TextView tarjeta = new TextView(this);
 
         String informacion = "Cliente: " + cita.getNombreCliente() + "\n"
+                + "Teléfono: " + cita.getTelefono() + "\n"
                 + "Servicio: " + cita.getServicio() + "\n"
                 + "Fecha: " + cita.getFecha() + "\n"
                 + "Hora: " + cita.getHora() + "\n"
@@ -159,16 +239,130 @@ public class MisCitasActivity extends AppCompatActivity {
         return tarjeta;
     }
 
-    private void mostrarDialogoCancelar(Cita cita) {
+    private void mostrarDialogoCancelar(CitaApi cita) {
         new AlertDialog.Builder(this)
                 .setTitle("Cancelar cita")
                 .setMessage("Antes de continuar, recuerde que la cancelación de una cita puede realizarse hasta 1 hora antes del horario establecido. ¿Está seguro de que desea cancelar esta cita?")
-                .setPositiveButton("Sí, cancelar", (dialog, which) -> {
-                    RepositorioCitas.cancelarCita(cita);
-                    cargarCitasActuales();
-                    cargarHistorialCitas();
-                })
+                .setPositiveButton("Sí, cancelar", (dialog, which) -> cancelarCitaApi(cita))
                 .setNegativeButton("No", null)
                 .show();
+    }
+
+    private void cancelarCitaApi(CitaApi cita) {
+        String url = ApiConfig.URL_CITAS + "/" + cita.getIdCita() + "/cancelar";
+
+        JsonObjectRequest request = new JsonObjectRequest(
+                Request.Method.PATCH,
+                url,
+                null,
+                response -> {
+                    Toast.makeText(
+                            MisCitasActivity.this,
+                            "Cita cancelada correctamente",
+                            Toast.LENGTH_SHORT
+                    ).show();
+
+                    cargarCitasDesdeApi();
+                },
+                error -> {
+                    Toast.makeText(
+                            MisCitasActivity.this,
+                            "No se pudo cancelar la cita",
+                            Toast.LENGTH_LONG
+                    ).show();
+                }
+        );
+
+        requestQueue.add(request);
+    }
+
+    private String formatearFecha(String fechaApi) {
+        if (fechaApi == null || fechaApi.isEmpty()) {
+            return "";
+        }
+
+        if (fechaApi.length() >= 10) {
+            String anio = fechaApi.substring(0, 4);
+            String mes = fechaApi.substring(5, 7);
+            String dia = fechaApi.substring(8, 10);
+            return dia + "/" + mes + "/" + anio;
+        }
+
+        return fechaApi;
+    }
+
+    private String formatearHora(String horaApi) {
+        if (horaApi == null || horaApi.isEmpty()) {
+            return "";
+        }
+
+        if (horaApi.length() >= 5) {
+            return horaApi.substring(0, 5);
+        }
+
+        return horaApi;
+    }
+
+    private static class CitaApi {
+
+        private int idCita;
+        private String nombreCliente;
+        private String telefono;
+        private String servicio;
+        private String fecha;
+        private String hora;
+        private String estado;
+        private String observaciones;
+
+        public CitaApi(int idCita,
+                       String nombreCliente,
+                       String telefono,
+                       String servicio,
+                       String fecha,
+                       String hora,
+                       String estado,
+                       String observaciones) {
+
+            this.idCita = idCita;
+            this.nombreCliente = nombreCliente;
+            this.telefono = telefono;
+            this.servicio = servicio;
+            this.fecha = fecha;
+            this.hora = hora;
+            this.estado = estado;
+            this.observaciones = observaciones;
+        }
+
+        public int getIdCita() {
+            return idCita;
+        }
+
+        public String getNombreCliente() {
+            return nombreCliente;
+        }
+
+        public String getTelefono() {
+            return telefono;
+        }
+
+        public String getServicio() {
+            return servicio;
+        }
+
+        public String getFecha() {
+            return fecha;
+        }
+
+        public String getHora() {
+            return hora;
+        }
+
+        public String getEstado() {
+            return estado;
+        }
+
+        public String getObservaciones() {
+            return observaciones;
+        }
     }
 }
