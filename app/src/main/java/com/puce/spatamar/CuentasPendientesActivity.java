@@ -9,7 +9,17 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
+import java.util.Locale;
 
 public class CuentasPendientesActivity extends AppCompatActivity {
 
@@ -20,6 +30,9 @@ public class CuentasPendientesActivity extends AppCompatActivity {
     private LinearLayout contenedorCuentasPendientes;
 
     private AppCompatButton btnVolverCuentasPendientes;
+
+    private RequestQueue requestQueue;
+    private ArrayList<CuentaPendienteApi> listaCuentasPendientes;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,6 +47,9 @@ public class CuentasPendientesActivity extends AppCompatActivity {
 
         btnVolverCuentasPendientes = findViewById(R.id.btnVolverCuentasPendientes);
 
+        requestQueue = Volley.newRequestQueue(this);
+        listaCuentasPendientes = new ArrayList<>();
+
         btnVolverCuentasPendientes.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -41,20 +57,20 @@ public class CuentasPendientesActivity extends AppCompatActivity {
             }
         });
 
-        cargarCuentasPendientes();
+        cargarCuentasPendientesApi();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        cargarCuentasPendientes();
+        cargarCuentasPendientesApi();
     }
 
-    private void cargarCuentasPendientes() {
-        if (!RepositorioPerfil.existePerfil()) {
+    private void cargarCuentasPendientesApi() {
+        if (!SesionUsuario.haySesionActiva()) {
             Toast.makeText(
                     this,
-                    "No se encontró un perfil registrado.",
+                    "Debe iniciar sesión para consultar sus cuentas pendientes.",
                     Toast.LENGTH_LONG
             ).show();
 
@@ -65,20 +81,73 @@ public class CuentasPendientesActivity extends AppCompatActivity {
             return;
         }
 
-        PerfilUsuario perfil = RepositorioPerfil.obtenerPerfil();
-        String nombreCliente = perfil.getNombre();
-        String correoCliente = perfil.getCorreo();
+        txtClienteCuentaPendiente.setText("Cliente: " + SesionUsuario.getNombreCompleto());
 
-        txtClienteCuentaPendiente.setText("Cliente: " + nombreCliente);
+        String url = ApiConfig.URL_CUENTAS_COBRAR_USUARIO + SesionUsuario.getIdUsuario();
 
-        ArrayList<CuentaPendiente> cuentasCliente = RepositorioCuentasPendientes.obtenerCuentasPendientesPorCorreo(correoCliente);
-        double totalPendiente = RepositorioCuentasPendientes.calcularTotalPendientePorCorreo(correoCliente);
+        JsonObjectRequest request = new JsonObjectRequest(
+                Request.Method.GET,
+                url,
+                null,
+                response -> {
+                    try {
+                        JSONArray cuentasJson = response.getJSONArray("cuentas");
 
-        txtTotalPendiente.setText(String.format("Total pendiente: $%.2f", totalPendiente));
+                        listaCuentasPendientes.clear();
 
+                        double totalPendiente = 0;
+
+                        for (int i = 0; i < cuentasJson.length(); i++) {
+                            JSONObject cuentaJson = cuentasJson.getJSONObject(i);
+
+                            CuentaPendienteApi cuenta = new CuentaPendienteApi(
+                                    cuentaJson.getInt("id_cuenta_cobrar"),
+                                    cuentaJson.optInt("id_usuario", 0),
+                                    cuentaJson.optString("nombre_cliente", ""),
+                                    cuentaJson.optString("correo_cliente", ""),
+                                    cuentaJson.optString("concepto", ""),
+                                    formatearFecha(cuentaJson.optString("fecha", "")),
+                                    cuentaJson.optDouble("valor_pendiente", 0),
+                                    cuentaJson.optString("estado", ""),
+                                    cuentaJson.optString("observacion", "Sin observación")
+                            );
+
+                            if (cuenta.getEstado().equalsIgnoreCase("Pendiente")) {
+                                listaCuentasPendientes.add(cuenta);
+                                totalPendiente += cuenta.getValorPendiente();
+                            }
+                        }
+
+                        txtTotalPendiente.setText(
+                                "Total pendiente: $" + String.format(Locale.US, "%.2f", totalPendiente)
+                        );
+
+                        mostrarCuentasPendientes();
+
+                    } catch (JSONException e) {
+                        Toast.makeText(
+                                CuentasPendientesActivity.this,
+                                "Error al leer cuentas pendientes del servidor",
+                                Toast.LENGTH_SHORT
+                        ).show();
+                    }
+                },
+                error -> {
+                    Toast.makeText(
+                            CuentasPendientesActivity.this,
+                            "No se pudo consultar las cuentas pendientes desde la API",
+                            Toast.LENGTH_LONG
+                    ).show();
+                }
+        );
+
+        requestQueue.add(request);
+    }
+
+    private void mostrarCuentasPendientes() {
         contenedorCuentasPendientes.removeAllViews();
 
-        if (cuentasCliente.isEmpty()) {
+        if (listaCuentasPendientes.isEmpty()) {
             txtSinCuentasPendientes.setVisibility(View.VISIBLE);
             contenedorCuentasPendientes.setVisibility(View.GONE);
             return;
@@ -87,18 +156,18 @@ public class CuentasPendientesActivity extends AppCompatActivity {
         txtSinCuentasPendientes.setVisibility(View.GONE);
         contenedorCuentasPendientes.setVisibility(View.VISIBLE);
 
-        for (CuentaPendiente cuenta : cuentasCliente) {
+        for (CuentaPendienteApi cuenta : listaCuentasPendientes) {
             TextView tarjeta = crearTarjetaCuentaPendiente(cuenta);
             contenedorCuentasPendientes.addView(tarjeta);
         }
     }
 
-    private TextView crearTarjetaCuentaPendiente(CuentaPendiente cuenta) {
+    private TextView crearTarjetaCuentaPendiente(CuentaPendienteApi cuenta) {
         TextView tarjeta = new TextView(this);
 
         String informacion = "Concepto: " + cuenta.getConcepto() + "\n"
                 + "Fecha: " + cuenta.getFecha() + "\n"
-                + "Valor pendiente: $" + String.format("%.2f", cuenta.getValorPendiente()) + "\n"
+                + "Valor pendiente: $" + String.format(Locale.US, "%.2f", cuenta.getValorPendiente()) + "\n"
                 + "Estado: " + cuenta.getEstado() + "\n"
                 + "Observación: " + cuenta.getObservacion();
 
@@ -117,5 +186,91 @@ public class CuentasPendientesActivity extends AppCompatActivity {
         tarjeta.setLayoutParams(parametros);
 
         return tarjeta;
+    }
+
+    private String formatearFecha(String fechaApi) {
+        if (fechaApi == null || fechaApi.isEmpty()) {
+            return "";
+        }
+
+        if (fechaApi.length() >= 10) {
+            String anio = fechaApi.substring(0, 4);
+            String mes = fechaApi.substring(5, 7);
+            String dia = fechaApi.substring(8, 10);
+
+            return dia + "/" + mes + "/" + anio;
+        }
+
+        return fechaApi;
+    }
+
+    private static class CuentaPendienteApi {
+
+        private int idCuentaCobrar;
+        private int idUsuario;
+        private String nombreCliente;
+        private String correoCliente;
+        private String concepto;
+        private String fecha;
+        private double valorPendiente;
+        private String estado;
+        private String observacion;
+
+        public CuentaPendienteApi(int idCuentaCobrar,
+                                  int idUsuario,
+                                  String nombreCliente,
+                                  String correoCliente,
+                                  String concepto,
+                                  String fecha,
+                                  double valorPendiente,
+                                  String estado,
+                                  String observacion) {
+
+            this.idCuentaCobrar = idCuentaCobrar;
+            this.idUsuario = idUsuario;
+            this.nombreCliente = nombreCliente;
+            this.correoCliente = correoCliente;
+            this.concepto = concepto;
+            this.fecha = fecha;
+            this.valorPendiente = valorPendiente;
+            this.estado = estado;
+            this.observacion = observacion;
+        }
+
+        public int getIdCuentaCobrar() {
+            return idCuentaCobrar;
+        }
+
+        public int getIdUsuario() {
+            return idUsuario;
+        }
+
+        public String getNombreCliente() {
+            return nombreCliente;
+        }
+
+        public String getCorreoCliente() {
+            return correoCliente;
+        }
+
+        public String getConcepto() {
+            return concepto;
+        }
+
+        public String getFecha() {
+            return fecha;
+        }
+
+        public double getValorPendiente() {
+            return valorPendiente;
+        }
+
+        public String getEstado() {
+            return estado;
+        }
+
+        public String getObservacion() {
+            return observacion;
+        }
     }
 }

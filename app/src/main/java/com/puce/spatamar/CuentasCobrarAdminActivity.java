@@ -14,6 +14,15 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Locale;
@@ -35,7 +44,14 @@ public class CuentasCobrarAdminActivity extends AppCompatActivity {
     private AppCompatButton btnRegistrarCuentaCobrar;
     private AppCompatButton btnVolverCuentasCobrar;
 
-    private ArrayList<Usuario> listaClientes;
+    private RequestQueue requestQueue;
+
+    private ArrayList<ClienteApi> listaClientes;
+    private ArrayList<CuentaCobrarApi> listaCuentas;
+
+    private int anioSeleccionado = -1;
+    private int mesSeleccionado = -1;
+    private int diaSeleccionado = -1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,8 +73,13 @@ public class CuentasCobrarAdminActivity extends AppCompatActivity {
         btnRegistrarCuentaCobrar = findViewById(R.id.btnRegistrarCuentaCobrar);
         btnVolverCuentasCobrar = findViewById(R.id.btnVolverCuentasCobrar);
 
-        cargarClientesEnSpinner();
-        cargarCuentasRegistradas();
+        requestQueue = Volley.newRequestQueue(this);
+
+        listaClientes = new ArrayList<>();
+        listaCuentas = new ArrayList<>();
+
+        cargarClientesApi();
+        cargarCuentasRegistradasApi();
 
         edtFechaCobrar.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -70,7 +91,7 @@ public class CuentasCobrarAdminActivity extends AppCompatActivity {
         btnRegistrarCuentaCobrar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                registrarCuentaPorCobrar();
+                validarYRegistrarCuentaApi();
             }
         });
 
@@ -82,24 +103,75 @@ public class CuentasCobrarAdminActivity extends AppCompatActivity {
         });
     }
 
-    private void cargarClientesEnSpinner() {
-        listaClientes = RepositorioUsuarios.obtenerClientesRegistrados();
+    private void cargarClientesApi() {
+        JsonObjectRequest request = new JsonObjectRequest(
+                Request.Method.GET,
+                ApiConfig.URL_USUARIOS,
+                null,
+                response -> {
+                    try {
+                        JSONArray usuariosJson = response.getJSONArray("usuarios");
 
-        ArrayList<String> nombresClientes = new ArrayList<>();
-        nombresClientes.add("Seleccione un cliente");
+                        listaClientes.clear();
 
-        for (Usuario cliente : listaClientes) {
-            nombresClientes.add(cliente.getNombreCompleto() + " - " + cliente.getCorreo());
-        }
+                        ArrayList<String> nombresClientes = new ArrayList<>();
+                        nombresClientes.add("Seleccione un cliente");
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(
-                this,
-                android.R.layout.simple_spinner_item,
-                nombresClientes
+                        for (int i = 0; i < usuariosJson.length(); i++) {
+                            JSONObject usuarioJson = usuariosJson.getJSONObject(i);
+
+                            String rol = usuarioJson.optString("rol", "");
+                            boolean estado = usuarioJson.optBoolean("estado", true);
+
+                            if (rol.equalsIgnoreCase("cliente") && estado) {
+                                int idUsuario = usuarioJson.getInt("id_usuario");
+                                String nombre = usuarioJson.optString("nombre", "");
+                                String apellido = usuarioJson.optString("apellido", "");
+                                String telefono = usuarioJson.optString("telefono", "");
+                                String correo = usuarioJson.optString("correo", "");
+                                String usuario = usuarioJson.optString("usuario", "");
+
+                                ClienteApi cliente = new ClienteApi(
+                                        idUsuario,
+                                        nombre,
+                                        apellido,
+                                        telefono,
+                                        correo,
+                                        usuario
+                                );
+
+                                listaClientes.add(cliente);
+                                nombresClientes.add(cliente.getNombreCompleto() + " - " + cliente.getCorreo());
+                            }
+                        }
+
+                        ArrayAdapter<String> adapter = new ArrayAdapter<>(
+                                CuentasCobrarAdminActivity.this,
+                                android.R.layout.simple_spinner_item,
+                                nombresClientes
+                        );
+
+                        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                        spinnerClientesCobrar.setAdapter(adapter);
+
+                    } catch (JSONException e) {
+                        Toast.makeText(
+                                CuentasCobrarAdminActivity.this,
+                                "Error al leer clientes del servidor",
+                                Toast.LENGTH_SHORT
+                        ).show();
+                    }
+                },
+                error -> {
+                    Toast.makeText(
+                            CuentasCobrarAdminActivity.this,
+                            "No se pudo cargar clientes desde la API",
+                            Toast.LENGTH_LONG
+                    ).show();
+                }
         );
 
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinnerClientesCobrar.setAdapter(adapter);
+        requestQueue.add(request);
     }
 
     private void mostrarCalendario() {
@@ -112,6 +184,10 @@ public class CuentasCobrarAdminActivity extends AppCompatActivity {
         DatePickerDialog selectorFecha = new DatePickerDialog(
                 this,
                 (view, year, month, dayOfMonth) -> {
+                    anioSeleccionado = year;
+                    mesSeleccionado = month;
+                    diaSeleccionado = dayOfMonth;
+
                     String fechaSeleccionada = dayOfMonth + "/" + (month + 1) + "/" + year;
                     edtFechaCobrar.setText(fechaSeleccionada);
                 },
@@ -123,11 +199,11 @@ public class CuentasCobrarAdminActivity extends AppCompatActivity {
         selectorFecha.show();
     }
 
-    private void registrarCuentaPorCobrar() {
+    private void validarYRegistrarCuentaApi() {
         int posicionCliente = spinnerClientesCobrar.getSelectedItemPosition();
 
         String concepto = edtConceptoCobrar.getText().toString().trim();
-        String fecha = edtFechaCobrar.getText().toString().trim();
+        String fechaVisual = edtFechaCobrar.getText().toString().trim();
         String valorTexto = edtValorCobrar.getText().toString().trim();
         String observacion = edtObservacionCobrar.getText().toString().trim();
 
@@ -142,7 +218,7 @@ public class CuentasCobrarAdminActivity extends AppCompatActivity {
             return;
         }
 
-        if (fecha.isEmpty()) {
+        if (fechaVisual.isEmpty()) {
             Toast.makeText(this, "Seleccione la fecha", Toast.LENGTH_SHORT).show();
             return;
         }
@@ -173,36 +249,130 @@ public class CuentasCobrarAdminActivity extends AppCompatActivity {
             observacion = "Sin observación";
         }
 
-        Usuario clienteSeleccionado = listaClientes.get(posicionCliente - 1);
+        ClienteApi clienteSeleccionado = listaClientes.get(posicionCliente - 1);
 
-        CuentaPendiente nuevaCuenta = new CuentaPendiente(
-                clienteSeleccionado.getNombreCompleto(),
-                clienteSeleccionado.getUsuario(),
-                clienteSeleccionado.getCorreo(),
+        registrarCuentaCobrarApi(
+                clienteSeleccionado,
                 concepto,
-                fecha,
+                obtenerFechaFormatoApi(),
                 valorPendiente,
-                "Pendiente",
                 observacion
         );
-
-        RepositorioCuentasPendientes.agregarCuentaPendiente(nuevaCuenta);
-
-        Toast.makeText(this, "Cuenta por cobrar registrada correctamente", Toast.LENGTH_SHORT).show();
-
-        limpiarFormulario();
-        cargarCuentasRegistradas();
     }
 
-    private void cargarCuentasRegistradas() {
-        ArrayList<CuentaPendiente> cuentas = RepositorioCuentasPendientes.obtenerCuentasPendientes();
+    private void registrarCuentaCobrarApi(ClienteApi cliente,
+                                          String concepto,
+                                          String fechaApi,
+                                          double valorPendiente,
+                                          String observacion) {
 
-        double totalGeneral = RepositorioCuentasPendientes.calcularTotalGeneralPendiente();
-        txtTotalGeneralCobrar.setText("Total general por cobrar: $" + String.format(Locale.US, "%.2f", totalGeneral));
+        JSONObject datosCuenta = new JSONObject();
 
+        try {
+            datosCuenta.put("id_usuario", cliente.getIdUsuario());
+            datosCuenta.put("nombre_cliente", cliente.getNombreCompleto());
+            datosCuenta.put("correo_cliente", cliente.getCorreo());
+            datosCuenta.put("concepto", concepto);
+            datosCuenta.put("fecha", fechaApi);
+            datosCuenta.put("valor_pendiente", valorPendiente);
+            datosCuenta.put("observacion", observacion);
+
+        } catch (JSONException e) {
+            Toast.makeText(this, "Error al preparar datos de la cuenta", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        JsonObjectRequest request = new JsonObjectRequest(
+                Request.Method.POST,
+                ApiConfig.URL_CUENTAS_COBRAR,
+                datosCuenta,
+                response -> {
+                    Toast.makeText(
+                            CuentasCobrarAdminActivity.this,
+                            "Cuenta por cobrar registrada correctamente",
+                            Toast.LENGTH_SHORT
+                    ).show();
+
+                    limpiarFormulario();
+                    cargarCuentasRegistradasApi();
+                },
+                error -> {
+                    Toast.makeText(
+                            CuentasCobrarAdminActivity.this,
+                            "No se pudo registrar la cuenta por cobrar",
+                            Toast.LENGTH_LONG
+                    ).show();
+                }
+        );
+
+        requestQueue.add(request);
+    }
+
+    private void cargarCuentasRegistradasApi() {
+        JsonObjectRequest request = new JsonObjectRequest(
+                Request.Method.GET,
+                ApiConfig.URL_CUENTAS_COBRAR,
+                null,
+                response -> {
+                    try {
+                        JSONArray cuentasJson = response.getJSONArray("cuentas");
+
+                        listaCuentas.clear();
+
+                        double totalGeneralPendiente = 0;
+
+                        for (int i = 0; i < cuentasJson.length(); i++) {
+                            JSONObject cuentaJson = cuentasJson.getJSONObject(i);
+
+                            CuentaCobrarApi cuenta = new CuentaCobrarApi(
+                                    cuentaJson.getInt("id_cuenta_cobrar"),
+                                    cuentaJson.optInt("id_usuario", 0),
+                                    cuentaJson.optString("nombre_cliente", ""),
+                                    cuentaJson.optString("correo_cliente", ""),
+                                    cuentaJson.optString("concepto", ""),
+                                    formatearFecha(cuentaJson.optString("fecha", "")),
+                                    cuentaJson.optDouble("valor_pendiente", 0),
+                                    cuentaJson.optString("estado", ""),
+                                    cuentaJson.optString("observacion", "Sin observación")
+                            );
+
+                            listaCuentas.add(cuenta);
+
+                            if (cuenta.getEstado().equalsIgnoreCase("Pendiente")) {
+                                totalGeneralPendiente += cuenta.getValorPendiente();
+                            }
+                        }
+
+                        txtTotalGeneralCobrar.setText(
+                                "Total general por cobrar: $" + String.format(Locale.US, "%.2f", totalGeneralPendiente)
+                        );
+
+                        mostrarCuentasRegistradas();
+
+                    } catch (JSONException e) {
+                        Toast.makeText(
+                                CuentasCobrarAdminActivity.this,
+                                "Error al leer cuentas por cobrar",
+                                Toast.LENGTH_SHORT
+                        ).show();
+                    }
+                },
+                error -> {
+                    Toast.makeText(
+                            CuentasCobrarAdminActivity.this,
+                            "No se pudo consultar cuentas por cobrar",
+                            Toast.LENGTH_LONG
+                    ).show();
+                }
+        );
+
+        requestQueue.add(request);
+    }
+
+    private void mostrarCuentasRegistradas() {
         contenedorCuentasCobrar.removeAllViews();
 
-        if (cuentas.isEmpty()) {
+        if (listaCuentas.isEmpty()) {
             txtSinCuentasCobrar.setVisibility(View.VISIBLE);
             contenedorCuentasCobrar.setVisibility(View.GONE);
             return;
@@ -211,13 +381,13 @@ public class CuentasCobrarAdminActivity extends AppCompatActivity {
         txtSinCuentasCobrar.setVisibility(View.GONE);
         contenedorCuentasCobrar.setVisibility(View.VISIBLE);
 
-        for (CuentaPendiente cuenta : cuentas) {
+        for (CuentaCobrarApi cuenta : listaCuentas) {
             LinearLayout tarjeta = crearTarjetaCuenta(cuenta);
             contenedorCuentasCobrar.addView(tarjeta);
         }
     }
 
-    private LinearLayout crearTarjetaCuenta(CuentaPendiente cuenta) {
+    private LinearLayout crearTarjetaCuenta(CuentaCobrarApi cuenta) {
         LinearLayout tarjeta = new LinearLayout(this);
         tarjeta.setOrientation(LinearLayout.VERTICAL);
         tarjeta.setPadding(18, 18, 18, 18);
@@ -269,17 +439,66 @@ public class CuentasCobrarAdminActivity extends AppCompatActivity {
         return tarjeta;
     }
 
-    private void confirmarPago(CuentaPendiente cuenta) {
+    private void confirmarPago(CuentaCobrarApi cuenta) {
         new AlertDialog.Builder(this)
                 .setTitle("Confirmar pago")
-                .setMessage("¿Está seguro de marcar esta cuenta como pagada? El cliente dejará de verla como cuenta pendiente.")
-                .setPositiveButton("Sí, marcar pagado", (dialog, which) -> {
-                    RepositorioCuentasPendientes.marcarComoPagado(cuenta);
-                    Toast.makeText(this, "Cuenta marcada como pagada", Toast.LENGTH_SHORT).show();
-                    cargarCuentasRegistradas();
-                })
+                .setMessage("¿Está seguro de marcar esta cuenta como pagada? El sistema registrará automáticamente un ingreso financiero.")
+                .setPositiveButton("Sí, marcar pagado", (dialog, which) -> marcarCuentaComoPagadaApi(cuenta))
                 .setNegativeButton("No", null)
                 .show();
+    }
+
+    private void marcarCuentaComoPagadaApi(CuentaCobrarApi cuenta) {
+        String url = ApiConfig.URL_CUENTAS_COBRAR + "/" + cuenta.getIdCuentaCobrar() + "/pagar";
+
+        JsonObjectRequest request = new JsonObjectRequest(
+                Request.Method.PATCH,
+                url,
+                null,
+                response -> {
+                    Toast.makeText(
+                            CuentasCobrarAdminActivity.this,
+                            "Cuenta marcada como pagada e ingreso registrado",
+                            Toast.LENGTH_SHORT
+                    ).show();
+
+                    cargarCuentasRegistradasApi();
+                },
+                error -> {
+                    Toast.makeText(
+                            CuentasCobrarAdminActivity.this,
+                            "No se pudo marcar la cuenta como pagada",
+                            Toast.LENGTH_LONG
+                    ).show();
+                }
+        );
+
+        requestQueue.add(request);
+    }
+
+    private String obtenerFechaFormatoApi() {
+        return String.format(
+                "%04d-%02d-%02d",
+                anioSeleccionado,
+                mesSeleccionado + 1,
+                diaSeleccionado
+        );
+    }
+
+    private String formatearFecha(String fechaApi) {
+        if (fechaApi == null || fechaApi.isEmpty()) {
+            return "";
+        }
+
+        if (fechaApi.length() >= 10) {
+            String anio = fechaApi.substring(0, 4);
+            String mes = fechaApi.substring(5, 7);
+            String dia = fechaApi.substring(8, 10);
+
+            return dia + "/" + mes + "/" + anio;
+        }
+
+        return fechaApi;
     }
 
     private void limpiarFormulario() {
@@ -288,5 +507,124 @@ public class CuentasCobrarAdminActivity extends AppCompatActivity {
         edtFechaCobrar.setText("");
         edtValorCobrar.setText("");
         edtObservacionCobrar.setText("");
+
+        anioSeleccionado = -1;
+        mesSeleccionado = -1;
+        diaSeleccionado = -1;
+    }
+
+    private static class ClienteApi {
+
+        private int idUsuario;
+        private String nombre;
+        private String apellido;
+        private String telefono;
+        private String correo;
+        private String usuario;
+
+        public ClienteApi(int idUsuario,
+                          String nombre,
+                          String apellido,
+                          String telefono,
+                          String correo,
+                          String usuario) {
+
+            this.idUsuario = idUsuario;
+            this.nombre = nombre;
+            this.apellido = apellido;
+            this.telefono = telefono;
+            this.correo = correo;
+            this.usuario = usuario;
+        }
+
+        public int getIdUsuario() {
+            return idUsuario;
+        }
+
+        public String getNombreCompleto() {
+            return nombre + " " + apellido;
+        }
+
+        public String getTelefono() {
+            return telefono;
+        }
+
+        public String getCorreo() {
+            return correo;
+        }
+
+        public String getUsuario() {
+            return usuario;
+        }
+    }
+
+    private static class CuentaCobrarApi {
+
+        private int idCuentaCobrar;
+        private int idUsuario;
+        private String nombreCliente;
+        private String correoCliente;
+        private String concepto;
+        private String fecha;
+        private double valorPendiente;
+        private String estado;
+        private String observacion;
+
+        public CuentaCobrarApi(int idCuentaCobrar,
+                               int idUsuario,
+                               String nombreCliente,
+                               String correoCliente,
+                               String concepto,
+                               String fecha,
+                               double valorPendiente,
+                               String estado,
+                               String observacion) {
+
+            this.idCuentaCobrar = idCuentaCobrar;
+            this.idUsuario = idUsuario;
+            this.nombreCliente = nombreCliente;
+            this.correoCliente = correoCliente;
+            this.concepto = concepto;
+            this.fecha = fecha;
+            this.valorPendiente = valorPendiente;
+            this.estado = estado;
+            this.observacion = observacion;
+        }
+
+        public int getIdCuentaCobrar() {
+            return idCuentaCobrar;
+        }
+
+        public int getIdUsuario() {
+            return idUsuario;
+        }
+
+        public String getNombreCliente() {
+            return nombreCliente;
+        }
+
+        public String getCorreoCliente() {
+            return correoCliente;
+        }
+
+        public String getConcepto() {
+            return concepto;
+        }
+
+        public String getFecha() {
+            return fecha;
+        }
+
+        public double getValorPendiente() {
+            return valorPendiente;
+        }
+
+        public String getEstado() {
+            return estado;
+        }
+
+        public String getObservacion() {
+            return observacion;
+        }
     }
 }
