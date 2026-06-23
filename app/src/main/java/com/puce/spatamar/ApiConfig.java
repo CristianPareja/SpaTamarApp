@@ -9,4 +9,9 @@ public class ApiConfig {
 
     public static final String URL_SERVICIOS = BASE_URL + "/servicios";
     public static final String URL_SERVICIOS_ACTIVOS = BASE_URL + "/servicios/activos";
+
+    public static final String URL_CITAS = BASE_URL + "/citas";
+    public static final String URL_CITAS_FECHA = BASE_URL + "/citas/fecha/";
+    public static final String URL_CITAS_CLIENTE = BASE_URL + "/citas/cliente/";
+
 }

@@ -15,6 +15,14 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.TimeZone;
@@ -37,8 +45,11 @@ public class AgendarCitaActivity extends AppCompatActivity {
     private AppCompatButton btnGuardarCita;
     private AppCompatButton btnVolverAgendar;
 
+    private RequestQueue requestQueue;
+
     private String nombrePerfil = "";
     private String servicioRecibido = "";
+    private int idServicioRecibido = 0;
 
     private int anioSeleccionado = -1;
     private int mesSeleccionado = -1;
@@ -69,7 +80,10 @@ public class AgendarCitaActivity extends AppCompatActivity {
         btnGuardarCita = findViewById(R.id.btnGuardarCita);
         btnVolverAgendar = findViewById(R.id.btnVolverAgendar);
 
+        requestQueue = Volley.newRequestQueue(this);
+
         servicioRecibido = getIntent().getStringExtra("servicioSeleccionado");
+        idServicioRecibido = getIntent().getIntExtra("idServicioSeleccionado", 0);
 
         if (servicioRecibido == null) {
             servicioRecibido = "";
@@ -102,7 +116,7 @@ public class AgendarCitaActivity extends AppCompatActivity {
         btnGuardarCita.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                guardarCitaTemporal();
+                validarYRegistrarCitaApi();
             }
         });
 
@@ -115,16 +129,23 @@ public class AgendarCitaActivity extends AppCompatActivity {
     }
 
     private void cargarPerfilEnFormulario() {
-        if (!RepositorioPerfil.existePerfil()) {
+        if (!SesionUsuario.haySesionActiva() && !RepositorioPerfil.existePerfil()) {
             txtClientePerfil.setText("Cliente: perfil no registrado");
 
             Toast.makeText(
                     this,
-                    "Debe registrar o actualizar su perfil antes de agendar una cita",
+                    "Debe iniciar sesión antes de agendar una cita",
                     Toast.LENGTH_LONG
             ).show();
 
             btnGuardarCita.setEnabled(false);
+            return;
+        }
+
+        if (SesionUsuario.haySesionActiva()) {
+            nombrePerfil = SesionUsuario.getNombreCompleto();
+            txtClientePerfil.setText("Cliente: " + nombrePerfil);
+            edtTelefonoCliente.setText(SesionUsuario.getTelefono());
             return;
         }
 
@@ -180,6 +201,22 @@ public class AgendarCitaActivity extends AppCompatActivity {
                 return;
             }
         }
+    }
+
+    private int obtenerIdServicioSeleccionado(String nombreServicio) {
+        if (idServicioRecibido > 0 && nombreServicio.equalsIgnoreCase(servicioRecibido)) {
+            return idServicioRecibido;
+        }
+
+        ArrayList<Servicio> serviciosActivos = RepositorioServicios.obtenerServiciosActivos();
+
+        for (Servicio servicio : serviciosActivos) {
+            if (servicio.getNombre().equalsIgnoreCase(nombreServicio)) {
+                return servicio.getIdServicio();
+            }
+        }
+
+        return 0;
     }
 
     private void mostrarCalendario() {
@@ -246,10 +283,10 @@ public class AgendarCitaActivity extends AppCompatActivity {
         selectorHora.show();
     }
 
-    private void guardarCitaTemporal() {
+    private void validarYRegistrarCitaApi() {
         String telefono = edtTelefonoCliente.getText().toString().trim();
         String servicio = spinnerServicio.getSelectedItem().toString();
-        String fecha = edtFechaCita.getText().toString().trim();
+        String fechaVisual = edtFechaCita.getText().toString().trim();
         String hora = edtHoraCita.getText().toString().trim();
         String observaciones = edtObservaciones.getText().toString().trim();
 
@@ -289,7 +326,7 @@ public class AgendarCitaActivity extends AppCompatActivity {
             return;
         }
 
-        if (fecha.isEmpty()) {
+        if (fechaVisual.isEmpty()) {
             Toast.makeText(this, "Seleccione la fecha de la cita", Toast.LENGTH_SHORT).show();
             return;
         }
@@ -308,38 +345,115 @@ public class AgendarCitaActivity extends AppCompatActivity {
             observaciones = "Sin observaciones";
         }
 
-        if (RepositorioCitas.existeCruceCita(fecha, hora)) {
-            Toast.makeText(this, "Ya existe una cita registrada en esa fecha y hora", Toast.LENGTH_LONG).show();
-            return;
-        }
+        int idServicio = obtenerIdServicioSeleccionado(servicio);
+        String fechaApi = obtenerFechaFormatoApi();
 
-        String estado = "En curso";
-
-        Cita nuevaCita = new Cita(
+        registrarCitaApi(
                 nombreParaCita,
                 telefono,
                 servicio,
-                fecha,
+                fechaApi,
                 hora,
-                estado,
-                observaciones
+                observaciones,
+                idServicio
+        );
+    }
+
+    private void registrarCitaApi(String nombreParaCita,
+                                  String telefono,
+                                  String servicio,
+                                  String fechaApi,
+                                  String hora,
+                                  String observaciones,
+                                  int idServicio) {
+
+        JSONObject datosCita = new JSONObject();
+
+        try {
+            if (SesionUsuario.haySesionActiva()) {
+                datosCita.put("id_usuario", SesionUsuario.getIdUsuario());
+            } else {
+                datosCita.put("id_usuario", JSONObject.NULL);
+            }
+
+            if (idServicio > 0) {
+                datosCita.put("id_servicio", idServicio);
+            } else {
+                datosCita.put("id_servicio", JSONObject.NULL);
+            }
+
+            datosCita.put("nombre_cliente", nombreParaCita);
+            datosCita.put("telefono", telefono);
+            datosCita.put("servicio", servicio);
+            datosCita.put("fecha", fechaApi);
+            datosCita.put("hora", hora);
+            datosCita.put("observaciones", observaciones);
+
+        } catch (JSONException e) {
+            Toast.makeText(this, "Error al preparar los datos de la cita", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        JsonObjectRequest request = new JsonObjectRequest(
+                Request.Method.POST,
+                ApiConfig.URL_CITAS,
+                datosCita,
+                response -> {
+                    String resumen = "Cliente: " + nombreParaCita + "\n"
+                            + "Teléfono: " + telefono + "\n"
+                            + "Servicio: " + servicio + "\n"
+                            + "Fecha: " + edtFechaCita.getText().toString().trim() + "\n"
+                            + "Hora: " + hora + "\n"
+                            + "Estado: En curso\n"
+                            + "Observaciones: " + observaciones;
+
+                    Cita nuevaCita = new Cita(
+                            nombreParaCita,
+                            telefono,
+                            servicio,
+                            edtFechaCita.getText().toString().trim(),
+                            hora,
+                            "En curso",
+                            observaciones
+                    );
+
+                    RepositorioCitas.agregarCita(nuevaCita);
+
+                    new AlertDialog.Builder(AgendarCitaActivity.this)
+                            .setTitle("Cita registrada")
+                            .setMessage(resumen)
+                            .setPositiveButton("Aceptar", (dialog, which) -> limpiarFormulario())
+                            .show();
+                },
+                error -> {
+                    String mensaje = "No se pudo registrar la cita";
+
+                    if (error.networkResponse == null) {
+                        mensaje = "No se pudo conectar con la API. Verifique que el backend esté encendido.";
+                    } else if (error.networkResponse.statusCode == 409) {
+                        mensaje = "Ya existe una cita registrada en esa fecha y hora";
+                    } else if (error.networkResponse.statusCode == 400) {
+                        mensaje = "Revise los datos obligatorios de la cita";
+                    }
+
+                    Toast.makeText(
+                            AgendarCitaActivity.this,
+                            mensaje,
+                            Toast.LENGTH_LONG
+                    ).show();
+                }
         );
 
-        RepositorioCitas.agregarCita(nuevaCita);
+        requestQueue.add(request);
+    }
 
-        String resumen = "Cliente: " + nombreParaCita + "\n"
-                + "Teléfono: " + telefono + "\n"
-                + "Servicio: " + servicio + "\n"
-                + "Fecha: " + fecha + "\n"
-                + "Hora: " + hora + "\n"
-                + "Estado: " + estado + "\n"
-                + "Observaciones: " + observaciones;
-
-        new AlertDialog.Builder(this)
-                .setTitle("Cita registrada")
-                .setMessage(resumen)
-                .setPositiveButton("Aceptar", (dialog, which) -> limpiarFormulario())
-                .show();
+    private String obtenerFechaFormatoApi() {
+        return String.format(
+                "%04d-%02d-%02d",
+                anioSeleccionado,
+                mesSeleccionado + 1,
+                diaSeleccionado
+        );
     }
 
     private boolean fechaYHoraSonValidas() {
