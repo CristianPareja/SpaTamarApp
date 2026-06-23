@@ -90,6 +90,8 @@ public class MenuClienteActivity extends AppCompatActivity {
         btnCerrarSesionCliente.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                SesionUsuario.cerrarSesion();
+
                 Intent intent = new Intent(MenuClienteActivity.this, MainActivity.class);
                 startActivity(intent);
                 finish();

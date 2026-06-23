@@ -112,6 +112,8 @@ public class MenuAdministradorActivity extends AppCompatActivity {
         btnCerrarSesionAdmin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                SesionUsuario.cerrarSesion();
+
                 Intent intent = new Intent(MenuAdministradorActivity.this, MainActivity.class);
                 startActivity(intent);
                 finish();

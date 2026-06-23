@@ -2,29 +2,31 @@ package com.puce.spatamar;
 
 public class RepositorioPerfil {
 
-    private static PerfilUsuario perfilActual;
+    private static PerfilUsuario perfilUsuario;
 
-    public static void registrarPerfilInicial(PerfilUsuario perfil) {
-        perfilActual = perfil;
+    public static void guardarPerfil(PerfilUsuario perfil) {
+        perfilUsuario = perfil;
     }
 
     public static PerfilUsuario obtenerPerfil() {
-        return perfilActual;
+        return perfilUsuario;
     }
 
     public static boolean existePerfil() {
-        return perfilActual != null;
+        return perfilUsuario != null;
     }
 
-    public static boolean actualizarPerfil(String nombre, String telefono, String correo) {
-        if (perfilActual == null) {
-            return false;
+    public static void actualizarPerfil(String nombre, String telefono, String correo) {
+        if (perfilUsuario == null) {
+            perfilUsuario = new PerfilUsuario(nombre, telefono, correo);
+        } else {
+            perfilUsuario.setNombre(nombre);
+            perfilUsuario.setTelefono(telefono);
+            perfilUsuario.setCorreo(correo);
         }
+    }
 
-        perfilActual.setNombre(nombre);
-        perfilActual.setTelefono(telefono);
-        perfilActual.setCorreo(correo);
-
-        return true;
+    public static void limpiarPerfil() {
+        perfilUsuario = null;
     }
 }

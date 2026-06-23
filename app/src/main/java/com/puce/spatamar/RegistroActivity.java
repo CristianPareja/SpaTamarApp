@@ -9,11 +9,21 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
 public class RegistroActivity extends AppCompatActivity {
 
     EditText edtNombreRegistro, edtApellidoRegistro, edtTelefonoRegistro, edtCorreoRegistro;
     EditText edtUsuarioRegistro, edtClaveRegistro, edtConfirmarClaveRegistro;
     AppCompatButton btnRegistrarUsuario, btnVolverRegistro;
+
+    RequestQueue requestQueue;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,6 +40,8 @@ public class RegistroActivity extends AppCompatActivity {
 
         btnRegistrarUsuario = findViewById(R.id.btnRegistrarUsuario);
         btnVolverRegistro = findViewById(R.id.btnVolverRegistro);
+
+        requestQueue = Volley.newRequestQueue(this);
 
         btnRegistrarUsuario.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -117,37 +129,97 @@ public class RegistroActivity extends AppCompatActivity {
             return;
         }
 
-        if (RepositorioUsuarios.existeUsuario(usuario, correo)) {
-            Toast.makeText(this, "El usuario o correo ya se encuentra registrado", Toast.LENGTH_LONG).show();
+        registrarUsuarioApi(nombre, apellido, telefono, correo, usuario, clave);
+    }
+
+    private void registrarUsuarioApi(String nombre,
+                                     String apellido,
+                                     String telefono,
+                                     String correo,
+                                     String usuario,
+                                     String clave) {
+
+        JSONObject datosRegistro = new JSONObject();
+
+        try {
+            datosRegistro.put("nombre", nombre);
+            datosRegistro.put("apellido", apellido);
+            datosRegistro.put("telefono", telefono);
+            datosRegistro.put("correo", correo);
+            datosRegistro.put("usuario", usuario);
+            datosRegistro.put("clave", clave);
+        } catch (JSONException e) {
+            Toast.makeText(this, "Error al preparar los datos del registro", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        Usuario nuevoUsuario = new Usuario(
-                nombre,
-                apellido,
-                telefono,
-                correo,
-                usuario,
-                clave,
-                "cliente"
+        JsonObjectRequest request = new JsonObjectRequest(
+                Request.Method.POST,
+                ApiConfig.URL_REGISTRO,
+                datosRegistro,
+                response -> {
+                    try {
+                        JSONObject usuarioJson = response.getJSONObject("usuario");
+
+                        int idUsuario = usuarioJson.getInt("id_usuario");
+                        String nombreRespuesta = usuarioJson.getString("nombre");
+                        String apellidoRespuesta = usuarioJson.getString("apellido");
+                        String telefonoRespuesta = usuarioJson.getString("telefono");
+                        String correoRespuesta = usuarioJson.getString("correo");
+                        String usuarioRespuesta = usuarioJson.getString("usuario");
+                        String rolRespuesta = usuarioJson.getString("rol");
+
+                        SesionUsuario.iniciarSesion(
+                                idUsuario,
+                                nombreRespuesta,
+                                apellidoRespuesta,
+                                telefonoRespuesta,
+                                correoRespuesta,
+                                usuarioRespuesta,
+                                rolRespuesta
+                        );
+
+                        PerfilUsuario perfil = new PerfilUsuario(
+                                nombreRespuesta + " " + apellidoRespuesta,
+                                telefonoRespuesta,
+                                correoRespuesta
+                        );
+
+                        RepositorioPerfil.guardarPerfil(perfil);
+
+                        Toast.makeText(
+                                RegistroActivity.this,
+                                "Registro realizado correctamente",
+                                Toast.LENGTH_SHORT
+                        ).show();
+
+                        Intent intent = new Intent(RegistroActivity.this, MenuClienteActivity.class);
+                        startActivity(intent);
+                        finish();
+
+                    } catch (JSONException e) {
+                        Toast.makeText(
+                                RegistroActivity.this,
+                                "Error al leer la respuesta del servidor",
+                                Toast.LENGTH_SHORT
+                        ).show();
+                    }
+                },
+                error -> {
+                    String mensaje = "No se pudo registrar el usuario";
+
+                    if (error.networkResponse == null) {
+                        mensaje = "No se pudo conectar con la API. Verifique que el backend esté encendido.";
+                    } else if (error.networkResponse.statusCode == 409) {
+                        mensaje = "Ya existe un usuario con ese correo o nombre de usuario";
+                    } else if (error.networkResponse.statusCode == 400) {
+                        mensaje = "Todos los campos son obligatorios";
+                    }
+
+                    Toast.makeText(RegistroActivity.this, mensaje, Toast.LENGTH_LONG).show();
+                }
         );
 
-        RepositorioUsuarios.agregarUsuario(nuevoUsuario);
-
-        String nombreCompleto = nombre + " " + apellido;
-
-        PerfilUsuario perfil = new PerfilUsuario(
-                nombreCompleto,
-                telefono,
-                correo
-        );
-
-        RepositorioPerfil.registrarPerfilInicial(perfil);
-
-        Toast.makeText(this, "Registro realizado correctamente", Toast.LENGTH_SHORT).show();
-
-        Intent intent = new Intent(RegistroActivity.this, MainActivity.class);
-        startActivity(intent);
-        finish();
+        requestQueue.add(request);
     }
 }
