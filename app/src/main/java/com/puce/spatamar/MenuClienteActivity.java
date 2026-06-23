@@ -42,7 +42,7 @@ public class MenuClienteActivity extends AppCompatActivity {
                 if (pendientes == 0) {
                     Toast.makeText(
                             MenuClienteActivity.this,
-                            "No tiene citas pendientes por recordar.",
+                            "No tiene citas pendientes.",
                             Toast.LENGTH_SHORT
                     ).show();
                 } else {
