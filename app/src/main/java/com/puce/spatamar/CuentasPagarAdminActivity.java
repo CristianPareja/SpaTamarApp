@@ -13,6 +13,15 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Locale;
@@ -33,6 +42,14 @@ public class CuentasPagarAdminActivity extends AppCompatActivity {
     private AppCompatButton btnRegistrarCuentaPagar;
     private AppCompatButton btnVolverCuentasPagar;
 
+    private RequestQueue requestQueue;
+
+    private ArrayList<CuentaPagarApi> listaCuentasPagar;
+
+    private int anioSeleccionado = -1;
+    private int mesSeleccionado = -1;
+    private int diaSeleccionado = -1;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,8 +69,11 @@ public class CuentasPagarAdminActivity extends AppCompatActivity {
         btnRegistrarCuentaPagar = findViewById(R.id.btnRegistrarCuentaPagar);
         btnVolverCuentasPagar = findViewById(R.id.btnVolverCuentasPagar);
 
+        requestQueue = Volley.newRequestQueue(this);
+        listaCuentasPagar = new ArrayList<>();
+
         cargarTiposEgreso();
-        cargarCuentasPagar();
+        cargarCuentasPagarApi();
 
         edtFechaPagar.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -65,7 +85,7 @@ public class CuentasPagarAdminActivity extends AppCompatActivity {
         btnRegistrarCuentaPagar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                registrarEgreso();
+                validarYRegistrarCuentaPagarApi();
             }
         });
 
@@ -77,14 +97,21 @@ public class CuentasPagarAdminActivity extends AppCompatActivity {
         });
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        cargarCuentasPagarApi();
+    }
+
     private void cargarTiposEgreso() {
-        String[] tipos = {
-                "Seleccione tipo de egreso",
-                "Proveedor",
-                "Arriendo",
-                "Servicio básico",
-                "Otro"
-        };
+        ArrayList<String> tipos = new ArrayList<>();
+        tipos.add("Seleccione tipo de egreso");
+        tipos.add("Proveedor");
+        tipos.add("Arriendo");
+        tipos.add("Servicio básico");
+        tipos.add("Insumos");
+        tipos.add("Mantenimiento");
+        tipos.add("Otro");
 
         ArrayAdapter<String> adapter = new ArrayAdapter<>(
                 this,
@@ -106,6 +133,10 @@ public class CuentasPagarAdminActivity extends AppCompatActivity {
         DatePickerDialog selectorFecha = new DatePickerDialog(
                 this,
                 (view, year, month, dayOfMonth) -> {
+                    anioSeleccionado = year;
+                    mesSeleccionado = month;
+                    diaSeleccionado = dayOfMonth;
+
                     String fechaSeleccionada = dayOfMonth + "/" + (month + 1) + "/" + year;
                     edtFechaPagar.setText(fechaSeleccionada);
                 },
@@ -114,15 +145,13 @@ public class CuentasPagarAdminActivity extends AppCompatActivity {
                 dia
         );
 
-        selectorFecha.getDatePicker().setMinDate(System.currentTimeMillis() - 1000);
         selectorFecha.show();
     }
 
-    private void registrarEgreso() {
+    private void validarYRegistrarCuentaPagarApi() {
         int posicionTipo = spinnerTipoEgreso.getSelectedItemPosition();
 
-        String tipoEgreso = spinnerTipoEgreso.getSelectedItem().toString();
-        String fecha = edtFechaPagar.getText().toString().trim();
+        String fechaVisual = edtFechaPagar.getText().toString().trim();
         String valorTexto = edtValorPagar.getText().toString().trim();
         String observacion = edtObservacionPagar.getText().toString().trim();
 
@@ -131,7 +160,7 @@ public class CuentasPagarAdminActivity extends AppCompatActivity {
             return;
         }
 
-        if (fecha.isEmpty()) {
+        if (fechaVisual.isEmpty()) {
             Toast.makeText(this, "Seleccione la fecha", Toast.LENGTH_SHORT).show();
             return;
         }
@@ -162,34 +191,119 @@ public class CuentasPagarAdminActivity extends AppCompatActivity {
             observacion = "Sin observación";
         }
 
-        CuentaPagar nuevaCuenta = new CuentaPagar(
+        String tipoEgreso = spinnerTipoEgreso.getSelectedItem().toString();
+
+        registrarCuentaPagarApi(
                 tipoEgreso,
-                tipoEgreso,
-                tipoEgreso,
-                fecha,
+                obtenerFechaFormatoApi(),
                 valor,
-                "Registrado",
                 observacion
         );
-
-        RepositorioCuentasPagar.agregarCuentaPagar(nuevaCuenta);
-
-        Toast.makeText(this, "Egreso registrado correctamente", Toast.LENGTH_SHORT).show();
-
-        limpiarFormulario();
-        cargarCuentasPagar();
     }
 
-    private void cargarCuentasPagar() {
-        ArrayList<CuentaPagar> cuentas = RepositorioCuentasPagar.obtenerCuentasPagar();
+    private void registrarCuentaPagarApi(String tipoEgreso,
+                                         String fechaApi,
+                                         double valor,
+                                         String observacion) {
 
-        double total = RepositorioCuentasPagar.calcularTotalCuentasPagar();
+        JSONObject datosCuenta = new JSONObject();
 
-        txtTotalCuentasPagar.setText("Total egresos registrados: $" + String.format(Locale.US, "%.2f", total));
+        try {
+            datosCuenta.put("tipo_egreso", tipoEgreso);
+            datosCuenta.put("fecha", fechaApi);
+            datosCuenta.put("valor", valor);
+            datosCuenta.put("observacion", observacion);
 
+        } catch (JSONException e) {
+            Toast.makeText(this, "Error al preparar datos del egreso", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        JsonObjectRequest request = new JsonObjectRequest(
+                Request.Method.POST,
+                ApiConfig.URL_CUENTAS_PAGAR,
+                datosCuenta,
+                response -> {
+                    Toast.makeText(
+                            CuentasPagarAdminActivity.this,
+                            "Egreso registrado correctamente",
+                            Toast.LENGTH_SHORT
+                    ).show();
+
+                    limpiarFormulario();
+                    cargarCuentasPagarApi();
+                },
+                error -> {
+                    Toast.makeText(
+                            CuentasPagarAdminActivity.this,
+                            "No se pudo registrar el egreso",
+                            Toast.LENGTH_LONG
+                    ).show();
+                }
+        );
+
+        requestQueue.add(request);
+    }
+
+    private void cargarCuentasPagarApi() {
+        JsonObjectRequest request = new JsonObjectRequest(
+                Request.Method.GET,
+                ApiConfig.URL_CUENTAS_PAGAR,
+                null,
+                response -> {
+                    try {
+                        JSONArray cuentasJson = response.getJSONArray("cuentas");
+
+                        listaCuentasPagar.clear();
+
+                        double totalEgresos = 0;
+
+                        for (int i = 0; i < cuentasJson.length(); i++) {
+                            JSONObject cuentaJson = cuentasJson.getJSONObject(i);
+
+                            CuentaPagarApi cuenta = new CuentaPagarApi(
+                                    cuentaJson.getInt("id_cuenta_pagar"),
+                                    cuentaJson.optString("tipo_egreso", ""),
+                                    formatearFecha(cuentaJson.optString("fecha", "")),
+                                    cuentaJson.optDouble("valor", 0),
+                                    cuentaJson.optString("estado", ""),
+                                    cuentaJson.optString("observacion", "Sin observación")
+                            );
+
+                            listaCuentasPagar.add(cuenta);
+                            totalEgresos += cuenta.getValor();
+                        }
+
+                        txtTotalCuentasPagar.setText(
+                                "Total egresos registrados: $" + String.format(Locale.US, "%.2f", totalEgresos)
+                        );
+
+                        mostrarCuentasPagar();
+
+                    } catch (JSONException e) {
+                        Toast.makeText(
+                                CuentasPagarAdminActivity.this,
+                                "Error al leer egresos del servidor",
+                                Toast.LENGTH_SHORT
+                        ).show();
+                    }
+                },
+                error -> {
+                    Toast.makeText(
+                            CuentasPagarAdminActivity.this,
+                            "No se pudo consultar egresos desde la API",
+                            Toast.LENGTH_LONG
+                    ).show();
+                }
+        );
+
+        requestQueue.add(request);
+    }
+
+    private void mostrarCuentasPagar() {
         contenedorCuentasPagar.removeAllViews();
 
-        if (cuentas.isEmpty()) {
+        if (listaCuentasPagar.isEmpty()) {
             txtSinCuentasPagar.setVisibility(View.VISIBLE);
             contenedorCuentasPagar.setVisibility(View.GONE);
             return;
@@ -198,16 +312,16 @@ public class CuentasPagarAdminActivity extends AppCompatActivity {
         txtSinCuentasPagar.setVisibility(View.GONE);
         contenedorCuentasPagar.setVisibility(View.VISIBLE);
 
-        for (CuentaPagar cuenta : cuentas) {
+        for (CuentaPagarApi cuenta : listaCuentasPagar) {
             TextView tarjeta = crearTarjetaCuentaPagar(cuenta);
             contenedorCuentasPagar.addView(tarjeta);
         }
     }
 
-    private TextView crearTarjetaCuentaPagar(CuentaPagar cuenta) {
+    private TextView crearTarjetaCuentaPagar(CuentaPagarApi cuenta) {
         TextView tarjeta = new TextView(this);
 
-        String informacion = "Tipo: " + cuenta.getTipoEgreso() + "\n"
+        String informacion = "Tipo de egreso: " + cuenta.getTipoEgreso() + "\n"
                 + "Fecha: " + cuenta.getFecha() + "\n"
                 + "Valor: $" + String.format(Locale.US, "%.2f", cuenta.getValor()) + "\n"
                 + "Estado: " + cuenta.getEstado() + "\n"
@@ -230,10 +344,88 @@ public class CuentasPagarAdminActivity extends AppCompatActivity {
         return tarjeta;
     }
 
+    private String obtenerFechaFormatoApi() {
+        return String.format(
+                "%04d-%02d-%02d",
+                anioSeleccionado,
+                mesSeleccionado + 1,
+                diaSeleccionado
+        );
+    }
+
+    private String formatearFecha(String fechaApi) {
+        if (fechaApi == null || fechaApi.isEmpty()) {
+            return "";
+        }
+
+        if (fechaApi.length() >= 10) {
+            String anio = fechaApi.substring(0, 4);
+            String mes = fechaApi.substring(5, 7);
+            String dia = fechaApi.substring(8, 10);
+
+            return dia + "/" + mes + "/" + anio;
+        }
+
+        return fechaApi;
+    }
+
     private void limpiarFormulario() {
         spinnerTipoEgreso.setSelection(0);
         edtFechaPagar.setText("");
         edtValorPagar.setText("");
         edtObservacionPagar.setText("");
+
+        anioSeleccionado = -1;
+        mesSeleccionado = -1;
+        diaSeleccionado = -1;
+    }
+
+    private static class CuentaPagarApi {
+
+        private int idCuentaPagar;
+        private String tipoEgreso;
+        private String fecha;
+        private double valor;
+        private String estado;
+        private String observacion;
+
+        public CuentaPagarApi(int idCuentaPagar,
+                              String tipoEgreso,
+                              String fecha,
+                              double valor,
+                              String estado,
+                              String observacion) {
+
+            this.idCuentaPagar = idCuentaPagar;
+            this.tipoEgreso = tipoEgreso;
+            this.fecha = fecha;
+            this.valor = valor;
+            this.estado = estado;
+            this.observacion = observacion;
+        }
+
+        public int getIdCuentaPagar() {
+            return idCuentaPagar;
+        }
+
+        public String getTipoEgreso() {
+            return tipoEgreso;
+        }
+
+        public String getFecha() {
+            return fecha;
+        }
+
+        public double getValor() {
+            return valor;
+        }
+
+        public String getEstado() {
+            return estado;
+        }
+
+        public String getObservacion() {
+            return observacion;
+        }
     }
 }
