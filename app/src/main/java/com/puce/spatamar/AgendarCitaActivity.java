@@ -17,6 +17,7 @@ import androidx.appcompat.widget.AppCompatButton;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.TimeZone;
 
 public class AgendarCitaActivity extends AppCompatActivity {
 
@@ -37,12 +38,15 @@ public class AgendarCitaActivity extends AppCompatActivity {
     private AppCompatButton btnVolverAgendar;
 
     private String nombrePerfil = "";
+    private String servicioRecibido = "";
 
     private int anioSeleccionado = -1;
     private int mesSeleccionado = -1;
     private int diaSeleccionado = -1;
     private int horaSeleccionada = -1;
     private int minutoSeleccionado = -1;
+
+    private static final String ZONA_HORARIA_ECUADOR = "America/Guayaquil";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,6 +68,12 @@ public class AgendarCitaActivity extends AppCompatActivity {
 
         btnGuardarCita = findViewById(R.id.btnGuardarCita);
         btnVolverAgendar = findViewById(R.id.btnVolverAgendar);
+
+        servicioRecibido = getIntent().getStringExtra("servicioSeleccionado");
+
+        if (servicioRecibido == null) {
+            servicioRecibido = "";
+        }
 
         cargarPerfilEnFormulario();
         cargarServicios();
@@ -155,14 +165,29 @@ public class AgendarCitaActivity extends AppCompatActivity {
 
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerServicio.setAdapter(adapter);
+
+        seleccionarServicioRecibido(nombresServicios);
+    }
+
+    private void seleccionarServicioRecibido(ArrayList<String> nombresServicios) {
+        if (servicioRecibido.isEmpty()) {
+            return;
+        }
+
+        for (int i = 0; i < nombresServicios.size(); i++) {
+            if (nombresServicios.get(i).equalsIgnoreCase(servicioRecibido)) {
+                spinnerServicio.setSelection(i);
+                return;
+            }
+        }
     }
 
     private void mostrarCalendario() {
-        Calendar calendario = Calendar.getInstance();
+        Calendar calendarioEcuador = obtenerCalendarioEcuador();
 
-        int anio = calendario.get(Calendar.YEAR);
-        int mes = calendario.get(Calendar.MONTH);
-        int dia = calendario.get(Calendar.DAY_OF_MONTH);
+        int anio = calendarioEcuador.get(Calendar.YEAR);
+        int mes = calendarioEcuador.get(Calendar.MONTH);
+        int dia = calendarioEcuador.get(Calendar.DAY_OF_MONTH);
 
         DatePickerDialog selectorFecha = new DatePickerDialog(
                 this,
@@ -183,7 +208,13 @@ public class AgendarCitaActivity extends AppCompatActivity {
                 dia
         );
 
-        selectorFecha.getDatePicker().setMinDate(System.currentTimeMillis() - 1000);
+        Calendar inicioDiaActualEcuador = obtenerCalendarioEcuador();
+        inicioDiaActualEcuador.set(Calendar.HOUR_OF_DAY, 0);
+        inicioDiaActualEcuador.set(Calendar.MINUTE, 0);
+        inicioDiaActualEcuador.set(Calendar.SECOND, 0);
+        inicioDiaActualEcuador.set(Calendar.MILLISECOND, 0);
+
+        selectorFecha.getDatePicker().setMinDate(inicioDiaActualEcuador.getTimeInMillis());
         selectorFecha.show();
     }
 
@@ -193,10 +224,10 @@ public class AgendarCitaActivity extends AppCompatActivity {
             return;
         }
 
-        Calendar calendario = Calendar.getInstance();
+        Calendar calendarioEcuador = obtenerCalendarioEcuador();
 
-        int hora = calendario.get(Calendar.HOUR_OF_DAY);
-        int minuto = calendario.get(Calendar.MINUTE);
+        int hora = calendarioEcuador.get(Calendar.HOUR_OF_DAY);
+        int minuto = calendarioEcuador.get(Calendar.MINUTE);
 
         TimePickerDialog selectorHora = new TimePickerDialog(
                 this,
@@ -317,7 +348,7 @@ public class AgendarCitaActivity extends AppCompatActivity {
             return false;
         }
 
-        Calendar fechaHoraCita = Calendar.getInstance();
+        Calendar fechaHoraCita = Calendar.getInstance(TimeZone.getTimeZone(ZONA_HORARIA_ECUADOR));
         fechaHoraCita.set(Calendar.YEAR, anioSeleccionado);
         fechaHoraCita.set(Calendar.MONTH, mesSeleccionado);
         fechaHoraCita.set(Calendar.DAY_OF_MONTH, diaSeleccionado);
@@ -326,9 +357,13 @@ public class AgendarCitaActivity extends AppCompatActivity {
         fechaHoraCita.set(Calendar.SECOND, 0);
         fechaHoraCita.set(Calendar.MILLISECOND, 0);
 
-        Calendar fechaHoraActual = Calendar.getInstance();
+        Calendar fechaHoraActualEcuador = obtenerCalendarioEcuador();
 
-        return fechaHoraCita.after(fechaHoraActual);
+        return fechaHoraCita.after(fechaHoraActualEcuador);
+    }
+
+    private Calendar obtenerCalendarioEcuador() {
+        return Calendar.getInstance(TimeZone.getTimeZone(ZONA_HORARIA_ECUADOR));
     }
 
     private void limpiarFormulario() {

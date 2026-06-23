@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
@@ -21,6 +20,9 @@ public class MenuAdministradorActivity extends AppCompatActivity {
     private TextView txtTotalCobroDashboard;
     private TextView txtGananciaNetaDashboard;
     private TextView txtDetalleFinancieroDashboard;
+    private TextView txtEstadoFinanciero;
+    private TextView txtMensajeEstadoFinanciero;
+    private TextView txtAlertasDashboard;
     private TextView txtResumenDashboard;
 
     private LinearLayout cardClientesDashboard;
@@ -43,6 +45,9 @@ public class MenuAdministradorActivity extends AppCompatActivity {
         txtTotalCobroDashboard = findViewById(R.id.txtTotalCobroDashboard);
         txtGananciaNetaDashboard = findViewById(R.id.txtGananciaNetaDashboard);
         txtDetalleFinancieroDashboard = findViewById(R.id.txtDetalleFinancieroDashboard);
+        txtEstadoFinanciero = findViewById(R.id.txtEstadoFinanciero);
+        txtMensajeEstadoFinanciero = findViewById(R.id.txtMensajeEstadoFinanciero);
+        txtAlertasDashboard = findViewById(R.id.txtAlertasDashboard);
         txtResumenDashboard = findViewById(R.id.txtResumenDashboard);
 
         cardClientesDashboard = findViewById(R.id.cardClientesDashboard);
@@ -99,11 +104,8 @@ public class MenuAdministradorActivity extends AppCompatActivity {
         btnSimulacionProyeccionAdmin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(
-                        MenuAdministradorActivity.this,
-                        "Módulo de simulación y proyección en desarrollo.",
-                        Toast.LENGTH_SHORT
-                ).show();
+                Intent intent = new Intent(MenuAdministradorActivity.this, SimulacionProyeccionActivity.class);
+                startActivity(intent);
             }
         });
 
@@ -145,6 +147,54 @@ public class MenuAdministradorActivity extends AppCompatActivity {
                         + " | Egresos: $" + String.format(Locale.US, "%.2f", totalEgresos)
         );
 
+        cargarEstadoFinanciero(gananciaNeta, totalIngresos, totalEgresos, totalCobro);
+        cargarAlertas(citasHoyEnCurso, totalCobro, totalIngresos, totalEgresos, gananciaNeta);
+        cargarResumen(citasHoyEnCurso, gananciaNeta, totalIngresos, totalEgresos);
+    }
+
+    private void cargarEstadoFinanciero(double gananciaNeta, double totalIngresos, double totalEgresos, double totalCobro) {
+        if (gananciaNeta < 0) {
+            txtEstadoFinanciero.setText("🚨 Riesgo financiero alto");
+            txtMensajeEstadoFinanciero.setText("Los egresos superan a los ingresos. Se recomienda revisar pagos, gastos y cobros pendientes.");
+        } else if (totalIngresos == 0 && totalEgresos > 0) {
+            txtEstadoFinanciero.setText("⚠️ Riesgo financiero medio");
+            txtMensajeEstadoFinanciero.setText("Existen egresos registrados, pero todavía no hay ingresos suficientes.");
+        } else if (totalCobro > totalIngresos && totalCobro > 0) {
+            txtEstadoFinanciero.setText("⚠️ Cobros pendientes elevados");
+            txtMensajeEstadoFinanciero.setText("Hay valores pendientes por cobrar que podrían afectar el flujo de caja.");
+        } else {
+            txtEstadoFinanciero.setText("✅ Flujo saludable");
+            txtMensajeEstadoFinanciero.setText("El negocio mantiene una ganancia positiva y un flujo financiero estable.");
+        }
+    }
+
+    private void cargarAlertas(int citasHoyEnCurso, double totalCobro, double totalIngresos, double totalEgresos, double gananciaNeta) {
+        String alertas = "";
+
+        if (citasHoyEnCurso > 0) {
+            alertas = alertas + "🔔 Tiene " + citasHoyEnCurso + " cita(s) pendiente(s) por atender hoy.\n";
+        }
+
+        if (totalCobro > 0) {
+            alertas = alertas + "⚠️ Existen $" + String.format(Locale.US, "%.2f", totalCobro) + " pendientes de cobro.\n";
+        }
+
+        if (totalEgresos > totalIngresos && totalEgresos > 0) {
+            alertas = alertas + "🚨 Los egresos superan los ingresos registrados.\n";
+        }
+
+        if (gananciaNeta < 0) {
+            alertas = alertas + "🚨 La ganancia neta actual es negativa.\n";
+        }
+
+        if (alertas.isEmpty()) {
+            alertas = "✅ No existen alertas relevantes. El flujo se mantiene estable.";
+        }
+
+        txtAlertasDashboard.setText(alertas.trim());
+    }
+
+    private void cargarResumen(int citasHoyEnCurso, double gananciaNeta, double totalIngresos, double totalEgresos) {
         String resumen;
 
         if (citasHoyEnCurso == 0) {

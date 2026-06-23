@@ -40,6 +40,7 @@
         <activity android:name=".CitasAdminActivity" />
         <activity android:name=".CuentasCobrarAdminActivity" />
         <activity android:name=".CuentasPagarAdminActivity" />
+        <activity android:name=".SimulacionProyeccionActivity" />
         <activity
             android:name=".MainActivity"
             android:exported="true">

@@ -1,5 +1,6 @@
 package com.puce.spatamar;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -67,13 +68,16 @@ public class ServiciosClienteActivity extends AppCompatActivity {
 
         String informacion = "Servicio: " + servicio.getNombre() + "\n"
                 + "Descripción: " + servicio.getDescripcion() + "\n"
-                + "Precio: $" + String.format(Locale.US, "%.2f", servicio.getPrecio());
+                + "Precio: $" + String.format(Locale.US, "%.2f", servicio.getPrecio()) + "\n\n"
+                + "Tocar para agendar cita";
 
         tarjeta.setText(informacion);
         tarjeta.setTextSize(15);
         tarjeta.setTextColor(getResources().getColor(android.R.color.black));
         tarjeta.setPadding(18, 18, 18, 18);
         tarjeta.setBackgroundResource(R.drawable.card_login);
+        tarjeta.setClickable(true);
+        tarjeta.setFocusable(true);
 
         LinearLayout.LayoutParams parametros = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
@@ -82,6 +86,15 @@ public class ServiciosClienteActivity extends AppCompatActivity {
 
         parametros.setMargins(0, 0, 0, 14);
         tarjeta.setLayoutParams(parametros);
+
+        tarjeta.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(ServiciosClienteActivity.this, AgendarCitaActivity.class);
+                intent.putExtra("servicioSeleccionado", servicio.getNombre());
+                startActivity(intent);
+            }
+        });
 
         return tarjeta;
     }

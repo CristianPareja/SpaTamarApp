@@ -1,0 +1,286 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/mainSimulacionProyeccion"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/celeste_fondo"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:id="@+id/contenedorPrincipalSimulacion"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="20dp">
+
+        <TextView
+            android:id="@+id/txtTituloSimulacion"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="25dp"
+            android:text="Simulación y proyección"
+            android:textAlignment="center"
+            android:textColor="@color/azul_titulo"
+            android:textSize="25sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/txtSubtituloSimulacion"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:layout_marginBottom="18dp"
+            android:text="Estime ingresos, egresos y riesgo financiero del Spa TAMAR"
+            android:textAlignment="center"
+            android:textColor="@color/gris_texto"
+            android:textSize="13sp" />
+
+        <LinearLayout
+            android:id="@+id/cardDatosActuales"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="18dp"
+            android:background="@drawable/card_login"
+            android:orientation="vertical"
+            android:padding="18dp">
+
+            <TextView
+                android:id="@+id/txtTituloDatosActuales"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Situación actual"
+                android:textColor="@color/azul_titulo"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/txtIngresosActuales"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="Ingresos actuales: $0.00"
+                android:textColor="@color/texto_principal"
+                android:textSize="15sp" />
+
+            <TextView
+                android:id="@+id/txtEgresosActuales"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:text="Egresos actuales: $0.00"
+                android:textColor="@color/texto_principal"
+                android:textSize="15sp" />
+
+            <TextView
+                android:id="@+id/txtCuentasPendientesActuales"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:text="Cuentas por cobrar pendientes: $0.00"
+                android:textColor="@color/texto_principal"
+                android:textSize="15sp" />
+
+            <TextView
+                android:id="@+id/txtGananciaActual"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:text="Ganancia actual: $0.00"
+                android:textColor="@color/azul_titulo"
+                android:textSize="17sp"
+                android:textStyle="bold" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/cardFormularioSimulacion"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="18dp"
+            android:background="@drawable/card_login"
+            android:orientation="vertical"
+            android:padding="18dp">
+
+            <TextView
+                android:id="@+id/txtTituloEscenario"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="12dp"
+                android:text="Escenario a simular"
+                android:textColor="@color/azul_titulo"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/txtLabelVariacionIngresos"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Variación esperada de ingresos (%)"
+                android:textColor="@color/azul_titulo"
+                android:textSize="14sp"
+                android:textStyle="bold" />
+
+            <EditText
+                android:id="@+id/edtVariacionIngresos"
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                android:layout_marginTop="6dp"
+                android:layout_marginBottom="12dp"
+                android:background="@drawable/edittext_login"
+                android:hint="Ejemplo: 20 o -10"
+                android:inputType="numberDecimal|numberSigned"
+                android:padding="14dp"
+                android:textColor="@color/texto_principal"
+                android:textColorHint="@color/gris_texto" />
+
+            <TextView
+                android:id="@+id/txtLabelIncrementoEgresos"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Incremento esperado de egresos (%)"
+                android:textColor="@color/azul_titulo"
+                android:textSize="14sp"
+                android:textStyle="bold" />
+
+            <EditText
+                android:id="@+id/edtIncrementoEgresos"
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                android:layout_marginTop="6dp"
+                android:layout_marginBottom="12dp"
+                android:background="@drawable/edittext_login"
+                android:hint="Ejemplo: 10"
+                android:inputType="numberDecimal"
+                android:padding="14dp"
+                android:textColor="@color/texto_principal"
+                android:textColorHint="@color/gris_texto" />
+
+            <TextView
+                android:id="@+id/txtLabelPagosAtrasados"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Porcentaje de pagos pendientes atrasados (%)"
+                android:textColor="@color/azul_titulo"
+                android:textSize="14sp"
+                android:textStyle="bold" />
+
+            <EditText
+                android:id="@+id/edtPagosAtrasados"
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                android:layout_marginTop="6dp"
+                android:layout_marginBottom="14dp"
+                android:background="@drawable/edittext_login"
+                android:hint="Ejemplo: 30"
+                android:inputType="numberDecimal"
+                android:padding="14dp"
+                android:textColor="@color/texto_principal"
+                android:textColorHint="@color/gris_texto" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btnCalcularSimulacion"
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                android:background="@drawable/boton_principal"
+                android:text="Calcular proyección"
+                android:textAllCaps="false"
+                android:textColor="@color/blanco"
+                android:textSize="15sp"
+                android:textStyle="bold" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btnLimpiarSimulacion"
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/boton_principal"
+                android:text="Limpiar simulación"
+                android:textAllCaps="false"
+                android:textColor="@color/blanco"
+                android:textSize="15sp"
+                android:textStyle="bold" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/cardResultadoSimulacion"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="18dp"
+            android:background="@drawable/card_login"
+            android:orientation="vertical"
+            android:padding="18dp">
+
+            <TextView
+                android:id="@+id/txtTituloResultado"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Resultado de la simulación"
+                android:textColor="@color/azul_titulo"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/txtResultadoSimulacion"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="Ingrese los valores del escenario y presione calcular."
+                android:textColor="@color/texto_principal"
+                android:textSize="15sp" />
+
+            <TextView
+                android:id="@+id/txtRiesgoSimulacion"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:text="Riesgo: sin calcular"
+                android:textColor="@color/azul_titulo"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/cardAlertasSimulacion"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="18dp"
+            android:background="@drawable/card_login"
+            android:orientation="vertical"
+            android:padding="18dp">
+
+            <TextView
+                android:id="@+id/txtTituloAlertasSimulacion"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Alertas de escenario"
+                android:textColor="@color/azul_titulo"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/txtAlertasSimulacion"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="Las alertas aparecerán después de calcular la simulación."
+                android:textColor="@color/texto_principal"
+                android:textSize="15sp" />
+
+        </LinearLayout>
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btnVolverSimulacion"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:background="@drawable/boton_principal"
+            android:text="Volver"
+            android:textAllCaps="false"
+            android:textColor="@color/blanco"
+            android:textSize="15sp"
+            android:textStyle="bold" />
+
+    </LinearLayout>
+
+</ScrollView>

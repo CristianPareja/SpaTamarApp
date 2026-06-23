@@ -23,14 +23,12 @@ public class CitasAdminActivity extends AppCompatActivity {
     private TextView txtSinCitasAdmin;
 
     private EditText edtBuscarClienteCitas;
-    private EditText edtBuscarFechaCitas;
 
     private LinearLayout contenedorCitasAdmin;
 
     private AppCompatButton btnDiaAnteriorCitas;
     private AppCompatButton btnDiaSiguienteCitas;
     private AppCompatButton btnBuscarClienteCitas;
-    private AppCompatButton btnBuscarFechaCitas;
     private AppCompatButton btnMostrarHoyCitas;
     private AppCompatButton btnVolverCitasAdmin;
 
@@ -46,14 +44,12 @@ public class CitasAdminActivity extends AppCompatActivity {
         txtSinCitasAdmin = findViewById(R.id.txtSinCitasAdmin);
 
         edtBuscarClienteCitas = findViewById(R.id.edtBuscarClienteCitas);
-        edtBuscarFechaCitas = findViewById(R.id.edtBuscarFechaCitas);
 
         contenedorCitasAdmin = findViewById(R.id.contenedorCitasAdmin);
 
         btnDiaAnteriorCitas = findViewById(R.id.btnDiaAnteriorCitas);
         btnDiaSiguienteCitas = findViewById(R.id.btnDiaSiguienteCitas);
         btnBuscarClienteCitas = findViewById(R.id.btnBuscarClienteCitas);
-        btnBuscarFechaCitas = findViewById(R.id.btnBuscarFechaCitas);
         btnMostrarHoyCitas = findViewById(R.id.btnMostrarHoyCitas);
         btnVolverCitasAdmin = findViewById(R.id.btnVolverCitasAdmin);
 
@@ -65,6 +61,7 @@ public class CitasAdminActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 fechaSeleccionada.add(Calendar.DAY_OF_MONTH, -1);
+                edtBuscarClienteCitas.setText("");
                 cargarCitasPorFecha();
             }
         });
@@ -73,21 +70,8 @@ public class CitasAdminActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 fechaSeleccionada.add(Calendar.DAY_OF_MONTH, 1);
+                edtBuscarClienteCitas.setText("");
                 cargarCitasPorFecha();
-            }
-        });
-
-        edtBuscarFechaCitas.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mostrarCalendarioBusqueda();
-            }
-        });
-
-        btnBuscarFechaCitas.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                buscarPorFecha();
             }
         });
 
@@ -103,7 +87,6 @@ public class CitasAdminActivity extends AppCompatActivity {
             public void onClick(View view) {
                 fechaSeleccionada = Calendar.getInstance();
                 edtBuscarClienteCitas.setText("");
-                edtBuscarFechaCitas.setText("");
                 cargarCitasPorFecha();
             }
         });
@@ -134,23 +117,6 @@ public class CitasAdminActivity extends AppCompatActivity {
         mostrarListadoCitas(citas);
     }
 
-    private void buscarPorFecha() {
-        String fechaBusqueda = edtBuscarFechaCitas.getText().toString().trim();
-
-        if (fechaBusqueda.isEmpty()) {
-            Toast.makeText(this, "Seleccione una fecha para buscar", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        txtFechaSeleccionadaAdmin.setText("Fecha: " + fechaBusqueda);
-
-        ArrayList<Cita> citas = RepositorioCitas.obtenerCitasPorFecha(fechaBusqueda);
-
-        txtTotalCitasFechaAdmin.setText("Total de citas: " + citas.size());
-
-        mostrarListadoCitas(citas);
-    }
-
     private void buscarPorCliente() {
         String clienteBusqueda = edtBuscarClienteCitas.getText().toString().trim();
 
@@ -166,31 +132,6 @@ public class CitasAdminActivity extends AppCompatActivity {
         ArrayList<Cita> citas = RepositorioCitas.obtenerCitasPorCliente(clienteBusqueda);
 
         mostrarListadoCitas(citas);
-    }
-
-    private void mostrarCalendarioBusqueda() {
-        Calendar calendario = Calendar.getInstance();
-
-        int anio = calendario.get(Calendar.YEAR);
-        int mes = calendario.get(Calendar.MONTH);
-        int dia = calendario.get(Calendar.DAY_OF_MONTH);
-
-        DatePickerDialog selectorFecha = new DatePickerDialog(
-                this,
-                (view, year, month, dayOfMonth) -> {
-                    String fechaSeleccionadaTexto = dayOfMonth + "/" + (month + 1) + "/" + year;
-                    edtBuscarFechaCitas.setText(fechaSeleccionadaTexto);
-
-                    fechaSeleccionada.set(Calendar.YEAR, year);
-                    fechaSeleccionada.set(Calendar.MONTH, month);
-                    fechaSeleccionada.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-                },
-                anio,
-                mes,
-                dia
-        );
-
-        selectorFecha.show();
     }
 
     private void mostrarListadoCitas(ArrayList<Cita> citas) {
@@ -306,7 +247,12 @@ public class CitasAdminActivity extends AppCompatActivity {
                     );
 
                     Toast.makeText(this, "Cita finalizada e ingreso registrado", Toast.LENGTH_SHORT).show();
-                    cargarCitasPorFecha();
+
+                    if (edtBuscarClienteCitas.getText().toString().trim().isEmpty()) {
+                        cargarCitasPorFecha();
+                    } else {
+                        buscarPorCliente();
+                    }
                 })
                 .setNegativeButton("Cancelar", null)
                 .show();

@@ -69,18 +69,6 @@
             android:textStyle="bold" />
 
         <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/btnAgendarCitaCliente"
-            android:layout_width="match_parent"
-            android:layout_height="52dp"
-            android:layout_marginBottom="12dp"
-            android:background="@drawable/boton_principal"
-            android:text="Agendar cita"
-            android:textAllCaps="false"
-            android:textColor="@color/blanco"
-            android:textSize="16sp"
-            android:textStyle="bold" />
-
-        <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btnMisCitasCliente"
             android:layout_width="match_parent"
             android:layout_height="52dp"

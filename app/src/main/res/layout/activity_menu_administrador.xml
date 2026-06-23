@@ -60,7 +60,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Citas de hoy"
+                android:text="Citas pendientes de hoy"
                 android:textColor="@color/gris_texto"
                 android:textSize="14sp" />
 
@@ -71,7 +71,7 @@
                 android:layout_marginTop="8dp"
                 android:text="0"
                 android:textColor="@color/azul_titulo"
-                android:textSize="32sp"
+                android:textSize="34sp"
                 android:textStyle="bold" />
 
             <TextView
@@ -179,7 +179,7 @@
             android:id="@+id/cardGananciasDashboard"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
+            android:layout_marginBottom="12dp"
             android:background="@drawable/card_login"
             android:orientation="vertical"
             android:padding="18dp">
@@ -198,7 +198,7 @@
                 android:layout_marginTop="8dp"
                 android:text="$0.00"
                 android:textColor="@color/azul_titulo"
-                android:textSize="30sp"
+                android:textSize="32sp"
                 android:textStyle="bold" />
 
             <TextView
@@ -209,6 +209,63 @@
                 android:text="Ingresos: $0.00 | Egresos: $0.00"
                 android:textColor="@color/gris_texto"
                 android:textSize="13sp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/cardEstadoFinanciero"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="12dp"
+            android:background="@drawable/card_login"
+            android:orientation="vertical"
+            android:padding="18dp">
+
+            <TextView
+                android:id="@+id/txtEstadoFinanciero"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="✅ Flujo saludable"
+                android:textColor="@color/azul_titulo"
+                android:textSize="19sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/txtMensajeEstadoFinanciero"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="El negocio mantiene una ganancia positiva."
+                android:textColor="@color/texto_principal"
+                android:textSize="14sp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/cardAlertasDashboard"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="18dp"
+            android:background="@drawable/card_login"
+            android:orientation="vertical"
+            android:padding="18dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Alertas"
+                android:textColor="@color/azul_titulo"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/txtAlertasDashboard"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="No existen alertas relevantes."
+                android:textColor="@color/texto_principal"
+                android:textSize="14sp" />
 
         </LinearLayout>
 

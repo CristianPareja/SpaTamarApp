@@ -29,11 +29,22 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="6dp"
-            android:layout_marginBottom="18dp"
+            android:layout_marginBottom="10dp"
             android:text="Consulte los servicios activos del Spa TAMAR"
             android:textAlignment="center"
             android:textColor="@color/gris_texto"
             android:textSize="13sp" />
+
+        <TextView
+            android:id="@+id/txtIndicacionServiciosCliente"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="18dp"
+            android:text="Seleccione un servicio para agendar una cita"
+            android:textAlignment="center"
+            android:textColor="@color/azul_secundario"
+            android:textSize="14sp"
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/txtSinServiciosCliente"
