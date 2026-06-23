@@ -7,37 +7,17 @@ public class RepositorioServicios {
     private static ArrayList<Servicio> listaServicios = new ArrayList<>();
 
     static {
-        listaServicios.add(new Servicio(
-                "Manicure",
-                "Limpieza, limado y cuidado básico de uñas de manos.",
-                8.00,
-                true
-        ));
-
-        listaServicios.add(new Servicio(
-                "Pedicure",
-                "Limpieza, cuidado y arreglo de uñas de pies.",
-                10.00,
-                true
-        ));
-
-        listaServicios.add(new Servicio(
-                "Uñas acrílicas",
-                "Aplicación de uñas acrílicas con acabado personalizado.",
-                18.00,
-                true
-        ));
-
-        listaServicios.add(new Servicio(
-                "Masajes relajantes",
-                "Masaje relajante para reducir tensión y estrés.",
-                20.00,
-                true
-        ));
+        if (listaServicios.isEmpty()) {
+            listaServicios.add(new Servicio(1, "Manicure", "Limpieza, limado y cuidado básico de uñas de manos.", 8.00, true));
+            listaServicios.add(new Servicio(2, "Pedicure", "Limpieza, cuidado y arreglo de uñas de pies.", 10.00, true));
+            listaServicios.add(new Servicio(3, "Uñas acrílicas", "Aplicación de uñas acrílicas con acabado personalizado.", 18.00, true));
+            listaServicios.add(new Servicio(4, "Masajes relajantes", "Masaje relajante para reducir tensión y estrés.", 20.00, true));
+        }
     }
 
-    public static void agregarServicio(Servicio servicio) {
-        listaServicios.add(servicio);
+    public static void guardarServicios(ArrayList<Servicio> servicios) {
+        listaServicios.clear();
+        listaServicios.addAll(servicios);
     }
 
     public static ArrayList<Servicio> obtenerServicios() {
@@ -56,42 +36,23 @@ public class RepositorioServicios {
         return serviciosActivos;
     }
 
-    public static void actualizarServicio(Servicio servicioSeleccionado, String nombre, String descripcion, double precio) {
-        for (Servicio servicio : listaServicios) {
-            if (servicio == servicioSeleccionado) {
-                servicio.setNombre(nombre);
-                servicio.setDescripcion(descripcion);
-                servicio.setPrecio(precio);
-                return;
-            }
+    public static void agregarServicio(Servicio servicio) {
+        listaServicios.add(servicio);
+    }
+
+    public static void actualizarServicio(int posicion, Servicio servicioActualizado) {
+        if (posicion >= 0 && posicion < listaServicios.size()) {
+            listaServicios.set(posicion, servicioActualizado);
         }
     }
 
-    public static void deshabilitarServicio(Servicio servicioSeleccionado) {
+    public static Servicio obtenerServicioPorNombre(String nombre) {
         for (Servicio servicio : listaServicios) {
-            if (servicio == servicioSeleccionado) {
-                servicio.setActivo(false);
-                return;
-            }
-        }
-    }
-
-    public static void habilitarServicio(Servicio servicioSeleccionado) {
-        for (Servicio servicio : listaServicios) {
-            if (servicio == servicioSeleccionado) {
-                servicio.setActivo(true);
-                return;
-            }
-        }
-    }
-
-    public static boolean existeServicioPorNombre(String nombreServicio) {
-        for (Servicio servicio : listaServicios) {
-            if (servicio.getNombre().equalsIgnoreCase(nombreServicio)) {
-                return true;
+            if (servicio.getNombre().equalsIgnoreCase(nombre)) {
+                return servicio;
             }
         }
 
-        return false;
+        return null;
     }
 }

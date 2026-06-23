@@ -7,30 +7,31 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
-import java.util.Locale;
 
 public class ServiciosActivity extends AppCompatActivity {
 
-    private EditText edtNombreServicio;
-    private EditText edtDescripcionServicio;
-    private EditText edtPrecioServicio;
+    EditText edtNombreServicio, edtDescripcionServicio, edtPrecioServicio;
+    AppCompatButton btnGuardarServicio, btnLimpiarServicio, btnVolverServicios;
+    LinearLayout contenedorServiciosAdmin;
 
-    private TextView txtTituloFormularioServicio;
-    private TextView txtTotalServicios;
-    private TextView txtSinServicios;
+    RequestQueue requestQueue;
+    ArrayList<Servicio> listaServicios;
 
-    private LinearLayout contenedorServicios;
-
-    private AppCompatButton btnGuardarServicio;
-    private AppCompatButton btnCancelarEdicionServicio;
-    private AppCompatButton btnVolverServicios;
-
-    private Servicio servicioEnEdicion = null;
+    int idServicioSeleccionado = 0;
+    boolean modoEdicion = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,29 +42,28 @@ public class ServiciosActivity extends AppCompatActivity {
         edtDescripcionServicio = findViewById(R.id.edtDescripcionServicio);
         edtPrecioServicio = findViewById(R.id.edtPrecioServicio);
 
-        txtTituloFormularioServicio = findViewById(R.id.txtTituloFormularioServicio);
-        txtTotalServicios = findViewById(R.id.txtTotalServicios);
-        txtSinServicios = findViewById(R.id.txtSinServicios);
-
-        contenedorServicios = findViewById(R.id.contenedorServicios);
-
         btnGuardarServicio = findViewById(R.id.btnGuardarServicio);
-        btnCancelarEdicionServicio = findViewById(R.id.btnCancelarEdicionServicio);
+        btnLimpiarServicio = findViewById(R.id.btnLimpiarServicio);
         btnVolverServicios = findViewById(R.id.btnVolverServicios);
 
-        cargarServicios();
+        contenedorServiciosAdmin = findViewById(R.id.contenedorServiciosAdmin);
+
+        requestQueue = Volley.newRequestQueue(this);
+        listaServicios = new ArrayList<>();
+
+        cargarServiciosApi();
 
         btnGuardarServicio.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                guardarServicio();
+                validarFormularioServicio();
             }
         });
 
-        btnCancelarEdicionServicio.setOnClickListener(new View.OnClickListener() {
+        btnLimpiarServicio.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                cancelarEdicion();
+                limpiarFormulario();
             }
         });
 
@@ -75,7 +75,114 @@ public class ServiciosActivity extends AppCompatActivity {
         });
     }
 
-    private void guardarServicio() {
+    private void cargarServiciosApi() {
+        JsonObjectRequest request = new JsonObjectRequest(
+                Request.Method.GET,
+                ApiConfig.URL_SERVICIOS,
+                null,
+                response -> {
+                    try {
+                        JSONArray serviciosJson = response.getJSONArray("servicios");
+
+                        listaServicios.clear();
+
+                        for (int i = 0; i < serviciosJson.length(); i++) {
+                            JSONObject servicioJson = serviciosJson.getJSONObject(i);
+
+                            int idServicio = servicioJson.getInt("id_servicio");
+                            String nombre = servicioJson.getString("nombre");
+                            String descripcion = servicioJson.getString("descripcion");
+                            double precio = servicioJson.getDouble("precio");
+                            boolean activo = servicioJson.getBoolean("activo");
+
+                            Servicio servicio = new Servicio(
+                                    idServicio,
+                                    nombre,
+                                    descripcion,
+                                    precio,
+                                    activo
+                            );
+
+                            listaServicios.add(servicio);
+                        }
+
+                        RepositorioServicios.guardarServicios(listaServicios);
+                        mostrarServicios();
+
+                    } catch (JSONException e) {
+                        Toast.makeText(
+                                ServiciosActivity.this,
+                                "Error al leer servicios del servidor",
+                                Toast.LENGTH_SHORT
+                        ).show();
+                    }
+                },
+                error -> {
+                    Toast.makeText(
+                            ServiciosActivity.this,
+                            "No se pudo conectar con la API",
+                            Toast.LENGTH_LONG
+                    ).show();
+                }
+        );
+
+        requestQueue.add(request);
+    }
+
+    private void mostrarServicios() {
+        contenedorServiciosAdmin.removeAllViews();
+
+        if (listaServicios.isEmpty()) {
+            TextView txtSinServicios = new TextView(this);
+            txtSinServicios.setText("No existen servicios registrados.");
+            txtSinServicios.setTextSize(16);
+            txtSinServicios.setPadding(20, 20, 20, 20);
+            contenedorServiciosAdmin.addView(txtSinServicios);
+            return;
+        }
+
+        for (Servicio servicio : listaServicios) {
+            View tarjetaServicio = getLayoutInflater().inflate(R.layout.item_servicio_admin, null);
+
+            TextView txtNombre = tarjetaServicio.findViewById(R.id.txtNombreServicioAdmin);
+            TextView txtDescripcion = tarjetaServicio.findViewById(R.id.txtDescripcionServicioAdmin);
+            TextView txtPrecio = tarjetaServicio.findViewById(R.id.txtPrecioServicioAdmin);
+            TextView txtEstado = tarjetaServicio.findViewById(R.id.txtEstadoServicioAdmin);
+
+            AppCompatButton btnEditar = tarjetaServicio.findViewById(R.id.btnEditarServicioAdmin);
+            AppCompatButton btnCambiarEstado = tarjetaServicio.findViewById(R.id.btnCambiarEstadoServicioAdmin);
+
+            txtNombre.setText(servicio.getNombre());
+            txtDescripcion.setText(servicio.getDescripcion());
+            txtPrecio.setText("$ " + servicio.getPrecio());
+
+            if (servicio.isActivo()) {
+                txtEstado.setText("Estado: Activo");
+                btnCambiarEstado.setText("Deshabilitar");
+            } else {
+                txtEstado.setText("Estado: Inactivo");
+                btnCambiarEstado.setText("Habilitar");
+            }
+
+            btnEditar.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    cargarServicioEnFormulario(servicio);
+                }
+            });
+
+            btnCambiarEstado.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    cambiarEstadoServicioApi(servicio);
+                }
+            });
+
+            contenedorServiciosAdmin.addView(tarjetaServicio);
+        }
+    }
+
+    private void validarFormularioServicio() {
         String nombre = edtNombreServicio.getText().toString().trim();
         String descripcion = edtDescripcionServicio.getText().toString().trim();
         String precioTexto = edtPrecioServicio.getText().toString().trim();
@@ -93,7 +200,7 @@ public class ServiciosActivity extends AppCompatActivity {
         }
 
         if (precioTexto.isEmpty()) {
-            edtPrecioServicio.setError("Ingrese el precio del servicio");
+            edtPrecioServicio.setError("Ingrese el precio");
             edtPrecioServicio.requestFocus();
             return;
         }
@@ -114,187 +221,151 @@ public class ServiciosActivity extends AppCompatActivity {
             return;
         }
 
-        if (servicioEnEdicion == null) {
-            if (RepositorioServicios.existeServicioPorNombre(nombre)) {
-                Toast.makeText(this, "Ya existe un servicio con ese nombre", Toast.LENGTH_LONG).show();
-                return;
-            }
-
-            Servicio nuevoServicio = new Servicio(nombre, descripcion, precio, true);
-            RepositorioServicios.agregarServicio(nuevoServicio);
-
-            Toast.makeText(this, "Servicio registrado correctamente", Toast.LENGTH_SHORT).show();
-
+        if (modoEdicion) {
+            actualizarServicioApi(nombre, descripcion, precio);
         } else {
-            RepositorioServicios.actualizarServicio(servicioEnEdicion, nombre, descripcion, precio);
-
-            Toast.makeText(this, "Servicio actualizado correctamente", Toast.LENGTH_SHORT).show();
+            registrarServicioApi(nombre, descripcion, precio);
         }
-
-        limpiarFormulario();
-        cargarServicios();
     }
 
-    private void cargarServicios() {
-        ArrayList<Servicio> servicios = RepositorioServicios.obtenerServicios();
+    private void registrarServicioApi(String nombre, String descripcion, double precio) {
+        JSONObject datosServicio = new JSONObject();
 
-        int activos = 0;
-
-        for (Servicio servicio : servicios) {
-            if (servicio.isActivo()) {
-                activos++;
-            }
-        }
-
-        txtTotalServicios.setText("Servicios registrados: " + servicios.size() + " | Activos: " + activos);
-
-        contenedorServicios.removeAllViews();
-
-        if (servicios.isEmpty()) {
-            txtSinServicios.setVisibility(View.VISIBLE);
-            contenedorServicios.setVisibility(View.GONE);
+        try {
+            datosServicio.put("nombre", nombre);
+            datosServicio.put("descripcion", descripcion);
+            datosServicio.put("precio", precio);
+        } catch (JSONException e) {
+            Toast.makeText(this, "Error al preparar datos del servicio", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        txtSinServicios.setVisibility(View.GONE);
-        contenedorServicios.setVisibility(View.VISIBLE);
+        JsonObjectRequest request = new JsonObjectRequest(
+                Request.Method.POST,
+                ApiConfig.URL_SERVICIOS,
+                datosServicio,
+                response -> {
+                    Toast.makeText(
+                            ServiciosActivity.this,
+                            "Servicio registrado correctamente",
+                            Toast.LENGTH_SHORT
+                    ).show();
 
-        for (Servicio servicio : servicios) {
-            LinearLayout tarjeta = crearTarjetaServicio(servicio);
-            contenedorServicios.addView(tarjeta);
-        }
-    }
+                    limpiarFormulario();
+                    cargarServiciosApi();
+                },
+                error -> {
+                    String mensaje = "No se pudo registrar el servicio";
 
-    private LinearLayout crearTarjetaServicio(Servicio servicio) {
-        LinearLayout tarjeta = new LinearLayout(this);
-        tarjeta.setOrientation(LinearLayout.VERTICAL);
-        tarjeta.setPadding(18, 18, 18, 18);
-        tarjeta.setBackgroundResource(R.drawable.card_login);
+                    if (error.networkResponse != null && error.networkResponse.statusCode == 409) {
+                        mensaje = "Ya existe un servicio con ese nombre";
+                    }
 
-        LinearLayout.LayoutParams parametrosTarjeta = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT
+                    Toast.makeText(ServiciosActivity.this, mensaje, Toast.LENGTH_LONG).show();
+                }
         );
 
-        parametrosTarjeta.setMargins(0, 0, 0, 14);
-        tarjeta.setLayoutParams(parametrosTarjeta);
-
-        TextView informacion = new TextView(this);
-
-        String estado = servicio.isActivo() ? "Activo" : "Deshabilitado";
-
-        String texto = "Servicio: " + servicio.getNombre() + "\n"
-                + "Descripción: " + servicio.getDescripcion() + "\n"
-                + "Precio: $" + String.format(Locale.US, "%.2f", servicio.getPrecio()) + "\n"
-                + "Estado: " + estado;
-
-        informacion.setText(texto);
-        informacion.setTextSize(15);
-        informacion.setTextColor(getResources().getColor(android.R.color.black));
-        informacion.setPadding(0, 0, 0, 14);
-
-        AppCompatButton btnActualizar = new AppCompatButton(this);
-        btnActualizar.setText("Actualizar servicio");
-        btnActualizar.setTextSize(14);
-        btnActualizar.setTextColor(getResources().getColor(android.R.color.white));
-        btnActualizar.setAllCaps(false);
-        btnActualizar.setBackgroundResource(R.drawable.boton_principal);
-
-        btnActualizar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                prepararEdicion(servicio);
-            }
-        });
-
-        AppCompatButton btnCambiarEstado = new AppCompatButton(this);
-
-        if (servicio.isActivo()) {
-            btnCambiarEstado.setText("Deshabilitar servicio");
-        } else {
-            btnCambiarEstado.setText("Habilitar servicio");
-        }
-
-        btnCambiarEstado.setTextSize(14);
-        btnCambiarEstado.setTextColor(getResources().getColor(android.R.color.white));
-        btnCambiarEstado.setAllCaps(false);
-        btnCambiarEstado.setBackgroundResource(R.drawable.boton_principal);
-
-        LinearLayout.LayoutParams parametrosBotonEstado = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT
-        );
-        parametrosBotonEstado.setMargins(0, 10, 0, 0);
-        btnCambiarEstado.setLayoutParams(parametrosBotonEstado);
-
-        btnCambiarEstado.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                confirmarCambioEstado(servicio);
-            }
-        });
-
-        tarjeta.addView(informacion);
-        tarjeta.addView(btnActualizar);
-        tarjeta.addView(btnCambiarEstado);
-
-        return tarjeta;
+        requestQueue.add(request);
     }
 
-    private void prepararEdicion(Servicio servicio) {
-        servicioEnEdicion = servicio;
+    private void actualizarServicioApi(String nombre, String descripcion, double precio) {
+        JSONObject datosServicio = new JSONObject();
+
+        try {
+            datosServicio.put("nombre", nombre);
+            datosServicio.put("descripcion", descripcion);
+            datosServicio.put("precio", precio);
+        } catch (JSONException e) {
+            Toast.makeText(this, "Error al preparar datos del servicio", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        String urlActualizar = ApiConfig.URL_SERVICIOS + "/" + idServicioSeleccionado;
+
+        JsonObjectRequest request = new JsonObjectRequest(
+                Request.Method.PUT,
+                urlActualizar,
+                datosServicio,
+                response -> {
+                    Toast.makeText(
+                            ServiciosActivity.this,
+                            "Servicio actualizado correctamente",
+                            Toast.LENGTH_SHORT
+                    ).show();
+
+                    limpiarFormulario();
+                    cargarServiciosApi();
+                },
+                error -> {
+                    String mensaje = "No se pudo actualizar el servicio";
+
+                    if (error.networkResponse != null && error.networkResponse.statusCode == 409) {
+                        mensaje = "Ya existe otro servicio con ese nombre";
+                    }
+
+                    Toast.makeText(ServiciosActivity.this, mensaje, Toast.LENGTH_LONG).show();
+                }
+        );
+
+        requestQueue.add(request);
+    }
+
+    private void cambiarEstadoServicioApi(Servicio servicio) {
+        JSONObject datosEstado = new JSONObject();
+
+        try {
+            datosEstado.put("activo", !servicio.isActivo());
+        } catch (JSONException e) {
+            Toast.makeText(this, "Error al preparar el estado", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        String urlEstado = ApiConfig.URL_SERVICIOS + "/" + servicio.getIdServicio() + "/estado";
+
+        JsonObjectRequest request = new JsonObjectRequest(
+                Request.Method.PATCH,
+                urlEstado,
+                datosEstado,
+                response -> {
+                    Toast.makeText(
+                            ServiciosActivity.this,
+                            servicio.isActivo() ? "Servicio deshabilitado" : "Servicio habilitado",
+                            Toast.LENGTH_SHORT
+                    ).show();
+
+                    cargarServiciosApi();
+                },
+                error -> {
+                    Toast.makeText(
+                            ServiciosActivity.this,
+                            "No se pudo cambiar el estado del servicio",
+                            Toast.LENGTH_LONG
+                    ).show();
+                }
+        );
+
+        requestQueue.add(request);
+    }
+
+    private void cargarServicioEnFormulario(Servicio servicio) {
+        modoEdicion = true;
+        idServicioSeleccionado = servicio.getIdServicio();
 
         edtNombreServicio.setText(servicio.getNombre());
         edtDescripcionServicio.setText(servicio.getDescripcion());
-        edtPrecioServicio.setText(String.format(Locale.US, "%.2f", servicio.getPrecio()));
+        edtPrecioServicio.setText(String.valueOf(servicio.getPrecio()));
 
-        txtTituloFormularioServicio.setText("Actualizar servicio");
-        btnGuardarServicio.setText("Guardar actualización");
-        btnCancelarEdicionServicio.setVisibility(View.VISIBLE);
-
-        edtNombreServicio.requestFocus();
-    }
-
-    private void confirmarCambioEstado(Servicio servicio) {
-        String mensaje;
-
-        if (servicio.isActivo()) {
-            mensaje = "¿Está seguro de deshabilitar este servicio? Ya no será visible para el cliente ni estará disponible al agendar citas.";
-        } else {
-            mensaje = "¿Está seguro de habilitar este servicio? Volverá a ser visible para el cliente.";
-        }
-
-        new AlertDialog.Builder(this)
-                .setTitle("Cambiar estado del servicio")
-                .setMessage(mensaje)
-                .setPositiveButton("Aceptar", (dialog, which) -> {
-                    if (servicio.isActivo()) {
-                        RepositorioServicios.deshabilitarServicio(servicio);
-                        Toast.makeText(this, "Servicio deshabilitado correctamente", Toast.LENGTH_SHORT).show();
-                    } else {
-                        RepositorioServicios.habilitarServicio(servicio);
-                        Toast.makeText(this, "Servicio habilitado correctamente", Toast.LENGTH_SHORT).show();
-                    }
-
-                    cargarServicios();
-                })
-                .setNegativeButton("Cancelar", null)
-                .show();
-    }
-
-    private void cancelarEdicion() {
-        limpiarFormulario();
+        btnGuardarServicio.setText("Actualizar servicio");
     }
 
     private void limpiarFormulario() {
+        modoEdicion = false;
+        idServicioSeleccionado = 0;
+
         edtNombreServicio.setText("");
         edtDescripcionServicio.setText("");
         edtPrecioServicio.setText("");
 
-        servicioEnEdicion = null;
-
-        txtTituloFormularioServicio.setText("Registrar nuevo servicio");
-        btnGuardarServicio.setText("Registrar servicio");
-        btnCancelarEdicionServicio.setVisibility(View.GONE);
+        btnGuardarServicio.setText("Guardar servicio");
     }
 }
