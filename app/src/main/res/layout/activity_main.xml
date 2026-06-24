@@ -109,17 +109,18 @@
                 android:textSize="15sp"
                 android:textStyle="bold" />
 
-        </LinearLayout>
+            <TextView
+                android:id="@+id/txtOlvideClave"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:padding="8dp"
+                android:text="¿Olvidaste tu contraseña? Recupérala"
+                android:textColor="@color/azul_secundario"
+                android:textSize="14sp"
+                android:textStyle="bold" />
 
-        <TextView
-            android:id="@+id/txtPrueba"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="18dp"
-            android:gravity="center"
-            android:text="Usuarios de prueba:\ncliente  1234\nadmin  1234"
-            android:textColor="@color/gris_texto"
-            android:textSize="13sp" />
+        </LinearLayout>
 
     </LinearLayout>
 

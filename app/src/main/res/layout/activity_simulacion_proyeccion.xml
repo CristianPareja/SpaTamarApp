@@ -18,22 +18,12 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="25dp"
+            android:layout_marginBottom="15dp"
             android:text="Simulación y proyección"
             android:textAlignment="center"
             android:textColor="@color/azul_titulo"
             android:textSize="25sp"
             android:textStyle="bold" />
-
-        <TextView
-            android:id="@+id/txtSubtituloSimulacion"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="6dp"
-            android:layout_marginBottom="18dp"
-            android:text="Estime ingresos, egresos y riesgo financiero del Spa TAMAR"
-            android:textAlignment="center"
-            android:textColor="@color/gris_texto"
-            android:textSize="13sp" />
 
         <LinearLayout
             android:id="@+id/cardDatosActuales"

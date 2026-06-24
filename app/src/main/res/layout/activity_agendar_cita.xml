@@ -16,21 +16,12 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="25dp"
+            android:layout_marginBottom="15dp"
             android:text="Agendar cita"
             android:textAlignment="center"
             android:textColor="@color/azul_titulo"
             android:textSize="25sp"
             android:textStyle="bold" />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="6dp"
-            android:layout_marginBottom="18dp"
-            android:text="Complete los datos para registrar una cita en Spa TAMAR"
-            android:textAlignment="center"
-            android:textColor="@color/gris_texto"
-            android:textSize="13sp" />
 
         <LinearLayout
             android:layout_width="match_parent"

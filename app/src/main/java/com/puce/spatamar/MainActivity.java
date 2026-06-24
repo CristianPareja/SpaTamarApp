@@ -22,7 +22,7 @@ public class MainActivity extends AppCompatActivity {
 
     EditText edtUsuario, edtClave;
     AppCompatButton btnIngresar;
-    TextView txtRegistrarse;
+    TextView txtRegistrarse, txtOlvideClave;
 
     RequestQueue requestQueue;
 
@@ -35,6 +35,7 @@ public class MainActivity extends AppCompatActivity {
         edtClave = findViewById(R.id.edtClave);
         btnIngresar = findViewById(R.id.btnIngresar);
         txtRegistrarse = findViewById(R.id.txtRegistrarse);
+        txtOlvideClave = findViewById(R.id.txtOlvideClave);
 
         requestQueue = Volley.newRequestQueue(this);
 
@@ -49,6 +50,14 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(MainActivity.this, RegistroActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        txtOlvideClave.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this, RecuperarClaveActivity.class);
                 startActivity(intent);
             }
         });

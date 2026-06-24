@@ -28,21 +28,11 @@
             android:id="@+id/txtTituloCliente"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Menú del Cliente"
+            android:layout_marginBottom="15dp"
+            android:text="Bienvenido"
             android:textColor="@color/azul_titulo"
             android:textSize="28sp"
             android:textStyle="bold" />
-
-        <TextView
-            android:id="@+id/txtBienvenidaCliente"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="6dp"
-            android:layout_marginBottom="24dp"
-            android:gravity="center"
-            android:text="Bienvenido al sistema Spa TAMAR"
-            android:textColor="@color/gris_texto"
-            android:textSize="15sp" />
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btnServiciosCliente"

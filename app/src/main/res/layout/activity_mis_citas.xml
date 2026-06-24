@@ -18,22 +18,12 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="25dp"
+            android:layout_marginBottom="15dp"
             android:text="Mis citas e historial"
             android:textAlignment="center"
             android:textColor="@color/azul_titulo"
             android:textSize="25sp"
             android:textStyle="bold" />
-
-        <TextView
-            android:id="@+id/txtSubtituloMisCitas"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="6dp"
-            android:layout_marginBottom="18dp"
-            android:text="Revise sus citas actuales y el historial de atenciones"
-            android:textAlignment="center"
-            android:textColor="@color/gris_texto"
-            android:textSize="13sp" />
 
         <TextView
             android:id="@+id/txtSeccionActuales"

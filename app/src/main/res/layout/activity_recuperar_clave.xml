@@ -1,111 +1,123 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/mainRegistro"
+    android:id="@+id/mainRecuperarClave"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/celeste_fondo"
     android:fillViewport="true">
 
     <LinearLayout
-        android:id="@+id/contenedorRegistro"
+        android:id="@+id/contenedorRecuperarClave"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
         android:orientation="vertical"
         android:padding="28dp">
 
+        <ImageView
+            android:id="@+id/imgLogoRecuperarClave"
+            android:layout_width="160dp"
+            android:layout_height="160dp"
+            android:layout_marginBottom="12dp"
+            android:contentDescription="Logo Spa TAMAR"
+            android:scaleType="fitCenter"
+            android:src="@drawable/logo_spa_tamar" />
+
         <TextView
-            android:id="@+id/txtTituloRegistro"
+            android:id="@+id/txtTituloRecuperarClave"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="15dp"
-            android:text="Registro de Cliente"
+            android:text="Recuperar contraseña"
             android:textColor="@color/azul_titulo"
-            android:textSize="28sp"
+            android:textSize="25sp"
             android:textStyle="bold" />
 
-        <LinearLayout
-            android:id="@+id/cardRegistro"
+        <TextView
+            android:id="@+id/txtSubtituloRecuperarClave"
             android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:layout_marginBottom="18dp"
+            android:text="Ingrese su correo, revise el código recibido y establezca una nueva contraseña."
+            android:textAlignment="center"
+            android:textColor="@color/gris_texto"
+            android:textSize="13sp" />
+
+        <LinearLayout
+            android:id="@+id/cardRecuperarClave"
+            android:layout_width="320dp"
             android:layout_height="wrap_content"
             android:background="@drawable/card_login"
             android:elevation="6dp"
             android:orientation="vertical"
             android:padding="22dp">
 
-            <EditText
-                android:id="@+id/edtNombreRegistro"
+            <TextView
+                android:id="@+id/txtPasoCorreo"
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:layout_marginBottom="12dp"
-                android:background="@drawable/edittext_login"
-                android:hint="Nombre"
-                android:inputType="textPersonName"
-                android:paddingLeft="14dp"
-                android:paddingRight="14dp"
-                android:textColor="@color/texto_principal"
-                android:textColorHint="@color/gris_texto" />
+                android:layout_height="wrap_content"
+                android:text="Paso 1: Solicitar código"
+                android:textColor="@color/azul_titulo"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="12dp" />
 
             <EditText
-                android:id="@+id/edtApellidoRegistro"
+                android:id="@+id/edtCorreoRecuperacion"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:layout_marginBottom="12dp"
                 android:background="@drawable/edittext_login"
-                android:hint="Apellido"
-                android:inputType="textPersonName"
-                android:paddingLeft="14dp"
-                android:paddingRight="14dp"
-                android:textColor="@color/texto_principal"
-                android:textColorHint="@color/gris_texto" />
-
-            <EditText
-                android:id="@+id/edtTelefonoRegistro"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:layout_marginBottom="12dp"
-                android:background="@drawable/edittext_login"
-                android:hint="Teléfono"
-                android:inputType="phone"
-                android:maxLength="10"
-                android:paddingLeft="14dp"
-                android:paddingRight="14dp"
-                android:textColor="@color/texto_principal"
-                android:textColorHint="@color/gris_texto" />
-
-            <EditText
-                android:id="@+id/edtCorreoRegistro"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:layout_marginBottom="12dp"
-                android:background="@drawable/edittext_login"
-                android:hint="Correo electrónico"
+                android:hint="Correo registrado"
                 android:inputType="textEmailAddress"
                 android:paddingLeft="14dp"
                 android:paddingRight="14dp"
                 android:textColor="@color/texto_principal"
                 android:textColorHint="@color/gris_texto" />
 
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btnSolicitarCodigo"
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                android:layout_marginBottom="18dp"
+                android:background="@drawable/boton_principal"
+                android:text="Enviar código"
+                android:textAllCaps="false"
+                android:textColor="@color/blanco"
+                android:textSize="15sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/txtPasoNuevaClave"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Paso 2: Restablecer contraseña"
+                android:textColor="@color/azul_titulo"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="12dp" />
+
             <EditText
-                android:id="@+id/edtUsuarioRegistro"
+                android:id="@+id/edtCodigoRecuperacion"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:layout_marginBottom="12dp"
                 android:background="@drawable/edittext_login"
-                android:hint="Usuario"
-                android:inputType="text"
+                android:hint="Código recibido"
+                android:inputType="number"
+                android:maxLength="6"
                 android:paddingLeft="14dp"
                 android:paddingRight="14dp"
                 android:textColor="@color/texto_principal"
                 android:textColorHint="@color/gris_texto" />
 
             <EditText
-                android:id="@+id/edtClaveRegistro"
+                android:id="@+id/edtNuevaClave"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:layout_marginBottom="12dp"
                 android:background="@drawable/edittext_login"
-                android:hint="Contraseña"
+                android:hint="Nueva contraseña"
                 android:inputType="textPassword"
                 android:paddingLeft="14dp"
                 android:paddingRight="14dp"
@@ -113,10 +125,10 @@
                 android:textColorHint="@color/gris_texto" />
 
             <EditText
-                android:id="@+id/edtConfirmarClaveRegistro"
+                android:id="@+id/edtConfirmarNuevaClave"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
-                android:layout_marginBottom="20dp"
+                android:layout_marginBottom="14dp"
                 android:background="@drawable/edittext_login"
                 android:hint="Confirmar contraseña"
                 android:inputType="textPassword"
@@ -126,26 +138,26 @@
                 android:textColorHint="@color/gris_texto" />
 
             <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/btnRegistrarUsuario"
+                android:id="@+id/btnRestablecerClave"
                 android:layout_width="match_parent"
                 android:layout_height="52dp"
                 android:layout_marginBottom="12dp"
                 android:background="@drawable/boton_principal"
-                android:text="Registrar"
+                android:text="Restablecer contraseña"
                 android:textAllCaps="false"
                 android:textColor="@color/blanco"
-                android:textSize="16sp"
+                android:textSize="15sp"
                 android:textStyle="bold" />
 
             <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/btnVolverRegistro"
+                android:id="@+id/btnVolverRecuperarClave"
                 android:layout_width="match_parent"
                 android:layout_height="52dp"
                 android:background="@drawable/boton_principal"
-                android:text="Volver al login"
+                android:text="Volver"
                 android:textAllCaps="false"
                 android:textColor="@color/blanco"
-                android:textSize="16sp"
+                android:textSize="15sp"
                 android:textStyle="bold" />
 
         </LinearLayout>

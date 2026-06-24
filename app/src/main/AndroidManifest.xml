@@ -13,6 +13,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.SpaTamarApp">
         <activity android:name=".PerfilClienteActivity" />
+        <activity android:name=".RecuperarClaveActivity" />
         <activity
             android:name=".MisCitasActivity"
             android:exported="false" />

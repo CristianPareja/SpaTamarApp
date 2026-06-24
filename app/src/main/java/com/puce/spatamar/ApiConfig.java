@@ -23,4 +23,7 @@ public class ApiConfig {
 
     public static final String URL_FINANZAS_RESUMEN = BASE_URL + "/finanzas/resumen";
     public static final String URL_FINANZAS_MOVIMIENTOS = BASE_URL + "/finanzas/movimientos";
+
+    public static final String URL_SOLICITAR_RECUPERACION = BASE_URL + "/usuarios/solicitar-recuperacion";
+    public static final String URL_RESTABLECER_CLAVE = BASE_URL + "/usuarios/restablecer-clave";
 }

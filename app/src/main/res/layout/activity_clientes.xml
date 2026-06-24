@@ -18,22 +18,12 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="25dp"
+            android:layout_marginBottom="15dp"
             android:text="Clientes registrados"
             android:textAlignment="center"
             android:textColor="@color/azul_titulo"
             android:textSize="25sp"
             android:textStyle="bold" />
-
-        <TextView
-            android:id="@+id/txtSubtituloClientes"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="6dp"
-            android:layout_marginBottom="18dp"
-            android:text="Consulta de clientes registrados desde el formulario de registro"
-            android:textAlignment="center"
-            android:textColor="@color/gris_texto"
-            android:textSize="13sp" />
 
         <LinearLayout
             android:id="@+id/cardResumenClientes"
@@ -52,15 +42,6 @@
                 android:textColor="@color/azul_titulo"
                 android:textSize="18sp"
                 android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/txtNotaClientes"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:text="Este módulo es solo de consulta. Los datos se reflejan automáticamente desde el registro de usuario."
-                android:textColor="@color/gris_texto"
-                android:textSize="13sp" />
 
         </LinearLayout>
 

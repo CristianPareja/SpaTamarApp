@@ -18,22 +18,12 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="25dp"
+            android:layout_marginBottom="15dp"
             android:text="Cuentas por cobrar"
             android:textAlignment="center"
             android:textColor="@color/azul_titulo"
             android:textSize="25sp"
             android:textStyle="bold" />
-
-        <TextView
-            android:id="@+id/txtSubtituloCuentasCobrarAdmin"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="6dp"
-            android:layout_marginBottom="18dp"
-            android:text="Registro de valores pendientes para clientes del Spa TAMAR"
-            android:textAlignment="center"
-            android:textColor="@color/gris_texto"
-            android:textSize="13sp" />
 
         <LinearLayout
             android:id="@+id/cardFormularioCuentaCobrar"
@@ -141,15 +131,6 @@
                 android:textColor="@color/azul_titulo"
                 android:textSize="18sp"
                 android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/txtNotaCuentasCobrar"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:text="Los valores registrados se reflejan automáticamente en el módulo Cuentas pendientes del cliente."
-                android:textColor="@color/gris_texto"
-                android:textSize="13sp" />
 
         </LinearLayout>
 

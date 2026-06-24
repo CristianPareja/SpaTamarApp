@@ -12,39 +12,16 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:padding="20dp">
-
-        <TextView
-            android:id="@+id/txtTituloAdministrador"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:text="Panel de Administración"
-            android:textAlignment="center"
-            android:textColor="@color/azul_titulo"
-            android:textSize="26sp"
-            android:textStyle="bold" />
-
-        <TextView
-            android:id="@+id/txtSubtituloAdministrador"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="6dp"
-            android:text="Resumen general de la operación del Spa TAMAR"
-            android:textAlignment="center"
-            android:textColor="@color/gris_texto"
-            android:textSize="14sp" />
-
         <TextView
             android:id="@+id/txtFechaDashboard"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:layout_marginBottom="16dp"
-            android:text="Fecha del panel: --/--/----"
+            android:layout_marginTop="6dp"
+            android:layout_marginBottom="18dp"
+            android:text="Fecha actual"
             android:textAlignment="center"
-            android:textColor="@color/azul_secundario"
-            android:textSize="14sp"
-            android:textStyle="bold" />
+            android:textColor="@color/gris_texto"
+            android:textSize="14sp" />
 
         <LinearLayout
             android:id="@+id/cardCitasHoyDashboard"
