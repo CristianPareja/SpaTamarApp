@@ -13,7 +13,6 @@
         android:orientation="vertical"
         android:padding="20dp">
 
-        <!-- ENCABEZADO -->
         <LinearLayout
             android:id="@+id/headerAdministrador"
             android:layout_width="match_parent"
@@ -22,56 +21,60 @@
             android:layout_marginBottom="18dp"
             android:background="@drawable/card_moderno"
             android:elevation="4dp"
-            android:orientation="vertical"
+            android:orientation="horizontal"
             android:padding="20dp">
 
-            <TextView
-                android:id="@+id/txtTituloDashboardAdmin"
-                android:layout_width="match_parent"
+            <LinearLayout
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="Spa TAMAR"
-                android:textColor="@color/azul_oscuro_moderno"
-                android:textSize="28sp"
-                android:textStyle="bold" />
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/txtTituloDashboardAdmin"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Spa TAMAR"
+                    android:textColor="@color/azul_oscuro_moderno"
+                    android:textSize="28sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/txtFechaDashboard"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="14dp"
+                    android:background="@drawable/fondo_chip_moderno"
+                    android:paddingLeft="14dp"
+                    android:paddingTop="8dp"
+                    android:paddingRight="14dp"
+                    android:paddingBottom="8dp"
+                    android:text="--/--/----"
+                    android:textColor="@color/azul_moderno"
+                    android:textSize="13sp"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
 
             <TextView
-                android:id="@+id/txtSubtituloDashboardAdmin"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:text="Panel de administración"
-                android:textColor="@color/gris_moderno"
-                android:textSize="15sp" />
-
-            <TextView
-                android:id="@+id/txtFechaDashboard"
+                android:id="@+id/txtCampanitaAdmin"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="14dp"
                 android:background="@drawable/fondo_chip_moderno"
-                android:paddingLeft="14dp"
+                android:clickable="true"
+                android:focusable="true"
+                android:paddingLeft="12dp"
                 android:paddingTop="8dp"
-                android:paddingRight="14dp"
+                android:paddingRight="12dp"
                 android:paddingBottom="8dp"
-                android:text="Fecha del panel: --/--/----"
+                android:text="🔔"
+                android:textAlignment="center"
                 android:textColor="@color/azul_moderno"
-                android:textSize="13sp"
+                android:textSize="20sp"
                 android:textStyle="bold" />
 
         </LinearLayout>
 
-        <!-- SECCION RESUMEN -->
-        <TextView
-            android:id="@+id/txtTituloResumenNegocio"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="12dp"
-            android:text="Resumen del negocio"
-            android:textColor="@color/azul_oscuro_moderno"
-            android:textSize="20sp"
-            android:textStyle="bold" />
-
-        <!-- CITAS DE HOY -->
         <LinearLayout
             android:id="@+id/cardCitasHoyDashboard"
             android:layout_width="match_parent"
@@ -81,53 +84,36 @@
             android:clickable="true"
             android:elevation="4dp"
             android:focusable="true"
-            android:orientation="horizontal"
+            android:orientation="vertical"
             android:padding="18dp">
 
-            <ImageView
-                android:layout_width="54dp"
-                android:layout_height="54dp"
-                android:background="@drawable/fondo_icono_azul"
-                android:padding="13dp"
-                android:src="@drawable/ic_calendar_moderno" />
-
-            <LinearLayout
-                android:layout_width="0dp"
+            <TextView
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_weight="1"
-                android:orientation="vertical">
+                android:text="Citas pendientes de hoy"
+                android:textColor="@color/gris_moderno"
+                android:textSize="14sp" />
 
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Citas pendientes de hoy"
-                    android:textColor="@color/gris_moderno"
-                    android:textSize="14sp" />
+            <TextView
+                android:id="@+id/txtCitasHoyDashboard"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="0"
+                android:textColor="@color/azul_moderno"
+                android:textSize="34sp"
+                android:textStyle="bold" />
 
-                <TextView
-                    android:id="@+id/txtCitasHoyDashboard"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
-                    android:text="0"
-                    android:textColor="@color/azul_moderno"
-                    android:textSize="34sp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Ver agenda del día"
-                    android:textColor="@color/azul_moderno"
-                    android:textSize="13sp"
-                    android:textStyle="bold" />
-
-            </LinearLayout>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Ver agenda del día"
+                android:textColor="@color/azul_moderno"
+                android:textSize="13sp"
+                android:textStyle="bold" />
 
         </LinearLayout>
 
-        <!-- FILA COBROS Y CLIENTES -->
         <LinearLayout
             android:id="@+id/filaResumenFinancieroClientes"
             android:layout_width="match_parent"
@@ -149,17 +135,9 @@
                 android:orientation="vertical"
                 android:padding="16dp">
 
-                <ImageView
-                    android:layout_width="46dp"
-                    android:layout_height="46dp"
-                    android:background="@drawable/fondo_icono_verde"
-                    android:padding="11dp"
-                    android:src="@drawable/ic_money_moderno" />
-
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="12dp"
                     android:text="Total por cobrar"
                     android:textColor="@color/gris_moderno"
                     android:textSize="13sp" />
@@ -197,17 +175,9 @@
                 android:orientation="vertical"
                 android:padding="16dp">
 
-                <ImageView
-                    android:layout_width="46dp"
-                    android:layout_height="46dp"
-                    android:background="@drawable/fondo_icono_morado"
-                    android:padding="11dp"
-                    android:src="@drawable/ic_clients_moderno" />
-
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="12dp"
                     android:text="Clientes registrados"
                     android:textColor="@color/gris_moderno"
                     android:textSize="13sp" />
@@ -234,7 +204,6 @@
 
         </LinearLayout>
 
-        <!-- GANANCIA NETA -->
         <LinearLayout
             android:id="@+id/cardGananciasDashboard"
             android:layout_width="match_parent"
@@ -242,54 +211,37 @@
             android:layout_marginBottom="12dp"
             android:background="@drawable/card_moderno"
             android:elevation="4dp"
-            android:orientation="horizontal"
+            android:orientation="vertical"
             android:padding="18dp">
 
-            <ImageView
-                android:layout_width="54dp"
-                android:layout_height="54dp"
-                android:background="@drawable/fondo_icono_verde"
-                android:padding="13dp"
-                android:src="@drawable/ic_trending_moderno" />
-
-            <LinearLayout
-                android:layout_width="0dp"
+            <TextView
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_weight="1"
-                android:orientation="vertical">
+                android:text="Ganancia neta"
+                android:textColor="@color/gris_moderno"
+                android:textSize="14sp" />
 
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Ganancia neta"
-                    android:textColor="@color/gris_moderno"
-                    android:textSize="14sp" />
+            <TextView
+                android:id="@+id/txtGananciaNetaDashboard"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="$0.00"
+                android:textColor="@color/azul_titulo"
+                android:textSize="32sp"
+                android:textStyle="bold" />
 
-                <TextView
-                    android:id="@+id/txtGananciaNetaDashboard"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
-                    android:text="$0.00"
-                    android:textColor="@color/azul_titulo"
-                    android:textSize="32sp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/txtDetalleFinancieroDashboard"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="6dp"
-                    android:text="Ingresos: $0.00 | Egresos: $0.00"
-                    android:textColor="@color/gris_moderno"
-                    android:textSize="13sp" />
-
-            </LinearLayout>
+            <TextView
+                android:id="@+id/txtDetalleFinancieroDashboard"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:text="Ingresos: $0.00 | Egresos: $0.00"
+                android:textColor="@color/gris_moderno"
+                android:textSize="13sp" />
 
         </LinearLayout>
 
-        <!-- ESTADO FINANCIERO -->
         <LinearLayout
             android:id="@+id/cardEstadoFinanciero"
             android:layout_width="match_parent"
@@ -297,46 +249,29 @@
             android:layout_marginBottom="12dp"
             android:background="@drawable/card_moderno_verde"
             android:elevation="4dp"
-            android:orientation="horizontal"
+            android:orientation="vertical"
             android:padding="18dp">
 
-            <ImageView
-                android:layout_width="46dp"
-                android:layout_height="46dp"
-                android:background="@drawable/fondo_icono_verde"
-                android:padding="10dp"
-                android:src="@drawable/ic_check_moderno" />
-
-            <LinearLayout
-                android:layout_width="0dp"
+            <TextView
+                android:id="@+id/txtEstadoFinanciero"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="14dp"
-                android:layout_weight="1"
-                android:orientation="vertical">
+                android:text="Flujo saludable"
+                android:textColor="@color/verde_positivo"
+                android:textSize="18sp"
+                android:textStyle="bold" />
 
-                <TextView
-                    android:id="@+id/txtEstadoFinanciero"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="✅ Flujo saludable"
-                    android:textColor="@color/verde_positivo"
-                    android:textSize="18sp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/txtMensajeEstadoFinanciero"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="6dp"
-                    android:text="El negocio mantiene una ganancia positiva."
-                    android:textColor="@color/texto_oscuro_moderno"
-                    android:textSize="14sp" />
-
-            </LinearLayout>
+            <TextView
+                android:id="@+id/txtMensajeEstadoFinanciero"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:text="El negocio mantiene una ganancia positiva."
+                android:textColor="@color/texto_oscuro_moderno"
+                android:textSize="14sp" />
 
         </LinearLayout>
 
-        <!-- ESTADISTICAS -->
         <LinearLayout
             android:id="@+id/cardEstadisticasServicios"
             android:layout_width="match_parent"
@@ -347,30 +282,13 @@
             android:orientation="vertical"
             android:padding="18dp">
 
-            <LinearLayout
+            <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <ImageView
-                    android:layout_width="46dp"
-                    android:layout_height="46dp"
-                    android:background="@drawable/fondo_icono_morado"
-                    android:padding="10dp"
-                    android:src="@drawable/ic_simulation_moderno" />
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginStart="14dp"
-                    android:layout_weight="1"
-                    android:text="Estadísticas de servicios"
-                    android:textColor="@color/azul_oscuro_moderno"
-                    android:textSize="18sp"
-                    android:textStyle="bold" />
-
-            </LinearLayout>
+                android:text="Estadísticas de servicios"
+                android:textColor="@color/azul_oscuro_moderno"
+                android:textSize="18sp"
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/txtServicioMasUtilizado"
@@ -391,94 +309,23 @@
                 android:textSize="14sp" />
 
             <TextView
-                android:id="@+id/txtServicioMayorIngreso"
+                android:id="@+id/txtTituloGraficoPastel"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:text="Mayor ingreso: Sin datos"
-                android:textColor="@color/texto_oscuro_moderno"
-                android:textSize="14sp" />
-
-        </LinearLayout>
-
-        <!-- ALERTAS -->
-        <LinearLayout
-            android:id="@+id/cardAlertasDashboard"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="12dp"
-            android:background="@drawable/card_moderno_naranja"
-            android:elevation="4dp"
-            android:orientation="horizontal"
-            android:padding="18dp">
-
-            <ImageView
-                android:layout_width="46dp"
-                android:layout_height="46dp"
-                android:background="@drawable/fondo_icono_rojo"
-                android:padding="10dp"
-                android:src="@drawable/ic_warning_moderno" />
-
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="14dp"
-                android:layout_weight="1"
-                android:orientation="vertical">
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Alertas"
-                    android:textColor="@color/naranja_alerta"
-                    android:textSize="18sp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/txtAlertasDashboard"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:text="No existen alertas relevantes."
-                    android:textColor="@color/texto_oscuro_moderno"
-                    android:textSize="14sp" />
-
-            </LinearLayout>
-
-        </LinearLayout>
-
-        <!-- RESUMEN -->
-        <LinearLayout
-            android:id="@+id/cardResumenGeneral"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="18dp"
-            android:background="@drawable/card_moderno"
-            android:elevation="4dp"
-            android:orientation="vertical"
-            android:padding="18dp">
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Resumen del día"
+                android:layout_marginTop="16dp"
+                android:text="Distribución de ingresos por servicio"
                 android:textColor="@color/azul_oscuro_moderno"
-                android:textSize="18sp"
+                android:textSize="15sp"
                 android:textStyle="bold" />
 
-            <TextView
-                android:id="@+id/txtResumenDashboard"
+            <com.puce.spatamar.GraficoPastelServiciosView
+                android:id="@+id/graficoPastelServicios"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:text="Cargando resumen..."
-                android:textColor="@color/texto_oscuro_moderno"
-                android:textSize="14sp" />
+                android:layout_height="280dp"
+                android:layout_marginTop="8dp" />
 
         </LinearLayout>
 
-        <!-- ACCESOS ADMINISTRATIVOS -->
-        <!-- ACCESOS ADMINISTRATIVOS -->
         <TextView
             android:id="@+id/txtSeccionModulosAdmin"
             android:layout_width="match_parent"

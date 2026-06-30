@@ -7,6 +7,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
 
@@ -15,15 +16,19 @@ import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Locale;
 
 public class MenuAdministradorActivity extends AppCompatActivity {
 
     private TextView txtFechaDashboard;
+    private TextView txtCampanitaAdmin;
+
     private TextView txtTotalClientesDashboard;
     private TextView txtCitasHoyDashboard;
     private TextView txtTotalCobroDashboard;
@@ -31,12 +36,11 @@ public class MenuAdministradorActivity extends AppCompatActivity {
     private TextView txtDetalleFinancieroDashboard;
     private TextView txtEstadoFinanciero;
     private TextView txtMensajeEstadoFinanciero;
-    private TextView txtAlertasDashboard;
-    private TextView txtResumenDashboard;
 
     private TextView txtServicioMasUtilizado;
     private TextView txtServicioMenosUtilizado;
-    private TextView txtServicioMayorIngreso;
+
+    private GraficoPastelServiciosView graficoPastelServicios;
 
     private LinearLayout cardClientesDashboard;
     private LinearLayout cardCitasHoyDashboard;
@@ -49,12 +53,16 @@ public class MenuAdministradorActivity extends AppCompatActivity {
 
     private RequestQueue requestQueue;
 
+    private String textoPendientesAdmin = "No existen pendientes relevantes hasta ahora.";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_menu_administrador);
 
         txtFechaDashboard = findViewById(R.id.txtFechaDashboard);
+        txtCampanitaAdmin = findViewById(R.id.txtCampanitaAdmin);
+
         txtTotalClientesDashboard = findViewById(R.id.txtTotalClientesDashboard);
         txtCitasHoyDashboard = findViewById(R.id.txtCitasHoyDashboard);
         txtTotalCobroDashboard = findViewById(R.id.txtTotalCobroDashboard);
@@ -62,12 +70,11 @@ public class MenuAdministradorActivity extends AppCompatActivity {
         txtDetalleFinancieroDashboard = findViewById(R.id.txtDetalleFinancieroDashboard);
         txtEstadoFinanciero = findViewById(R.id.txtEstadoFinanciero);
         txtMensajeEstadoFinanciero = findViewById(R.id.txtMensajeEstadoFinanciero);
-        txtAlertasDashboard = findViewById(R.id.txtAlertasDashboard);
-        txtResumenDashboard = findViewById(R.id.txtResumenDashboard);
 
         txtServicioMasUtilizado = findViewById(R.id.txtServicioMasUtilizado);
         txtServicioMenosUtilizado = findViewById(R.id.txtServicioMenosUtilizado);
-        txtServicioMayorIngreso = findViewById(R.id.txtServicioMayorIngreso);
+
+        graficoPastelServicios = findViewById(R.id.graficoPastelServicios);
 
         cardClientesDashboard = findViewById(R.id.cardClientesDashboard);
         cardCitasHoyDashboard = findViewById(R.id.cardCitasHoyDashboard);
@@ -81,6 +88,13 @@ public class MenuAdministradorActivity extends AppCompatActivity {
         requestQueue = Volley.newRequestQueue(this);
 
         cargarDashboardApi();
+
+        txtCampanitaAdmin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mostrarPendientesAdmin();
+            }
+        });
 
         cardCitasHoyDashboard.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -150,7 +164,7 @@ public class MenuAdministradorActivity extends AppCompatActivity {
 
     private void cargarDashboardApi() {
         String fechaActual = obtenerFechaActual();
-        txtFechaDashboard.setText("Fecha del panel: " + fechaActual);
+        txtFechaDashboard.setText(fechaActual);
 
         JsonObjectRequest request = new JsonObjectRequest(
                 Request.Method.GET,
@@ -173,9 +187,9 @@ public class MenuAdministradorActivity extends AppCompatActivity {
                         txtGananciaNetaDashboard.setText("$" + String.format(Locale.US, "%.2f", gananciaNeta));
 
                         if (gananciaNeta > 0) {
-                            txtGananciaNetaDashboard.setTextColor(getResources().getColor(android.R.color.holo_green_dark));
+                            txtGananciaNetaDashboard.setTextColor(getResources().getColor(R.color.verde_positivo));
                         } else if (gananciaNeta < 0) {
-                            txtGananciaNetaDashboard.setTextColor(getResources().getColor(android.R.color.holo_red_dark));
+                            txtGananciaNetaDashboard.setTextColor(getResources().getColor(R.color.rojo_negativo));
                         } else {
                             txtGananciaNetaDashboard.setTextColor(getResources().getColor(R.color.azul_titulo));
                         }
@@ -186,10 +200,10 @@ public class MenuAdministradorActivity extends AppCompatActivity {
                         );
 
                         cargarEstadisticasServicios(response);
+                        cargarGraficoPastelServicios(response);
 
                         cargarEstadoFinanciero(gananciaNeta, totalIngresos, totalEgresos, totalPorCobrar);
-                        cargarAlertas(citasHoy, totalPorCobrar, totalIngresos, totalEgresos, gananciaNeta);
-                        cargarResumen(citasHoy, gananciaNeta, totalIngresos, totalEgresos);
+                        actualizarPendientesAdmin(citasHoy, totalPorCobrar, totalIngresos, totalEgresos, gananciaNeta);
 
                     } catch (JSONException e) {
                         Toast.makeText(
@@ -219,16 +233,12 @@ public class MenuAdministradorActivity extends AppCompatActivity {
 
             JSONObject masUtilizado = estadisticas.getJSONObject("servicio_mas_utilizado");
             JSONObject menosUtilizado = estadisticas.getJSONObject("servicio_menos_utilizado");
-            JSONObject mayorIngreso = estadisticas.getJSONObject("servicio_mayor_ingreso");
 
             String nombreMasUtilizado = masUtilizado.getString("nombre");
             int totalUsosMas = masUtilizado.getInt("total_usos");
 
             String nombreMenosUtilizado = menosUtilizado.getString("nombre");
             int totalUsosMenos = menosUtilizado.getInt("total_usos");
-
-            String nombreMayorIngreso = mayorIngreso.getString("nombre");
-            double totalIngresoServicio = mayorIngreso.getDouble("total_ingresos");
 
             txtServicioMasUtilizado.setText(
                     "Más utilizado: " + nombreMasUtilizado + " (" + totalUsosMas + " uso(s))"
@@ -238,14 +248,39 @@ public class MenuAdministradorActivity extends AppCompatActivity {
                     "Menos utilizado: " + nombreMenosUtilizado + " (" + totalUsosMenos + " uso(s))"
             );
 
-            txtServicioMayorIngreso.setText(
-                    "Mayor ingreso: " + nombreMayorIngreso + " ($" + String.format(Locale.US, "%.2f", totalIngresoServicio) + ")"
-            );
-
         } catch (JSONException e) {
             txtServicioMasUtilizado.setText("Más utilizado: Sin datos");
             txtServicioMenosUtilizado.setText("Menos utilizado: Sin datos");
-            txtServicioMayorIngreso.setText("Mayor ingreso: Sin datos");
+        }
+    }
+
+    private void cargarGraficoPastelServicios(JSONObject response) {
+        try {
+            JSONObject estadisticas = response.getJSONObject("estadisticas_servicios");
+            JSONArray ranking = estadisticas.getJSONArray("ranking_servicios");
+
+            ArrayList<GraficoPastelServiciosView.ItemPastel> datosPastel = new ArrayList<>();
+
+            for (int i = 0; i < ranking.length(); i++) {
+                JSONObject item = ranking.getJSONObject(i);
+
+                String nombreServicio = item.optString("servicio", "Servicio");
+                double totalIngresos = item.optDouble("total_ingresos", 0);
+
+                if (totalIngresos > 0) {
+                    datosPastel.add(
+                            new GraficoPastelServiciosView.ItemPastel(
+                                    nombreServicio,
+                                    (float) totalIngresos
+                            )
+                    );
+                }
+            }
+
+            graficoPastelServicios.setDatos(datosPastel);
+
+        } catch (Exception e) {
+            graficoPastelServicios.setDatos(new ArrayList<>());
         }
     }
 
@@ -257,15 +292,15 @@ public class MenuAdministradorActivity extends AppCompatActivity {
         txtGananciaNetaDashboard.setTextColor(getResources().getColor(R.color.azul_titulo));
         txtDetalleFinancieroDashboard.setText("Ingresos: $0.00 | Egresos: $0.00");
 
-        txtEstadoFinanciero.setText("⚠️ Sin conexión con API");
+        txtEstadoFinanciero.setText("Sin conexión con API");
         txtMensajeEstadoFinanciero.setText("No fue posible consultar el resumen financiero desde PostgreSQL.");
 
         txtServicioMasUtilizado.setText("Más utilizado: Sin datos");
         txtServicioMenosUtilizado.setText("Menos utilizado: Sin datos");
-        txtServicioMayorIngreso.setText("Mayor ingreso: Sin datos");
 
-        txtAlertasDashboard.setText("Revise que el backend esté encendido con npm run dev.");
-        txtResumenDashboard.setText("No se pudo cargar el resumen del día desde la API.");
+        txtCampanitaAdmin.setText("🔔");
+        textoPendientesAdmin = "No se pudo consultar la información de pendientes.";
+        graficoPastelServicios.setDatos(new ArrayList<>());
     }
 
     private void cargarEstadoFinanciero(double gananciaNeta,
@@ -274,78 +309,65 @@ public class MenuAdministradorActivity extends AppCompatActivity {
                                         double totalPorCobrar) {
 
         if (gananciaNeta < 0) {
-            txtEstadoFinanciero.setText("🚨 Riesgo financiero alto");
+            txtEstadoFinanciero.setText("Riesgo financiero alto");
+            txtEstadoFinanciero.setTextColor(getResources().getColor(R.color.rojo_negativo));
             txtMensajeEstadoFinanciero.setText("Los egresos superan a los ingresos. Se recomienda revisar pagos, gastos y cobros pendientes.");
         } else if (totalIngresos == 0 && totalEgresos > 0) {
-            txtEstadoFinanciero.setText("⚠️ Riesgo financiero medio");
+            txtEstadoFinanciero.setText("Riesgo financiero medio");
+            txtEstadoFinanciero.setTextColor(getResources().getColor(R.color.naranja_alerta));
             txtMensajeEstadoFinanciero.setText("Existen egresos registrados, pero todavía no hay ingresos suficientes.");
         } else if (totalPorCobrar > totalIngresos && totalPorCobrar > 0) {
-            txtEstadoFinanciero.setText("⚠️ Cobros pendientes elevados");
+            txtEstadoFinanciero.setText("Cobros pendientes elevados");
+            txtEstadoFinanciero.setTextColor(getResources().getColor(R.color.naranja_alerta));
             txtMensajeEstadoFinanciero.setText("Hay valores pendientes por cobrar que podrían afectar el flujo de caja.");
         } else {
-            txtEstadoFinanciero.setText("✅ Flujo saludable");
+            txtEstadoFinanciero.setText("Flujo saludable");
+            txtEstadoFinanciero.setTextColor(getResources().getColor(R.color.verde_positivo));
             txtMensajeEstadoFinanciero.setText("El negocio mantiene una ganancia positiva y un flujo financiero estable.");
         }
     }
 
-    private void cargarAlertas(int citasHoy,
-                               double totalPorCobrar,
-                               double totalIngresos,
-                               double totalEgresos,
-                               double gananciaNeta) {
+    private void actualizarPendientesAdmin(int citasHoy,
+                                           double totalPorCobrar,
+                                           double totalIngresos,
+                                           double totalEgresos,
+                                           double gananciaNeta) {
 
-        String alertas = "";
+        String pendientes = "";
 
         if (citasHoy > 0) {
-            alertas = alertas + "🔔 Tiene " + citasHoy + " cita(s) pendiente(s) por atender hoy.\n";
+            pendientes = pendientes + "• " + citasHoy + " cita(s) pendiente(s) por atender hoy.\n";
         }
 
         if (totalPorCobrar > 0) {
-            alertas = alertas + "⚠️ Existen $" + String.format(Locale.US, "%.2f", totalPorCobrar) + " pendientes de cobro.\n";
+            pendientes = pendientes + "• $" + String.format(Locale.US, "%.2f", totalPorCobrar)
+                    + " pendientes por cobrar.\n";
         }
 
         if (totalEgresos > totalIngresos && totalEgresos > 0) {
-            alertas = alertas + "🚨 Los egresos superan los ingresos registrados.\n";
+            pendientes = pendientes + "• Los egresos superan los ingresos registrados.\n";
         }
 
         if (gananciaNeta < 0) {
-            alertas = alertas + "🚨 La ganancia neta actual es negativa.\n";
+            pendientes = pendientes + "• La ganancia neta actual es negativa.\n";
         }
 
-        if (alertas.isEmpty()) {
-            alertas = "✅ No existen alertas relevantes. El flujo se mantiene estable.";
+        if (pendientes.isEmpty()) {
+            pendientes = "No existen pendientes relevantes hasta ahora.";
+            txtCampanitaAdmin.setText("🔔");
+        } else {
+            txtCampanitaAdmin.setText("🔔 !");
         }
 
-        txtAlertasDashboard.setText(alertas.trim());
+        textoPendientesAdmin = pendientes.trim();
     }
 
-    private void cargarResumen(int citasHoy,
-                               double gananciaNeta,
-                               double totalIngresos,
-                               double totalEgresos) {
-
-        String resumen;
-
-        if (citasHoy == 0) {
-            resumen = "Para hoy no existen citas pendientes por atender. La ganancia neta actual es de $"
-                    + String.format(Locale.US, "%.2f", gananciaNeta)
-                    + ", con ingresos por $"
-                    + String.format(Locale.US, "%.2f", totalIngresos)
-                    + " y egresos por $"
-                    + String.format(Locale.US, "%.2f", totalEgresos)
-                    + ".";
-        } else {
-            resumen = "Para hoy existen " + citasHoy + " cita(s) pendientes por atender. "
-                    + "La ganancia neta actual es de $"
-                    + String.format(Locale.US, "%.2f", gananciaNeta)
-                    + ", con ingresos por $"
-                    + String.format(Locale.US, "%.2f", totalIngresos)
-                    + " y egresos por $"
-                    + String.format(Locale.US, "%.2f", totalEgresos)
-                    + ".";
-        }
-
-        txtResumenDashboard.setText(resumen);
+    private void mostrarPendientesAdmin() {
+        new AlertDialog.Builder(this)
+                .setTitle("Pendientes del panel")
+                .setMessage(textoPendientesAdmin)
+                .setPositiveButton("Aceptar", null)
+                .show();
     }
 
     private String obtenerFechaActual() {

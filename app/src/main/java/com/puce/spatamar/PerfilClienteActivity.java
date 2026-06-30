@@ -17,6 +17,10 @@ public class PerfilClienteActivity extends AppCompatActivity {
     private AppCompatButton btnGuardarPerfil;
     private AppCompatButton btnVolverPerfil;
 
+    private final String REGEX_SOLO_LETRAS = "^[A-Za-zÁÉÍÓÚáéíóúÑñ\\s]+$";
+    private final String REGEX_TELEFONO_ECUADOR = "^09[0-9]{8}$";
+    private final String REGEX_CORREO = "^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -74,20 +78,32 @@ public class PerfilClienteActivity extends AppCompatActivity {
             return;
         }
 
+        if (!nombre.matches(REGEX_SOLO_LETRAS)) {
+            edtNombrePerfil.setError("El nombre solo debe contener letras y espacios");
+            edtNombrePerfil.requestFocus();
+            return;
+        }
+
         if (telefono.isEmpty()) {
             edtTelefonoPerfil.setError("Ingrese su teléfono");
             edtTelefonoPerfil.requestFocus();
             return;
         }
 
-        if (telefono.length() < 10) {
-            edtTelefonoPerfil.setError("Ingrese un teléfono válido de 10 dígitos");
+        if (!telefono.matches(REGEX_TELEFONO_ECUADOR)) {
+            edtTelefonoPerfil.setError("El teléfono debe empezar con 09 y tener exactamente 10 dígitos");
             edtTelefonoPerfil.requestFocus();
             return;
         }
 
         if (correo.isEmpty()) {
             edtCorreoPerfil.setError("Ingrese su correo electrónico");
+            edtCorreoPerfil.requestFocus();
+            return;
+        }
+
+        if (!correo.matches(REGEX_CORREO)) {
+            edtCorreoPerfil.setError("Ingrese un correo válido. Ejemplo: cliente@email.com");
             edtCorreoPerfil.requestFocus();
             return;
         }

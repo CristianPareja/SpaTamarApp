@@ -1,5 +1,6 @@
 package com.puce.spatamar;
 
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.text.InputType;
 import android.view.View;
@@ -254,41 +255,59 @@ public class CitasAdminActivity extends AppCompatActivity {
     private LinearLayout crearTarjetaCita(CitaAdminApi cita) {
         LinearLayout tarjeta = new LinearLayout(this);
         tarjeta.setOrientation(LinearLayout.VERTICAL);
-        tarjeta.setPadding(18, 18, 18, 18);
-        tarjeta.setBackgroundResource(R.drawable.card_login);
+        tarjeta.setPadding(dp(18), dp(18), dp(18), dp(18));
+        tarjeta.setBackgroundResource(R.drawable.card_moderno);
+        tarjeta.setElevation(dp(4));
 
         LinearLayout.LayoutParams parametrosTarjeta = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT
         );
-
-        parametrosTarjeta.setMargins(0, 0, 0, 14);
+        parametrosTarjeta.setMargins(0, 0, 0, dp(14));
         tarjeta.setLayoutParams(parametrosTarjeta);
 
-        TextView informacion = new TextView(this);
+        TextView titulo = new TextView(this);
+        titulo.setText(cita.getServicio());
+        titulo.setTextSize(18);
+        titulo.setTypeface(null, Typeface.BOLD);
+        titulo.setTextColor(getResources().getColor(R.color.azul_oscuro_moderno));
+        titulo.setPadding(0, 0, 0, dp(8));
 
+        TextView estado = crearChipEstado(cita.getEstado());
+
+        TextView informacion = new TextView(this);
         String texto = "Cliente: " + cita.getNombreCliente() + "\n"
                 + "Teléfono: " + cita.getTelefono() + "\n"
-                + "Servicio: " + cita.getServicio() + "\n"
                 + "Fecha: " + cita.getFecha() + "\n"
                 + "Hora: " + cita.getHora() + "\n"
-                + "Estado: " + cita.getEstado() + "\n"
                 + "Observaciones: " + cita.getObservaciones();
 
         informacion.setText(texto);
-        informacion.setTextSize(15);
-        informacion.setTextColor(getResources().getColor(android.R.color.black));
-        informacion.setPadding(0, 0, 0, 14);
+        informacion.setTextSize(14);
+        informacion.setTextColor(getResources().getColor(R.color.texto_oscuro_moderno));
+        informacion.setLineSpacing(4, 1);
+        informacion.setPadding(0, dp(10), 0, 0);
 
+        tarjeta.addView(titulo);
+        tarjeta.addView(estado);
         tarjeta.addView(informacion);
 
         if (cita.getEstado().equalsIgnoreCase("En curso")) {
             AppCompatButton btnFinalizar = new AppCompatButton(this);
-            btnFinalizar.setText("Marcar como finalizada");
+            btnFinalizar.setText("Finalizar cita");
             btnFinalizar.setTextSize(14);
-            btnFinalizar.setTextColor(getResources().getColor(android.R.color.white));
+            btnFinalizar.setTextColor(getResources().getColor(R.color.blanco));
             btnFinalizar.setAllCaps(false);
             btnFinalizar.setBackgroundResource(R.drawable.boton_principal);
+
+            LinearLayout.LayoutParams parametrosBotonFinalizar = new LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT,
+                    dp(48)
+            );
+            parametrosBotonFinalizar.setMargins(0, dp(14), 0, 0);
+            btnFinalizar.setLayoutParams(parametrosBotonFinalizar);
+            btnFinalizar.setMinHeight(dp(48));
+            btnFinalizar.setPadding(dp(12), 0, dp(12), 0);
 
             btnFinalizar.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -302,16 +321,18 @@ public class CitasAdminActivity extends AppCompatActivity {
             AppCompatButton btnCancelar = new AppCompatButton(this);
             btnCancelar.setText("Cancelar cita");
             btnCancelar.setTextSize(14);
-            btnCancelar.setTextColor(getResources().getColor(android.R.color.white));
+            btnCancelar.setTextColor(getResources().getColor(R.color.rojo_negativo));
             btnCancelar.setAllCaps(false);
-            btnCancelar.setBackgroundResource(R.drawable.boton_principal);
+            btnCancelar.setBackgroundResource(R.drawable.boton_cerrar_sesion_moderno);
 
             LinearLayout.LayoutParams parametrosBotonCancelar = new LinearLayout.LayoutParams(
                     LinearLayout.LayoutParams.MATCH_PARENT,
-                    LinearLayout.LayoutParams.WRAP_CONTENT
+                    dp(48)
             );
-            parametrosBotonCancelar.setMargins(0, 10, 0, 0);
+            parametrosBotonCancelar.setMargins(0, dp(10), 0, 0);
             btnCancelar.setLayoutParams(parametrosBotonCancelar);
+            btnCancelar.setMinHeight(dp(48));
+            btnCancelar.setPadding(dp(12), 0, dp(12), 0);
 
             btnCancelar.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -326,21 +347,50 @@ public class CitasAdminActivity extends AppCompatActivity {
         return tarjeta;
     }
 
+    private TextView crearChipEstado(String estadoCita) {
+        TextView chip = new TextView(this);
+        chip.setText("Estado: " + estadoCita);
+        chip.setTextSize(13);
+        chip.setTypeface(null, Typeface.BOLD);
+        chip.setPadding(dp(12), dp(7), dp(12), dp(7));
+
+        LinearLayout.LayoutParams parametros = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+        );
+        parametros.setMargins(0, 0, 0, dp(6));
+        chip.setLayoutParams(parametros);
+
+        if (estadoCita.equalsIgnoreCase("Finalizado")) {
+            chip.setTextColor(getResources().getColor(R.color.verde_positivo));
+            chip.setBackgroundResource(R.drawable.card_moderno_verde);
+        } else if (estadoCita.equalsIgnoreCase("Cancelado")) {
+            chip.setTextColor(getResources().getColor(R.color.rojo_negativo));
+            chip.setBackgroundResource(R.drawable.card_moderno_rojo);
+        } else {
+            chip.setTextColor(getResources().getColor(R.color.azul_moderno));
+            chip.setBackgroundResource(R.drawable.fondo_chip_moderno);
+        }
+
+        return chip;
+    }
+
     private void mostrarDialogoFinalizar(CitaAdminApi cita) {
         EditText inputValor = new EditText(this);
-        inputValor.setHint("Valor cobrado");
+        inputValor.setHint("Valor pagado por el cliente");
         inputValor.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
-        inputValor.setPadding(40, 20, 40, 20);
+        inputValor.setPadding(dp(16), dp(12), dp(16), dp(12));
+        inputValor.setBackgroundResource(R.drawable.edittext_login);
 
         new AlertDialog.Builder(this)
                 .setTitle("Finalizar cita")
-                .setMessage("Ingrese el valor cobrado por esta cita para registrarlo como ingreso.")
+                .setMessage("Ingrese el valor pagado por el cliente. Si el pago es parcial, el sistema generará automáticamente una cuenta por cobrar.")
                 .setView(inputValor)
                 .setPositiveButton("Finalizar", (dialog, which) -> {
                     String valorTexto = inputValor.getText().toString().trim();
 
                     if (valorTexto.isEmpty()) {
-                        Toast.makeText(this, "Debe ingresar el valor cobrado", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this, "Debe ingresar el valor pagado", Toast.LENGTH_SHORT).show();
                         return;
                     }
 
@@ -353,8 +403,8 @@ public class CitasAdminActivity extends AppCompatActivity {
                         return;
                     }
 
-                    if (valorCobrado <= 0) {
-                        Toast.makeText(this, "El valor debe ser mayor a cero", Toast.LENGTH_SHORT).show();
+                    if (valorCobrado < 0) {
+                        Toast.makeText(this, "El valor no puede ser negativo", Toast.LENGTH_SHORT).show();
                         return;
                     }
 
@@ -383,16 +433,22 @@ public class CitasAdminActivity extends AppCompatActivity {
                 response -> {
                     Toast.makeText(
                             CitasAdminActivity.this,
-                            "Cita finalizada e ingreso registrado",
+                            "Cita finalizada correctamente",
                             Toast.LENGTH_SHORT
                     ).show();
 
                     recargarListadoActual();
                 },
                 error -> {
+                    String mensaje = "No se pudo finalizar la cita";
+
+                    if (error.networkResponse != null && error.networkResponse.statusCode == 400) {
+                        mensaje = "Revise el valor pagado. No puede ser mayor al precio del servicio.";
+                    }
+
                     Toast.makeText(
                             CitasAdminActivity.this,
-                            "No se pudo finalizar la cita",
+                            mensaje,
                             Toast.LENGTH_LONG
                     ).show();
                 }
@@ -488,6 +544,10 @@ public class CitasAdminActivity extends AppCompatActivity {
         }
 
         return horaApi;
+    }
+
+    private int dp(int valor) {
+        return (int) (valor * getResources().getDisplayMetrics().density);
     }
 
     private static class CitaAdminApi {
