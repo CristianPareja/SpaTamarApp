@@ -1,6 +1,7 @@
 package com.puce.spatamar;
 
 import android.app.DatePickerDialog;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -459,23 +460,37 @@ public class CuentasPagarAdminActivity extends AppCompatActivity {
     private LinearLayout crearTarjetaCuentaPagar(CuentaPagarApi cuenta) {
         LinearLayout tarjeta = new LinearLayout(this);
         tarjeta.setOrientation(LinearLayout.VERTICAL);
-        tarjeta.setPadding(18, 18, 18, 18);
-        tarjeta.setBackgroundResource(R.drawable.card_login);
+        tarjeta.setPadding(dp(18), dp(18), dp(18), dp(18));
+        tarjeta.setBackgroundResource(R.drawable.card_moderno);
+        tarjeta.setElevation(dp(4));
 
         LinearLayout.LayoutParams parametrosTarjeta = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT
         );
 
-        parametrosTarjeta.setMargins(0, 0, 0, 14);
+        parametrosTarjeta.setMargins(0, 0, 0, dp(14));
         tarjeta.setLayoutParams(parametrosTarjeta);
 
-        TextView informacion = new TextView(this);
+        TextView titulo = new TextView(this);
+        titulo.setText(cuenta.getTipoEgreso());
+        titulo.setTextSize(18);
+        titulo.setTypeface(null, Typeface.BOLD);
+        titulo.setTextColor(getResources().getColor(R.color.azul_oscuro_moderno));
+        titulo.setPadding(0, 0, 0, dp(6));
 
-        String texto = "Tipo de egreso: " + cuenta.getTipoEgreso() + "\n"
-                + "Fecha: " + cuenta.getFechaVisual() + "\n"
-                + "Valor: $" + String.format(Locale.US, "%.2f", cuenta.getValor()) + "\n"
-                + "Estado: " + cuenta.getEstado() + "\n"
+        TextView valor = new TextView(this);
+        valor.setText("$" + String.format(Locale.US, "%.2f", cuenta.getValor()));
+        valor.setTextSize(25);
+        valor.setTypeface(null, Typeface.BOLD);
+        valor.setTextColor(getResources().getColor(R.color.rojo_negativo));
+        valor.setPadding(0, 0, 0, dp(8));
+
+        TextView estado = crearChipEstado(cuenta.getEstado());
+
+        TextView detalle = new TextView(this);
+
+        String texto = "Fecha: " + cuenta.getFechaVisual() + "\n"
                 + "Observación: " + cuenta.getObservacion();
 
         if (cuenta.esRecurrente()) {
@@ -485,17 +500,28 @@ public class CuentasPagarAdminActivity extends AppCompatActivity {
             texto = texto + "\nTipo de registro: Único";
         }
 
-        informacion.setText(texto);
-        informacion.setTextSize(15);
-        informacion.setTextColor(getResources().getColor(android.R.color.black));
-        informacion.setPadding(0, 0, 0, 14);
+        detalle.setText(texto);
+        detalle.setTextSize(14);
+        detalle.setTextColor(getResources().getColor(R.color.texto_oscuro_moderno));
+        detalle.setLineSpacing(4, 1);
+        detalle.setPadding(0, dp(10), 0, 0);
 
         AppCompatButton btnEditar = new AppCompatButton(this);
         btnEditar.setText("Editar egreso");
         btnEditar.setTextSize(14);
-        btnEditar.setTextColor(getResources().getColor(android.R.color.white));
+        btnEditar.setTextColor(getResources().getColor(R.color.azul_moderno));
         btnEditar.setAllCaps(false);
-        btnEditar.setBackgroundResource(R.drawable.boton_principal);
+        btnEditar.setBackgroundResource(R.drawable.boton_secundario_moderno);
+
+        LinearLayout.LayoutParams parametrosBoton = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                dp(48)
+        );
+
+        parametrosBoton.setMargins(0, dp(14), 0, 0);
+        btnEditar.setLayoutParams(parametrosBoton);
+        btnEditar.setMinHeight(dp(48));
+        btnEditar.setPadding(dp(12), 0, dp(12), 0);
 
         btnEditar.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -504,10 +530,34 @@ public class CuentasPagarAdminActivity extends AppCompatActivity {
             }
         });
 
-        tarjeta.addView(informacion);
+        tarjeta.addView(titulo);
+        tarjeta.addView(valor);
+        tarjeta.addView(estado);
+        tarjeta.addView(detalle);
         tarjeta.addView(btnEditar);
 
         return tarjeta;
+    }
+
+    private TextView crearChipEstado(String estadoCuenta) {
+        TextView chip = new TextView(this);
+        chip.setText("Estado: " + estadoCuenta);
+        chip.setTextSize(13);
+        chip.setTypeface(null, Typeface.BOLD);
+        chip.setPadding(dp(12), dp(7), dp(12), dp(7));
+
+        LinearLayout.LayoutParams parametros = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+        );
+
+        parametros.setMargins(0, 0, 0, dp(6));
+        chip.setLayoutParams(parametros);
+
+        chip.setTextColor(getResources().getColor(R.color.rojo_negativo));
+        chip.setBackgroundResource(R.drawable.card_moderno_rojo);
+
+        return chip;
     }
 
     private void cargarEgresoEnFormulario(CuentaPagarApi cuenta) {
@@ -605,6 +655,10 @@ public class CuentasPagarAdminActivity extends AppCompatActivity {
         idCuentaEditar = 0;
 
         btnRegistrarCuentaPagar.setText("Registrar egreso");
+    }
+
+    private int dp(int valor) {
+        return (int) (valor * getResources().getDisplayMetrics().density);
     }
 
     private static class CuentaPagarApi {

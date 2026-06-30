@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/cardServicioAdmin"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginBottom="14dp"
-    android:background="@drawable/card_login"
+    android:background="@drawable/card_moderno"
+    android:elevation="4dp"
     android:orientation="vertical"
     android:padding="18dp">
 
@@ -12,7 +14,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Nombre del servicio"
-        android:textColor="#3E2723"
+        android:textColor="@color/azul_oscuro_moderno"
         android:textSize="18sp"
         android:textStyle="bold" />
 
@@ -22,46 +24,73 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="6dp"
         android:text="Descripción del servicio"
-        android:textColor="#5D4037"
+        android:textColor="@color/gris_moderno"
         android:textSize="14sp" />
 
     <TextView
         android:id="@+id/txtPrecioServicioAdmin"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:text="$ 0.00"
-        android:textColor="#8D6E63"
-        android:textSize="16sp"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/fondo_chip_moderno"
+        android:paddingLeft="12dp"
+        android:paddingTop="6dp"
+        android:paddingRight="12dp"
+        android:paddingBottom="6dp"
+        android:text="$0.00"
+        android:textColor="@color/verde_positivo"
+        android:textSize="15sp"
         android:textStyle="bold" />
 
     <TextView
         android:id="@+id/txtEstadoServicioAdmin"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="6dp"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/fondo_chip_moderno"
+        android:paddingLeft="12dp"
+        android:paddingTop="6dp"
+        android:paddingRight="12dp"
+        android:paddingBottom="6dp"
         android:text="Estado: Activo"
-        android:textColor="#5D4037"
-        android:textSize="14sp" />
-
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/btnEditarServicioAdmin"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
-        android:background="@drawable/boton_principal"
-        android:text="Editar"
-        android:textColor="#FFFFFF"
+        android:textColor="@color/azul_moderno"
+        android:textSize="13sp"
         android:textStyle="bold" />
 
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/btnCambiarEstadoServicioAdmin"
+    <LinearLayout
+        android:id="@+id/filaBotonesServicioAdmin"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:background="@drawable/boton_principal"
-        android:text="Deshabilitar"
-        android:textColor="#FFFFFF"
-        android:textStyle="bold" />
+        android:layout_marginTop="14dp"
+        android:orientation="horizontal"
+        android:weightSum="2">
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btnEditarServicioAdmin"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_marginEnd="6dp"
+            android:layout_weight="1"
+            android:background="@drawable/boton_secundario_moderno"
+            android:text="Editar"
+            android:textAllCaps="false"
+            android:textColor="@color/azul_moderno"
+            android:textSize="14sp"
+            android:textStyle="bold" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btnCambiarEstadoServicioAdmin"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_marginStart="6dp"
+            android:layout_weight="1"
+            android:background="@drawable/boton_principal"
+            android:text="Deshabilitar"
+            android:textAllCaps="false"
+            android:textColor="@color/blanco"
+            android:textSize="14sp"
+            android:textStyle="bold" />
+
+    </LinearLayout>
 
 </LinearLayout>

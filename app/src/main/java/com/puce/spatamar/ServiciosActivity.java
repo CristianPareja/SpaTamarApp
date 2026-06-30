@@ -20,6 +20,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Locale;
 
 public class ServiciosActivity extends AppCompatActivity {
 
@@ -135,8 +136,18 @@ public class ServiciosActivity extends AppCompatActivity {
         if (listaServicios.isEmpty()) {
             TextView txtSinServicios = new TextView(this);
             txtSinServicios.setText("No existen servicios registrados.");
-            txtSinServicios.setTextSize(16);
-            txtSinServicios.setPadding(20, 20, 20, 20);
+            txtSinServicios.setTextSize(15);
+            txtSinServicios.setTextColor(getResources().getColor(R.color.azul_oscuro_moderno));
+            txtSinServicios.setPadding(dp(18), dp(18), dp(18), dp(18));
+            txtSinServicios.setBackgroundResource(R.drawable.card_moderno);
+
+            LinearLayout.LayoutParams parametros = new LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT
+            );
+            parametros.setMargins(0, 0, 0, dp(14));
+            txtSinServicios.setLayoutParams(parametros);
+
             contenedorServiciosAdmin.addView(txtSinServicios);
             return;
         }
@@ -154,14 +165,24 @@ public class ServiciosActivity extends AppCompatActivity {
 
             txtNombre.setText(servicio.getNombre());
             txtDescripcion.setText(servicio.getDescripcion());
-            txtPrecio.setText("$ " + servicio.getPrecio());
+            txtPrecio.setText("$" + String.format(Locale.US, "%.2f", servicio.getPrecio()));
 
             if (servicio.isActivo()) {
                 txtEstado.setText("Estado: Activo");
+                txtEstado.setTextColor(getResources().getColor(R.color.verde_positivo));
+                txtEstado.setBackgroundResource(R.drawable.card_moderno_verde);
+
                 btnCambiarEstado.setText("Deshabilitar");
+                btnCambiarEstado.setTextColor(getResources().getColor(R.color.blanco));
+                btnCambiarEstado.setBackgroundResource(R.drawable.boton_principal);
             } else {
                 txtEstado.setText("Estado: Inactivo");
+                txtEstado.setTextColor(getResources().getColor(R.color.rojo_negativo));
+                txtEstado.setBackgroundResource(R.drawable.card_moderno_rojo);
+
                 btnCambiarEstado.setText("Habilitar");
+                btnCambiarEstado.setTextColor(getResources().getColor(R.color.verde_positivo));
+                btnCambiarEstado.setBackgroundResource(R.drawable.card_moderno_verde);
             }
 
             btnEditar.setOnClickListener(new View.OnClickListener() {
@@ -353,7 +374,7 @@ public class ServiciosActivity extends AppCompatActivity {
 
         edtNombreServicio.setText(servicio.getNombre());
         edtDescripcionServicio.setText(servicio.getDescripcion());
-        edtPrecioServicio.setText(String.valueOf(servicio.getPrecio()));
+        edtPrecioServicio.setText(String.format(Locale.US, "%.2f", servicio.getPrecio()));
 
         btnGuardarServicio.setText("Actualizar servicio");
     }
@@ -367,5 +388,9 @@ public class ServiciosActivity extends AppCompatActivity {
         edtPrecioServicio.setText("");
 
         btnGuardarServicio.setText("Guardar servicio");
+    }
+
+    private int dp(int valor) {
+        return (int) (valor * getResources().getDisplayMetrics().density);
     }
 }

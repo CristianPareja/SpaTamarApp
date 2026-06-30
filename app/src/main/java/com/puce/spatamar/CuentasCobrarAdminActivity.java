@@ -1,5 +1,6 @@
 package com.puce.spatamar;
 
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -149,41 +150,75 @@ public class CuentasCobrarAdminActivity extends AppCompatActivity {
     private LinearLayout crearTarjetaCuenta(CuentaCobrarApi cuenta) {
         LinearLayout tarjeta = new LinearLayout(this);
         tarjeta.setOrientation(LinearLayout.VERTICAL);
-        tarjeta.setPadding(18, 18, 18, 18);
-        tarjeta.setBackgroundResource(R.drawable.card_login);
+        tarjeta.setPadding(dp(18), dp(18), dp(18), dp(18));
+        tarjeta.setBackgroundResource(R.drawable.card_moderno);
+        tarjeta.setElevation(dp(4));
 
         LinearLayout.LayoutParams parametrosTarjeta = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT
         );
 
-        parametrosTarjeta.setMargins(0, 0, 0, 14);
+        parametrosTarjeta.setMargins(0, 0, 0, dp(14));
         tarjeta.setLayoutParams(parametrosTarjeta);
 
-        TextView informacion = new TextView(this);
+        TextView cliente = new TextView(this);
+        cliente.setText(cuenta.getNombreCliente());
+        cliente.setTextSize(18);
+        cliente.setTypeface(null, Typeface.BOLD);
+        cliente.setTextColor(getResources().getColor(R.color.azul_oscuro_moderno));
+        cliente.setPadding(0, 0, 0, dp(6));
 
-        String texto = "Cliente: " + cuenta.getNombreCliente() + "\n"
-                + "Correo: " + cuenta.getCorreoCliente() + "\n"
+        TextView valor = new TextView(this);
+        valor.setText("$" + String.format(Locale.US, "%.2f", cuenta.getValorPendiente()));
+        valor.setTextSize(25);
+        valor.setTypeface(null, Typeface.BOLD);
+
+        if (cuenta.getEstado().equalsIgnoreCase("Pendiente")) {
+            valor.setTextColor(getResources().getColor(R.color.naranja_alerta));
+        } else {
+            valor.setTextColor(getResources().getColor(R.color.verde_positivo));
+        }
+
+        valor.setPadding(0, 0, 0, dp(8));
+
+        TextView estado = crearChipEstado(cuenta.getEstado());
+
+        TextView detalle = new TextView(this);
+
+        String texto = "Correo: " + cuenta.getCorreoCliente() + "\n"
                 + "Concepto: " + cuenta.getConcepto() + "\n"
                 + "Fecha: " + cuenta.getFecha() + "\n"
-                + "Valor pendiente: $" + String.format(Locale.US, "%.2f", cuenta.getValorPendiente()) + "\n"
-                + "Estado: " + cuenta.getEstado() + "\n"
                 + "Observación: " + cuenta.getObservacion();
 
-        informacion.setText(texto);
-        informacion.setTextSize(15);
-        informacion.setTextColor(getResources().getColor(android.R.color.black));
-        informacion.setPadding(0, 0, 0, 14);
+        detalle.setText(texto);
+        detalle.setTextSize(14);
+        detalle.setTextColor(getResources().getColor(R.color.texto_oscuro_moderno));
+        detalle.setLineSpacing(4, 1);
+        detalle.setPadding(0, dp(10), 0, 0);
 
-        tarjeta.addView(informacion);
+        tarjeta.addView(cliente);
+        tarjeta.addView(valor);
+        tarjeta.addView(estado);
+        tarjeta.addView(detalle);
 
         if (cuenta.getEstado().equalsIgnoreCase("Pendiente")) {
             AppCompatButton btnMarcarPagado = new AppCompatButton(this);
             btnMarcarPagado.setText("Marcar como pagado");
             btnMarcarPagado.setTextSize(14);
-            btnMarcarPagado.setTextColor(getResources().getColor(android.R.color.white));
+            btnMarcarPagado.setTextColor(getResources().getColor(R.color.blanco));
             btnMarcarPagado.setAllCaps(false);
             btnMarcarPagado.setBackgroundResource(R.drawable.boton_principal);
+
+            LinearLayout.LayoutParams parametrosBoton = new LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT,
+                    dp(48)
+            );
+
+            parametrosBoton.setMargins(0, dp(14), 0, 0);
+            btnMarcarPagado.setLayoutParams(parametrosBoton);
+            btnMarcarPagado.setMinHeight(dp(48));
+            btnMarcarPagado.setPadding(dp(12), 0, dp(12), 0);
 
             btnMarcarPagado.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -196,6 +231,32 @@ public class CuentasCobrarAdminActivity extends AppCompatActivity {
         }
 
         return tarjeta;
+    }
+
+    private TextView crearChipEstado(String estadoCuenta) {
+        TextView chip = new TextView(this);
+        chip.setText("Estado: " + estadoCuenta);
+        chip.setTextSize(13);
+        chip.setTypeface(null, Typeface.BOLD);
+        chip.setPadding(dp(12), dp(7), dp(12), dp(7));
+
+        LinearLayout.LayoutParams parametros = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+        );
+
+        parametros.setMargins(0, 0, 0, dp(6));
+        chip.setLayoutParams(parametros);
+
+        if (estadoCuenta.equalsIgnoreCase("Pagado")) {
+            chip.setTextColor(getResources().getColor(R.color.verde_positivo));
+            chip.setBackgroundResource(R.drawable.card_moderno_verde);
+        } else {
+            chip.setTextColor(getResources().getColor(R.color.naranja_alerta));
+            chip.setBackgroundResource(R.drawable.card_moderno_naranja);
+        }
+
+        return chip;
     }
 
     private void confirmarPago(CuentaCobrarApi cuenta) {
@@ -249,6 +310,10 @@ public class CuentasCobrarAdminActivity extends AppCompatActivity {
         }
 
         return fechaApi;
+    }
+
+    private int dp(int valor) {
+        return (int) (valor * getResources().getDisplayMetrics().density);
     }
 
     private static class CuentaCobrarApi {

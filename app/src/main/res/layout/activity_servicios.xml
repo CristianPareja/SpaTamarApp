@@ -3,98 +3,157 @@
     android:id="@+id/activityServicios"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/fondo_login"
+    android:background="@color/fondo_moderno_spa"
     android:fillViewport="true">
 
     <LinearLayout
+        android:id="@+id/contenedorPrincipalServiciosAdmin"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="24dp">
+        android:padding="20dp">
 
-        <TextView
-            android:id="@+id/txtTituloServicios"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Gestión de servicios"
-            android:textAlignment="center"
-            android:textColor="#3E2723"
-            android:textSize="26sp"
-            android:textStyle="bold" />
-
+        <!-- ENCABEZADO -->
         <LinearLayout
+            android:id="@+id/headerServiciosAdmin"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="22dp"
-            android:background="@drawable/card_login"
+            android:layout_marginTop="18dp"
+            android:layout_marginBottom="18dp"
+            android:background="@drawable/card_moderno"
+            android:elevation="4dp"
+            android:orientation="horizontal"
+            android:padding="20dp">
+
+            <ImageView
+                android:layout_width="52dp"
+                android:layout_height="52dp"
+                android:background="@drawable/fondo_icono_azul"
+                android:padding="12dp"
+                android:src="@drawable/ic_spa_moderno" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="14dp"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/txtTituloServicios"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Gestión de servicios"
+                    android:textColor="@color/azul_oscuro_moderno"
+                    android:textSize="24sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/txtSubtituloServicios"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:text="Administra los servicios disponibles del Spa TAMAR"
+                    android:textColor="@color/gris_moderno"
+                    android:textSize="14sp" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <!-- FORMULARIO -->
+        <LinearLayout
+            android:id="@+id/cardFormularioServicios"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="18dp"
+            android:background="@drawable/card_moderno"
+            android:elevation="4dp"
             android:orientation="vertical"
             android:padding="18dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Datos del servicio"
+                android:textColor="@color/azul_oscuro_moderno"
+                android:textSize="18sp"
+                android:textStyle="bold" />
 
             <EditText
                 android:id="@+id/edtNombreServicio"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="52dp"
+                android:layout_marginTop="14dp"
                 android:background="@drawable/edittext_login"
                 android:hint="Nombre del servicio"
                 android:inputType="textCapWords"
                 android:padding="14dp"
-                android:textColor="#3E2723"
-                android:textColorHint="#8D6E63" />
+                android:textColor="@color/texto_oscuro_moderno"
+                android:textColorHint="@color/gris_moderno"
+                android:textSize="14sp" />
 
             <EditText
                 android:id="@+id/edtDescripcionServicio"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="92dp"
                 android:layout_marginTop="12dp"
                 android:background="@drawable/edittext_login"
+                android:gravity="top"
                 android:hint="Descripción del servicio"
                 android:inputType="textMultiLine"
-                android:minLines="2"
                 android:padding="14dp"
-                android:textColor="#3E2723"
-                android:textColorHint="#8D6E63" />
+                android:textColor="@color/texto_oscuro_moderno"
+                android:textColorHint="@color/gris_moderno"
+                android:textSize="14sp" />
 
             <EditText
                 android:id="@+id/edtPrecioServicio"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="52dp"
                 android:layout_marginTop="12dp"
                 android:background="@drawable/edittext_login"
                 android:hint="Precio"
                 android:inputType="numberDecimal"
                 android:padding="14dp"
-                android:textColor="#3E2723"
-                android:textColorHint="#8D6E63" />
+                android:textColor="@color/texto_oscuro_moderno"
+                android:textColorHint="@color/gris_moderno"
+                android:textSize="14sp" />
 
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/btnGuardarServicio"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="54dp"
                 android:layout_marginTop="16dp"
                 android:background="@drawable/boton_principal"
                 android:text="Guardar servicio"
-                android:textColor="#FFFFFF"
+                android:textAllCaps="false"
+                android:textColor="@color/blanco"
+                android:textSize="15sp"
                 android:textStyle="bold" />
 
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/btnLimpiarServicio"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="54dp"
                 android:layout_marginTop="10dp"
-                android:background="@drawable/boton_principal"
-                android:text="Limpiar"
-                android:textColor="#FFFFFF"
+                android:background="@drawable/boton_secundario_moderno"
+                android:text="Limpiar formulario"
+                android:textAllCaps="false"
+                android:textColor="@color/azul_moderno"
+                android:textSize="15sp"
                 android:textStyle="bold" />
 
         </LinearLayout>
 
+        <!-- LISTADO -->
         <TextView
             android:id="@+id/txtTituloListaServicios"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
+            android:layout_marginBottom="10dp"
             android:text="Servicios registrados"
-            android:textColor="#3E2723"
+            android:textColor="@color/azul_oscuro_moderno"
             android:textSize="20sp"
             android:textStyle="bold" />
 
@@ -102,17 +161,19 @@
             android:id="@+id/contenedorServiciosAdmin"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="14dp"
             android:orientation="vertical" />
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btnVolverServicios"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:background="@drawable/boton_principal"
+            android:layout_height="54dp"
+            android:layout_marginTop="18dp"
+            android:layout_marginBottom="18dp"
+            android:background="@drawable/boton_secundario_moderno"
             android:text="Volver"
-            android:textColor="#FFFFFF"
+            android:textAllCaps="false"
+            android:textColor="@color/azul_moderno"
+            android:textSize="15sp"
             android:textStyle="bold" />
 
     </LinearLayout>
