@@ -3,94 +3,109 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/celeste_fondo"
+    android:background="@color/fondo_moderno_spa"
     android:fillViewport="true">
 
     <LinearLayout
-        android:id="@+id/contenedorTitulo"
+        android:id="@+id/contenedorLogin"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
         android:orientation="vertical"
-        android:padding="28dp">
+        android:padding="24dp">
 
+        <!-- LOGO -->
         <ImageView
             android:id="@+id/imgLogo"
-            android:layout_width="190dp"
-            android:layout_height="190dp"
-            android:layout_marginBottom="12dp"
+            android:layout_width="165dp"
+            android:layout_height="165dp"
+            android:layout_marginTop="28dp"
+            android:layout_marginBottom="10dp"
             android:contentDescription="Logo Spa TAMAR"
             android:scaleType="fitCenter"
             android:src="@drawable/logo_spa_tamar" />
 
+        <!-- TITULO PRINCIPAL -->
         <TextView
             android:id="@+id/txtTitulo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Spa TAMAR"
-            android:textColor="@color/azul_titulo"
-            android:textSize="30sp"
+            android:textColor="@color/azul_oscuro_moderno"
+            android:textSize="32sp"
             android:textStyle="bold" />
 
         <TextView
             android:id="@+id/txtSubtitulo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Belleza de Manos y Pies"
-            android:textColor="@color/azul_secundario"
-            android:textSize="16sp" />
+            android:layout_marginTop="4dp"
+            android:text="Belleza, agenda y control de citas"
+            android:textColor="@color/gris_moderno"
+            android:textSize="15sp" />
 
+        <!-- CARD LOGIN -->
         <LinearLayout
             android:id="@+id/cardLogin"
-            android:layout_width="320dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-            android:background="@drawable/card_login"
+            android:layout_marginTop="26dp"
+            android:background="@drawable/card_moderno"
             android:elevation="6dp"
             android:orientation="vertical"
             android:padding="22dp">
 
             <TextView
                 android:id="@+id/txtInicioSesion"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="18dp"
-                android:text="Inicio de sesión"
-                android:textColor="@color/azul_titulo"
+                android:text="Iniciar sesión"
+                android:textColor="@color/azul_oscuro_moderno"
                 android:textSize="22sp"
                 android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/txtDescripcionLogin"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="18dp"
+                android:text="Ingrese sus credenciales para acceder a la aplicación."
+                android:textColor="@color/gris_moderno"
+                android:textSize="14sp" />
 
             <EditText
                 android:id="@+id/edtUsuario"
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
+                android:layout_height="54dp"
                 android:layout_marginBottom="14dp"
                 android:background="@drawable/edittext_login"
                 android:hint="Usuario o correo"
                 android:inputType="text"
                 android:paddingLeft="14dp"
                 android:paddingRight="14dp"
-                android:textColor="@color/texto_principal"
-                android:textColorHint="@color/gris_texto" />
+                android:textColor="@color/texto_oscuro_moderno"
+                android:textColorHint="@color/gris_moderno"
+                android:textSize="14sp" />
 
             <EditText
                 android:id="@+id/edtClave"
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:layout_marginBottom="20dp"
+                android:layout_height="54dp"
+                android:layout_marginBottom="18dp"
                 android:background="@drawable/edittext_login"
                 android:hint="Contraseña"
                 android:inputType="textPassword"
                 android:paddingLeft="14dp"
                 android:paddingRight="14dp"
-                android:textColor="@color/texto_principal"
-                android:textColorHint="@color/gris_texto" />
+                android:textColor="@color/texto_oscuro_moderno"
+                android:textColorHint="@color/gris_moderno"
+                android:textSize="14sp" />
 
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/btnIngresar"
                 android:layout_width="match_parent"
-                android:layout_height="52dp"
-                android:layout_marginBottom="12dp"
+                android:layout_height="54dp"
                 android:background="@drawable/boton_principal"
                 android:text="Ingresar"
                 android:textAllCaps="false"
@@ -100,27 +115,40 @@
 
             <TextView
                 android:id="@+id/txtRegistrarse"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
+                android:layout_marginTop="16dp"
                 android:padding="8dp"
                 android:text="¿No tienes cuenta? Regístrate"
-                android:textColor="@color/azul_principal"
+                android:textAlignment="center"
+                android:textColor="@color/azul_moderno"
                 android:textSize="15sp"
                 android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/txtOlvideClave"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
                 android:padding="8dp"
                 android:text="¿Olvidaste tu contraseña? Recupérala"
-                android:textColor="@color/azul_secundario"
+                android:textAlignment="center"
+                android:textColor="@color/morado_moderno"
                 android:textSize="14sp"
                 android:textStyle="bold" />
 
         </LinearLayout>
+
+        <!-- TEXTO INFERIOR -->
+        <TextView
+            android:id="@+id/txtPieLogin"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="18dp"
+            android:layout_marginBottom="20dp"
+            android:text="Sistema de agenda y gestión financiera para Spa TAMAR"
+            android:textAlignment="center"
+            android:textColor="@color/gris_moderno"
+            android:textSize="13sp" />
 
     </LinearLayout>
 
