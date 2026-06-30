@@ -20,6 +20,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Locale;
 
 public class ServiciosClienteActivity extends AppCompatActivity {
 
@@ -128,7 +129,7 @@ public class ServiciosClienteActivity extends AppCompatActivity {
 
             txtNombreServicio.setText(servicio.getNombre());
             txtDescripcionServicio.setText(servicio.getDescripcion());
-            txtPrecioServicio.setText("$ " + servicio.getPrecio());
+            txtPrecioServicio.setText("$" + String.format(Locale.US, "%.2f", servicio.getPrecio()));
 
             tarjetaServicio.setOnClickListener(new View.OnClickListener() {
                 @Override

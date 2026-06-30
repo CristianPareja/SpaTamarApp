@@ -3,40 +3,112 @@
     android:id="@+id/activityServiciosCliente"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/fondo_login"
+    android:background="@color/fondo_moderno_spa"
     android:fillViewport="true">
 
     <LinearLayout
+        android:id="@+id/contenedorPrincipalServiciosCliente"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="24dp">
+        android:padding="20dp">
 
-        <TextView
-            android:id="@+id/txtTituloServiciosCliente"
+        <!-- ENCABEZADO -->
+        <LinearLayout
+            android:id="@+id/headerServiciosCliente"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Servicios disponibles"
-            android:textAlignment="center"
-            android:textColor="#3E2723"
-            android:textSize="26sp"
-            android:textStyle="bold" />
+            android:layout_marginTop="18dp"
+            android:layout_marginBottom="18dp"
+            android:background="@drawable/card_moderno"
+            android:elevation="4dp"
+            android:orientation="horizontal"
+            android:padding="20dp">
 
+            <ImageView
+                android:layout_width="52dp"
+                android:layout_height="52dp"
+                android:background="@drawable/fondo_icono_azul"
+                android:padding="12dp"
+                android:src="@drawable/ic_spa_moderno" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="14dp"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/txtTituloServiciosCliente"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Servicios disponibles"
+                    android:textColor="@color/azul_oscuro_moderno"
+                    android:textSize="24sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/txtSubtituloServiciosCliente"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:text="Elige un servicio para agendar tu cita"
+                    android:textColor="@color/gris_moderno"
+                    android:textSize="14sp" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <!-- INFO -->
+        <LinearLayout
+            android:id="@+id/cardInfoServiciosCliente"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:background="@drawable/card_moderno_verde"
+            android:elevation="4dp"
+            android:orientation="horizontal"
+            android:padding="16dp">
+
+            <ImageView
+                android:layout_width="42dp"
+                android:layout_height="42dp"
+                android:background="@drawable/fondo_icono_verde"
+                android:padding="9dp"
+                android:src="@drawable/ic_check_moderno" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="12dp"
+                android:layout_weight="1"
+                android:text="Toca una tarjeta para continuar con la reserva del servicio seleccionado."
+                android:textColor="@color/texto_oscuro_moderno"
+                android:textSize="14sp" />
+
+        </LinearLayout>
+
+        <!-- LISTADO -->
         <LinearLayout
             android:id="@+id/contenedorServiciosCliente"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
             android:orientation="vertical" />
 
+        <!-- VOLVER -->
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btnVolverServiciosCliente"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:background="@drawable/boton_principal"
+            android:layout_height="54dp"
+            android:layout_marginTop="18dp"
+            android:layout_marginBottom="18dp"
+            android:background="@drawable/boton_secundario_moderno"
             android:text="Volver"
-            android:textColor="#FFFFFF"
+            android:textAllCaps="false"
+            android:textColor="@color/azul_moderno"
+            android:textSize="15sp"
             android:textStyle="bold" />
 
     </LinearLayout>
