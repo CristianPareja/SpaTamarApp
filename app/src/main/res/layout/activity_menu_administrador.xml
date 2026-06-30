@@ -12,16 +12,39 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:padding="20dp">
+
+        <TextView
+            android:id="@+id/txtTituloAdministrador"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="Panel de Administración"
+            android:textAlignment="center"
+            android:textColor="@color/azul_titulo"
+            android:textSize="26sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/txtSubtituloAdministrador"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:text="Resumen general de la operación del Spa TAMAR"
+            android:textAlignment="center"
+            android:textColor="@color/gris_texto"
+            android:textSize="14sp" />
+
         <TextView
             android:id="@+id/txtFechaDashboard"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="6dp"
-            android:layout_marginBottom="18dp"
-            android:text="Fecha actual"
+            android:layout_marginTop="12dp"
+            android:layout_marginBottom="16dp"
+            android:text="Fecha del panel: --/--/----"
             android:textAlignment="center"
-            android:textColor="@color/gris_texto"
-            android:textSize="14sp" />
+            android:textColor="@color/azul_secundario"
+            android:textSize="14sp"
+            android:textStyle="bold" />
 
         <LinearLayout
             android:id="@+id/cardCitasHoyDashboard"
@@ -103,7 +126,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
-                    android:text="Cuentas por cobrar"
+                    android:text="Ver saldos pendientes"
                     android:textColor="@color/azul_secundario"
                     android:textSize="12sp"
                     android:textStyle="bold" />
@@ -213,6 +236,52 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:text="El negocio mantiene una ganancia positiva."
+                android:textColor="@color/texto_principal"
+                android:textSize="14sp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/cardEstadisticasServicios"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="18dp"
+            android:background="@drawable/card_login"
+            android:orientation="vertical"
+            android:padding="18dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Estadísticas de servicios"
+                android:textColor="@color/azul_titulo"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/txtServicioMasUtilizado"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:text="Más utilizado: Sin datos"
+                android:textColor="@color/texto_principal"
+                android:textSize="14sp" />
+
+            <TextView
+                android:id="@+id/txtServicioMenosUtilizado"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="Menos utilizado: Sin datos"
+                android:textColor="@color/texto_principal"
+                android:textSize="14sp" />
+
+            <TextView
+                android:id="@+id/txtServicioMayorIngreso"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="Mayor ingreso: Sin datos"
                 android:textColor="@color/texto_principal"
                 android:textSize="14sp" />
 

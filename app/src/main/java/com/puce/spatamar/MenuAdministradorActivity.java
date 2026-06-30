@@ -16,6 +16,7 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.Calendar;
 import java.util.Locale;
@@ -32,6 +33,10 @@ public class MenuAdministradorActivity extends AppCompatActivity {
     private TextView txtMensajeEstadoFinanciero;
     private TextView txtAlertasDashboard;
     private TextView txtResumenDashboard;
+
+    private TextView txtServicioMasUtilizado;
+    private TextView txtServicioMenosUtilizado;
+    private TextView txtServicioMayorIngreso;
 
     private LinearLayout cardClientesDashboard;
     private LinearLayout cardCitasHoyDashboard;
@@ -59,6 +64,10 @@ public class MenuAdministradorActivity extends AppCompatActivity {
         txtMensajeEstadoFinanciero = findViewById(R.id.txtMensajeEstadoFinanciero);
         txtAlertasDashboard = findViewById(R.id.txtAlertasDashboard);
         txtResumenDashboard = findViewById(R.id.txtResumenDashboard);
+
+        txtServicioMasUtilizado = findViewById(R.id.txtServicioMasUtilizado);
+        txtServicioMenosUtilizado = findViewById(R.id.txtServicioMenosUtilizado);
+        txtServicioMayorIngreso = findViewById(R.id.txtServicioMayorIngreso);
 
         cardClientesDashboard = findViewById(R.id.cardClientesDashboard);
         cardCitasHoyDashboard = findViewById(R.id.cardCitasHoyDashboard);
@@ -162,10 +171,21 @@ public class MenuAdministradorActivity extends AppCompatActivity {
                         txtTotalClientesDashboard.setText(String.valueOf(clientesRegistrados));
 
                         txtGananciaNetaDashboard.setText("$" + String.format(Locale.US, "%.2f", gananciaNeta));
+
+                        if (gananciaNeta > 0) {
+                            txtGananciaNetaDashboard.setTextColor(getResources().getColor(android.R.color.holo_green_dark));
+                        } else if (gananciaNeta < 0) {
+                            txtGananciaNetaDashboard.setTextColor(getResources().getColor(android.R.color.holo_red_dark));
+                        } else {
+                            txtGananciaNetaDashboard.setTextColor(getResources().getColor(R.color.azul_titulo));
+                        }
+
                         txtDetalleFinancieroDashboard.setText(
                                 "Ingresos: $" + String.format(Locale.US, "%.2f", totalIngresos)
                                         + " | Egresos: $" + String.format(Locale.US, "%.2f", totalEgresos)
                         );
+
+                        cargarEstadisticasServicios(response);
 
                         cargarEstadoFinanciero(gananciaNeta, totalIngresos, totalEgresos, totalPorCobrar);
                         cargarAlertas(citasHoy, totalPorCobrar, totalIngresos, totalEgresos, gananciaNeta);
@@ -193,15 +213,56 @@ public class MenuAdministradorActivity extends AppCompatActivity {
         requestQueue.add(request);
     }
 
+    private void cargarEstadisticasServicios(JSONObject response) {
+        try {
+            JSONObject estadisticas = response.getJSONObject("estadisticas_servicios");
+
+            JSONObject masUtilizado = estadisticas.getJSONObject("servicio_mas_utilizado");
+            JSONObject menosUtilizado = estadisticas.getJSONObject("servicio_menos_utilizado");
+            JSONObject mayorIngreso = estadisticas.getJSONObject("servicio_mayor_ingreso");
+
+            String nombreMasUtilizado = masUtilizado.getString("nombre");
+            int totalUsosMas = masUtilizado.getInt("total_usos");
+
+            String nombreMenosUtilizado = menosUtilizado.getString("nombre");
+            int totalUsosMenos = menosUtilizado.getInt("total_usos");
+
+            String nombreMayorIngreso = mayorIngreso.getString("nombre");
+            double totalIngresoServicio = mayorIngreso.getDouble("total_ingresos");
+
+            txtServicioMasUtilizado.setText(
+                    "Más utilizado: " + nombreMasUtilizado + " (" + totalUsosMas + " uso(s))"
+            );
+
+            txtServicioMenosUtilizado.setText(
+                    "Menos utilizado: " + nombreMenosUtilizado + " (" + totalUsosMenos + " uso(s))"
+            );
+
+            txtServicioMayorIngreso.setText(
+                    "Mayor ingreso: " + nombreMayorIngreso + " ($" + String.format(Locale.US, "%.2f", totalIngresoServicio) + ")"
+            );
+
+        } catch (JSONException e) {
+            txtServicioMasUtilizado.setText("Más utilizado: Sin datos");
+            txtServicioMenosUtilizado.setText("Menos utilizado: Sin datos");
+            txtServicioMayorIngreso.setText("Mayor ingreso: Sin datos");
+        }
+    }
+
     private void cargarDashboardVacio() {
         txtCitasHoyDashboard.setText("0");
         txtTotalCobroDashboard.setText("$0.00");
         txtTotalClientesDashboard.setText("0");
         txtGananciaNetaDashboard.setText("$0.00");
+        txtGananciaNetaDashboard.setTextColor(getResources().getColor(R.color.azul_titulo));
         txtDetalleFinancieroDashboard.setText("Ingresos: $0.00 | Egresos: $0.00");
 
         txtEstadoFinanciero.setText("⚠️ Sin conexión con API");
         txtMensajeEstadoFinanciero.setText("No fue posible consultar el resumen financiero desde PostgreSQL.");
+
+        txtServicioMasUtilizado.setText("Más utilizado: Sin datos");
+        txtServicioMenosUtilizado.setText("Menos utilizado: Sin datos");
+        txtServicioMayorIngreso.setText("Mayor ingreso: Sin datos");
 
         txtAlertasDashboard.setText("Revise que el backend esté encendido con npm run dev.");
         txtResumenDashboard.setText("No se pudo cargar el resumen del día desde la API.");

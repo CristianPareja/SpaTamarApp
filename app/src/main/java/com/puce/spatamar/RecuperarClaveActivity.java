@@ -16,6 +16,8 @@ import com.android.volley.toolbox.Volley;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.nio.charset.StandardCharsets;
+
 public class RecuperarClaveActivity extends AppCompatActivity {
 
     private EditText edtCorreoRecuperacion;
@@ -28,6 +30,10 @@ public class RecuperarClaveActivity extends AppCompatActivity {
     private AppCompatButton btnVolverRecuperarClave;
 
     private RequestQueue requestQueue;
+
+    private final String REGEX_CORREO = "^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$";
+    private final String REGEX_CODIGO = "^[0-9]{6}$";
+    private final String REGEX_CLAVE = "^(?=.*[A-Z])(?=.*\\d)(?=.*[!@#$%^&*()_\\-+=.,;:¿?¡])[A-Za-z\\d!@#$%^&*()_\\-+=.,;:¿?¡]{6,}$";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,8 +82,8 @@ public class RecuperarClaveActivity extends AppCompatActivity {
             return;
         }
 
-        if (!correo.contains("@")) {
-            edtCorreoRecuperacion.setError("Ingrese un correo válido");
+        if (!correo.matches(REGEX_CORREO)) {
+            edtCorreoRecuperacion.setError("Ingrese un correo válido. Ejemplo: usuario@correo.com");
             edtCorreoRecuperacion.requestFocus();
             return;
         }
@@ -103,9 +109,15 @@ public class RecuperarClaveActivity extends AppCompatActivity {
                     ).show();
                 },
                 error -> {
+                    String mensaje = "No se pudo solicitar el código. Verifique la conexión con la API.";
+
+                    if (error.networkResponse != null && error.networkResponse.data != null) {
+                        mensaje = obtenerMensajeErrorBackend(error.networkResponse.data);
+                    }
+
                     Toast.makeText(
                             RecuperarClaveActivity.this,
-                            "No se pudo solicitar el código. Verifique la conexión con la API.",
+                            mensaje,
                             Toast.LENGTH_LONG
                     ).show();
                 }
@@ -126,14 +138,20 @@ public class RecuperarClaveActivity extends AppCompatActivity {
             return;
         }
 
+        if (!correo.matches(REGEX_CORREO)) {
+            edtCorreoRecuperacion.setError("Ingrese un correo válido. Ejemplo: usuario@correo.com");
+            edtCorreoRecuperacion.requestFocus();
+            return;
+        }
+
         if (codigo.isEmpty()) {
             edtCodigoRecuperacion.setError("Ingrese el código recibido");
             edtCodigoRecuperacion.requestFocus();
             return;
         }
 
-        if (codigo.length() < 6) {
-            edtCodigoRecuperacion.setError("El código debe tener 6 dígitos");
+        if (!codigo.matches(REGEX_CODIGO)) {
+            edtCodigoRecuperacion.setError("El código debe tener exactamente 6 dígitos");
             edtCodigoRecuperacion.requestFocus();
             return;
         }
@@ -144,8 +162,8 @@ public class RecuperarClaveActivity extends AppCompatActivity {
             return;
         }
 
-        if (nuevaClave.length() < 4) {
-            edtNuevaClave.setError("La contraseña debe tener al menos 4 caracteres");
+        if (!nuevaClave.matches(REGEX_CLAVE)) {
+            edtNuevaClave.setError("Mínimo 6 caracteres, una mayúscula, un número y un carácter especial");
             edtNuevaClave.requestFocus();
             return;
         }
@@ -191,6 +209,8 @@ public class RecuperarClaveActivity extends AppCompatActivity {
 
                     if (error.networkResponse == null) {
                         mensaje = "No se pudo conectar con la API.";
+                    } else if (error.networkResponse.data != null) {
+                        mensaje = obtenerMensajeErrorBackend(error.networkResponse.data);
                     } else if (error.networkResponse.statusCode == 400) {
                         mensaje = "Código inválido o expirado.";
                     }
@@ -204,5 +224,21 @@ public class RecuperarClaveActivity extends AppCompatActivity {
         );
 
         requestQueue.add(request);
+    }
+
+    private String obtenerMensajeErrorBackend(byte[] data) {
+        try {
+            String respuesta = new String(data, StandardCharsets.UTF_8);
+            JSONObject json = new JSONObject(respuesta);
+
+            if (json.has("mensaje")) {
+                return json.getString("mensaje");
+            }
+
+        } catch (Exception e) {
+            return "Los datos ingresados no cumplen las validaciones requeridas";
+        }
+
+        return "Los datos ingresados no cumplen las validaciones requeridas";
     }
 }

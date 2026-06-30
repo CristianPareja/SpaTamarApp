@@ -17,6 +17,8 @@ import com.android.volley.toolbox.Volley;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.nio.charset.StandardCharsets;
+
 public class RegistroActivity extends AppCompatActivity {
 
     EditText edtNombreRegistro, edtApellidoRegistro, edtTelefonoRegistro, edtCorreoRegistro;
@@ -24,6 +26,12 @@ public class RegistroActivity extends AppCompatActivity {
     AppCompatButton btnRegistrarUsuario, btnVolverRegistro;
 
     RequestQueue requestQueue;
+
+    private final String REGEX_SOLO_LETRAS = "^[A-Za-zÁÉÍÓÚáéíóúÑñ\\s]+$";
+    private final String REGEX_TELEFONO = "^09[0-9]{8}$";
+    private final String REGEX_CORREO = "^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$";
+    private final String REGEX_USUARIO = "^[A-Za-z0-9]{1,10}$";
+    private final String REGEX_CLAVE = "^(?=.*[A-Z])(?=.*\\d)(?=.*[!@#$%^&*()_\\-+=.,;:¿?¡])[A-Za-z\\d!@#$%^&*()_\\-+=.,;:¿?¡]{6,}$";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,8 +83,20 @@ public class RegistroActivity extends AppCompatActivity {
             return;
         }
 
+        if (!nombre.matches(REGEX_SOLO_LETRAS)) {
+            edtNombreRegistro.setError("El nombre solo debe contener letras y espacios");
+            edtNombreRegistro.requestFocus();
+            return;
+        }
+
         if (apellido.isEmpty()) {
             edtApellidoRegistro.setError("Ingrese el apellido");
+            edtApellidoRegistro.requestFocus();
+            return;
+        }
+
+        if (!apellido.matches(REGEX_SOLO_LETRAS)) {
+            edtApellidoRegistro.setError("El apellido solo debe contener letras y espacios");
             edtApellidoRegistro.requestFocus();
             return;
         }
@@ -87,8 +107,8 @@ public class RegistroActivity extends AppCompatActivity {
             return;
         }
 
-        if (telefono.length() < 10) {
-            edtTelefonoRegistro.setError("Ingrese un teléfono válido de 10 dígitos");
+        if (!telefono.matches(REGEX_TELEFONO)) {
+            edtTelefonoRegistro.setError("El teléfono debe empezar con 09 y tener exactamente 10 dígitos");
             edtTelefonoRegistro.requestFocus();
             return;
         }
@@ -99,8 +119,8 @@ public class RegistroActivity extends AppCompatActivity {
             return;
         }
 
-        if (!correo.contains("@")) {
-            edtCorreoRegistro.setError("Ingrese un correo válido");
+        if (!correo.matches(REGEX_CORREO)) {
+            edtCorreoRegistro.setError("Ingrese un correo válido. Ejemplo: usuario@correo.com");
             edtCorreoRegistro.requestFocus();
             return;
         }
@@ -111,8 +131,20 @@ public class RegistroActivity extends AppCompatActivity {
             return;
         }
 
+        if (!usuario.matches(REGEX_USUARIO)) {
+            edtUsuarioRegistro.setError("El usuario debe tener máximo 10 caracteres y solo letras o números");
+            edtUsuarioRegistro.requestFocus();
+            return;
+        }
+
         if (clave.isEmpty()) {
             edtClaveRegistro.setError("Ingrese una contraseña");
+            edtClaveRegistro.requestFocus();
+            return;
+        }
+
+        if (!clave.matches(REGEX_CLAVE)) {
+            edtClaveRegistro.setError("Mínimo 6 caracteres, una mayúscula, un número y un carácter especial");
             edtClaveRegistro.requestFocus();
             return;
         }
@@ -213,7 +245,7 @@ public class RegistroActivity extends AppCompatActivity {
                     } else if (error.networkResponse.statusCode == 409) {
                         mensaje = "Ya existe un usuario con ese correo o nombre de usuario";
                     } else if (error.networkResponse.statusCode == 400) {
-                        mensaje = "Todos los campos son obligatorios";
+                        mensaje = obtenerMensajeErrorBackend(error.networkResponse.data);
                     }
 
                     Toast.makeText(RegistroActivity.this, mensaje, Toast.LENGTH_LONG).show();
@@ -221,5 +253,21 @@ public class RegistroActivity extends AppCompatActivity {
         );
 
         requestQueue.add(request);
+    }
+
+    private String obtenerMensajeErrorBackend(byte[] data) {
+        try {
+            String respuesta = new String(data, StandardCharsets.UTF_8);
+            JSONObject json = new JSONObject(respuesta);
+
+            if (json.has("mensaje")) {
+                return json.getString("mensaje");
+            }
+
+        } catch (Exception e) {
+            return "Los datos ingresados no cumplen las validaciones requeridas";
+        }
+
+        return "Los datos ingresados no cumplen las validaciones requeridas";
     }
 }

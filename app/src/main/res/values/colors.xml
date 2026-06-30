@@ -12,4 +12,28 @@
     <color name="gris_texto">#555555</color>
     <color name="texto_principal">#333333</color>
     <color name="fondo_campo">#F8FBFF</color>
+
+    <!-- Paleta moderna Spa TAMAR -->
+    <color name="fondo_moderno_spa">#F5FAFF</color>
+    <color name="blanco_card">#FFFFFF</color>
+
+    <color name="azul_moderno">#185ABC</color>
+    <color name="azul_oscuro_moderno">#0B2B5B</color>
+    <color name="azul_suave_moderno">#EAF3FF</color>
+
+    <color name="verde_positivo">#2E7D32</color>
+    <color name="verde_suave">#EAF7EF</color>
+
+    <color name="rojo_negativo">#C62828</color>
+    <color name="rojo_suave">#FDECEC</color>
+
+    <color name="naranja_alerta">#F57C00</color>
+    <color name="naranja_suave">#FFF4E5</color>
+
+    <color name="morado_moderno">#6A4BC3</color>
+    <color name="morado_suave">#F1ECFF</color>
+
+    <color name="gris_moderno">#6B7280</color>
+    <color name="texto_oscuro_moderno">#102A43</color>
+    <color name="borde_suave_moderno">#DCEBFF</color>
 </resources>

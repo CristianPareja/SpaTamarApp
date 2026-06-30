@@ -18,101 +18,22 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="25dp"
-            android:layout_marginBottom="15dp"
             android:text="Cuentas por cobrar"
             android:textAlignment="center"
             android:textColor="@color/azul_titulo"
             android:textSize="25sp"
             android:textStyle="bold" />
 
-        <LinearLayout
-            android:id="@+id/cardFormularioCuentaCobrar"
+        <TextView
+            android:id="@+id/txtSubtituloCuentasCobrarAdmin"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
             android:layout_marginBottom="18dp"
-            android:background="@drawable/card_login"
-            android:orientation="vertical"
-            android:padding="18dp">
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Registrar cuenta pendiente"
-                android:textColor="@color/azul_titulo"
-                android:textSize="18sp"
-                android:textStyle="bold"
-                android:layout_marginBottom="12dp" />
-
-            <Spinner
-                android:id="@+id/spinnerClientesCobrar"
-                android:layout_width="match_parent"
-                android:layout_height="52dp"
-                android:layout_marginBottom="12dp"
-                android:background="@drawable/edittext_login"
-                android:padding="10dp" />
-
-            <EditText
-                android:id="@+id/edtConceptoCobrar"
-                android:layout_width="match_parent"
-                android:layout_height="52dp"
-                android:layout_marginBottom="12dp"
-                android:background="@drawable/edittext_login"
-                android:hint="Concepto del servicio"
-                android:inputType="text"
-                android:padding="14dp"
-                android:textColor="@color/texto_principal"
-                android:textColorHint="@color/gris_texto" />
-
-            <EditText
-                android:id="@+id/edtFechaCobrar"
-                android:layout_width="match_parent"
-                android:layout_height="52dp"
-                android:layout_marginBottom="12dp"
-                android:background="@drawable/edittext_login"
-                android:clickable="true"
-                android:focusable="false"
-                android:hint="Fecha"
-                android:padding="14dp"
-                android:textColor="@color/texto_principal"
-                android:textColorHint="@color/gris_texto" />
-
-            <EditText
-                android:id="@+id/edtValorCobrar"
-                android:layout_width="match_parent"
-                android:layout_height="52dp"
-                android:layout_marginBottom="12dp"
-                android:background="@drawable/edittext_login"
-                android:hint="Valor pendiente"
-                android:inputType="numberDecimal"
-                android:padding="14dp"
-                android:textColor="@color/texto_principal"
-                android:textColorHint="@color/gris_texto" />
-
-            <EditText
-                android:id="@+id/edtObservacionCobrar"
-                android:layout_width="match_parent"
-                android:layout_height="85dp"
-                android:layout_marginBottom="14dp"
-                android:background="@drawable/edittext_login"
-                android:gravity="top"
-                android:hint="Observación"
-                android:inputType="textMultiLine"
-                android:padding="14dp"
-                android:textColor="@color/texto_principal"
-                android:textColorHint="@color/gris_texto" />
-
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/btnRegistrarCuentaCobrar"
-                android:layout_width="match_parent"
-                android:layout_height="52dp"
-                android:background="@drawable/boton_principal"
-                android:text="Registrar cuenta por cobrar"
-                android:textAllCaps="false"
-                android:textColor="@color/blanco"
-                android:textSize="15sp"
-                android:textStyle="bold" />
-
-        </LinearLayout>
+            android:text="Saldos pendientes generados automáticamente al finalizar citas con pago parcial."
+            android:textAlignment="center"
+            android:textColor="@color/gris_texto"
+            android:textSize="14sp" />
 
         <LinearLayout
             android:id="@+id/cardResumenCuentasCobrar"
@@ -127,10 +48,19 @@
                 android:id="@+id/txtTotalGeneralCobrar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Total general por cobrar: $0.00"
+                android:text="Total pendiente por cobrar: $0.00"
                 android:textColor="@color/azul_titulo"
                 android:textSize="18sp"
                 android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/txtInfoCuentasCobrar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="Estas cuentas se crean cuando el cliente no cancela el valor completo del servicio."
+                android:textColor="@color/texto_principal"
+                android:textSize="14sp" />
 
         </LinearLayout>
 
@@ -138,24 +68,24 @@
             android:id="@+id/txtListadoCuentasCobrar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Listado de cuentas registradas"
+            android:layout_marginBottom="10dp"
+            android:text="Listado de cuentas generadas"
             android:textColor="@color/azul_titulo"
             android:textSize="18sp"
-            android:textStyle="bold"
-            android:layout_marginBottom="10dp" />
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/txtSinCuentasCobrar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="14dp"
             android:background="@drawable/card_login"
             android:padding="16dp"
-            android:text="No existen cuentas por cobrar registradas."
+            android:text="No existen cuentas por cobrar pendientes."
             android:textAlignment="center"
             android:textColor="@color/azul_titulo"
             android:textSize="15sp"
-            android:textStyle="bold"
-            android:layout_marginBottom="14dp" />
+            android:textStyle="bold" />
 
         <LinearLayout
             android:id="@+id/contenedorCuentasCobrar"
