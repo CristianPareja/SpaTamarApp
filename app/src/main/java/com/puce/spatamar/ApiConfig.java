@@ -2,7 +2,7 @@ package com.puce.spatamar;
 
 public class ApiConfig {
 
-    public static final String BASE_URL = "http://10.0.2.2:3000/api";
+    public static final String BASE_URL = "http://172.17.26.231:3000/api";
 
     public static final String URL_LOGIN = BASE_URL + "/usuarios/login";
     public static final String URL_REGISTRO = BASE_URL + "/usuarios";

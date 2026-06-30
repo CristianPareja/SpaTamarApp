@@ -407,17 +407,6 @@ public class AgendarCitaActivity extends AppCompatActivity {
                             + "Estado: En curso\n"
                             + "Observaciones: " + observaciones;
 
-                    Cita nuevaCita = new Cita(
-                            nombreParaCita,
-                            telefono,
-                            servicio,
-                            edtFechaCita.getText().toString().trim(),
-                            hora,
-                            "En curso",
-                            observaciones
-                    );
-
-                    RepositorioCitas.agregarCita(nuevaCita);
 
                     new AlertDialog.Builder(AgendarCitaActivity.this)
                             .setTitle("Cita registrada")
