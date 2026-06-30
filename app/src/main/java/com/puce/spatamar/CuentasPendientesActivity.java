@@ -1,5 +1,6 @@
 package com.puce.spatamar;
 
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -157,33 +158,68 @@ public class CuentasPendientesActivity extends AppCompatActivity {
         contenedorCuentasPendientes.setVisibility(View.VISIBLE);
 
         for (CuentaPendienteApi cuenta : listaCuentasPendientes) {
-            TextView tarjeta = crearTarjetaCuentaPendiente(cuenta);
+            LinearLayout tarjeta = crearTarjetaCuentaPendiente(cuenta);
             contenedorCuentasPendientes.addView(tarjeta);
         }
     }
 
-    private TextView crearTarjetaCuentaPendiente(CuentaPendienteApi cuenta) {
-        TextView tarjeta = new TextView(this);
-
-        String informacion = "Concepto: " + cuenta.getConcepto() + "\n"
-                + "Fecha: " + cuenta.getFecha() + "\n"
-                + "Valor pendiente: $" + String.format(Locale.US, "%.2f", cuenta.getValorPendiente()) + "\n"
-                + "Estado: " + cuenta.getEstado() + "\n"
-                + "Observación: " + cuenta.getObservacion();
-
-        tarjeta.setText(informacion);
-        tarjeta.setTextSize(15);
-        tarjeta.setTextColor(getResources().getColor(android.R.color.black));
-        tarjeta.setPadding(18, 18, 18, 18);
-        tarjeta.setBackgroundResource(R.drawable.card_login);
+    private LinearLayout crearTarjetaCuentaPendiente(CuentaPendienteApi cuenta) {
+        LinearLayout tarjeta = new LinearLayout(this);
+        tarjeta.setOrientation(LinearLayout.VERTICAL);
+        tarjeta.setPadding(dp(18), dp(18), dp(18), dp(18));
+        tarjeta.setBackgroundResource(R.drawable.card_moderno);
+        tarjeta.setElevation(dp(4));
 
         LinearLayout.LayoutParams parametros = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT
         );
 
-        parametros.setMargins(0, 0, 0, 14);
+        parametros.setMargins(0, 0, 0, dp(14));
         tarjeta.setLayoutParams(parametros);
+
+        TextView titulo = new TextView(this);
+        titulo.setText(cuenta.getConcepto());
+        titulo.setTextSize(17);
+        titulo.setTypeface(null, Typeface.BOLD);
+        titulo.setTextColor(getResources().getColor(R.color.azul_oscuro_moderno));
+        titulo.setPadding(0, 0, 0, dp(8));
+
+        TextView valor = new TextView(this);
+        valor.setText("$" + String.format(Locale.US, "%.2f", cuenta.getValorPendiente()));
+        valor.setTextSize(24);
+        valor.setTypeface(null, Typeface.BOLD);
+        valor.setTextColor(getResources().getColor(R.color.naranja_alerta));
+        valor.setPadding(0, 0, 0, dp(8));
+
+        TextView estado = new TextView(this);
+        estado.setText("Estado: " + cuenta.getEstado());
+        estado.setTextSize(13);
+        estado.setTypeface(null, Typeface.BOLD);
+        estado.setTextColor(getResources().getColor(R.color.naranja_alerta));
+        estado.setBackgroundResource(R.drawable.card_moderno_naranja);
+        estado.setPadding(dp(12), dp(7), dp(12), dp(7));
+
+        LinearLayout.LayoutParams parametrosEstado = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+        );
+        parametrosEstado.setMargins(0, 0, 0, dp(10));
+        estado.setLayoutParams(parametrosEstado);
+
+        TextView detalle = new TextView(this);
+        String informacion = "Fecha: " + cuenta.getFecha() + "\n"
+                + "Observación: " + cuenta.getObservacion();
+
+        detalle.setText(informacion);
+        detalle.setTextSize(14);
+        detalle.setTextColor(getResources().getColor(R.color.texto_oscuro_moderno));
+        detalle.setLineSpacing(4, 1);
+
+        tarjeta.addView(titulo);
+        tarjeta.addView(valor);
+        tarjeta.addView(estado);
+        tarjeta.addView(detalle);
 
         return tarjeta;
     }
@@ -202,6 +238,10 @@ public class CuentasPendientesActivity extends AppCompatActivity {
         }
 
         return fechaApi;
+    }
+
+    private int dp(int valor) {
+        return (int) (valor * getResources().getDisplayMetrics().density);
     }
 
     private static class CuentaPendienteApi {

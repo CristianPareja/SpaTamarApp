@@ -64,6 +64,12 @@ public class MisCitasActivity extends AppCompatActivity {
         cargarCitasDesdeApi();
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        cargarCitasDesdeApi();
+    }
+
     private void cargarCitasDesdeApi() {
         if (!SesionUsuario.haySesionActiva()) {
             Toast.makeText(this, "Debe iniciar sesión para consultar sus citas", Toast.LENGTH_LONG).show();
@@ -158,45 +164,42 @@ public class MisCitasActivity extends AppCompatActivity {
         contenedorHistorialCitas.setVisibility(View.VISIBLE);
 
         for (CitaApi cita : historialCitas) {
-            TextView tarjeta = crearTarjetaHistorial(cita);
+            LinearLayout tarjeta = crearTarjetaHistorial(cita);
             contenedorHistorialCitas.addView(tarjeta);
         }
     }
 
     private LinearLayout crearTarjetaCitaActual(CitaApi cita) {
-        LinearLayout tarjeta = new LinearLayout(this);
-        tarjeta.setOrientation(LinearLayout.VERTICAL);
-        tarjeta.setPadding(18, 18, 18, 18);
-        tarjeta.setBackgroundResource(R.drawable.card_login);
+        LinearLayout tarjeta = crearBaseTarjeta();
 
-        LinearLayout.LayoutParams parametrosTarjeta = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT
+        TextView titulo = crearTextoTitulo(cita.getServicio());
+        TextView estado = crearChipEstado(cita.getEstado());
+        TextView detalle = crearTextoDetalle(
+                "Cliente: " + cita.getNombreCliente() + "\n"
+                        + "Teléfono: " + cita.getTelefono() + "\n"
+                        + "Fecha: " + cita.getFecha() + "\n"
+                        + "Hora: " + cita.getHora() + "\n"
+                        + "Observaciones: " + cita.getObservaciones()
         );
-        parametrosTarjeta.setMargins(0, 0, 0, 14);
-        tarjeta.setLayoutParams(parametrosTarjeta);
-
-        TextView informacion = new TextView(this);
-
-        String texto = "Cliente: " + cita.getNombreCliente() + "\n"
-                + "Teléfono: " + cita.getTelefono() + "\n"
-                + "Servicio: " + cita.getServicio() + "\n"
-                + "Fecha: " + cita.getFecha() + "\n"
-                + "Hora: " + cita.getHora() + "\n"
-                + "Estado: " + cita.getEstado() + "\n"
-                + "Observaciones: " + cita.getObservaciones();
-
-        informacion.setText(texto);
-        informacion.setTextSize(15);
-        informacion.setTextColor(getResources().getColor(android.R.color.black));
-        informacion.setPadding(0, 0, 0, 14);
 
         AppCompatButton btnCancelar = new AppCompatButton(this);
         btnCancelar.setText("Cancelar cita");
         btnCancelar.setTextSize(14);
-        btnCancelar.setTextColor(getResources().getColor(android.R.color.white));
+        btnCancelar.setTextColor(getResources().getColor(R.color.rojo_negativo));
         btnCancelar.setAllCaps(false);
-        btnCancelar.setBackgroundResource(R.drawable.boton_principal);
+        btnCancelar.setBackgroundResource(R.drawable.boton_cerrar_sesion_moderno);
+
+        LinearLayout.LayoutParams parametrosBoton = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                dp(48)
+        );
+        parametrosBoton.setMargins(0, dp(14), 0, 0);
+        btnCancelar.setLayoutParams(parametrosBoton);
+
+        btnCancelar.setMinHeight(dp(48));
+        btnCancelar.setPadding(dp(12), 0, dp(12), 0);
+        parametrosBoton.setMargins(0, 14, 0, 0);
+        btnCancelar.setLayoutParams(parametrosBoton);
 
         btnCancelar.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -205,38 +208,100 @@ public class MisCitasActivity extends AppCompatActivity {
             }
         });
 
-        tarjeta.addView(informacion);
+        tarjeta.addView(titulo);
+        tarjeta.addView(estado);
+        tarjeta.addView(detalle);
         tarjeta.addView(btnCancelar);
 
         return tarjeta;
     }
 
-    private TextView crearTarjetaHistorial(CitaApi cita) {
-        TextView tarjeta = new TextView(this);
+    private LinearLayout crearTarjetaHistorial(CitaApi cita) {
+        LinearLayout tarjeta = crearBaseTarjeta();
 
-        String informacion = "Cliente: " + cita.getNombreCliente() + "\n"
-                + "Teléfono: " + cita.getTelefono() + "\n"
-                + "Servicio: " + cita.getServicio() + "\n"
-                + "Fecha: " + cita.getFecha() + "\n"
-                + "Hora: " + cita.getHora() + "\n"
-                + "Estado: " + cita.getEstado() + "\n"
-                + "Observaciones: " + cita.getObservaciones();
+        TextView titulo = crearTextoTitulo(cita.getServicio());
+        TextView estado = crearChipEstado(cita.getEstado());
+        TextView detalle = crearTextoDetalle(
+                "Cliente: " + cita.getNombreCliente() + "\n"
+                        + "Teléfono: " + cita.getTelefono() + "\n"
+                        + "Fecha: " + cita.getFecha() + "\n"
+                        + "Hora: " + cita.getHora() + "\n"
+                        + "Observaciones: " + cita.getObservaciones()
+        );
 
-        tarjeta.setText(informacion);
-        tarjeta.setTextSize(15);
-        tarjeta.setTextColor(getResources().getColor(android.R.color.black));
-        tarjeta.setPadding(18, 18, 18, 18);
-        tarjeta.setBackgroundResource(R.drawable.card_login);
+        tarjeta.addView(titulo);
+        tarjeta.addView(estado);
+        tarjeta.addView(detalle);
 
-        LinearLayout.LayoutParams parametros = new LinearLayout.LayoutParams(
+        return tarjeta;
+    }
+
+    private LinearLayout crearBaseTarjeta() {
+        LinearLayout tarjeta = new LinearLayout(this);
+        tarjeta.setOrientation(LinearLayout.VERTICAL);
+        tarjeta.setPadding(22, 22, 22, 22);
+        tarjeta.setBackgroundResource(R.drawable.card_moderno);
+        tarjeta.setElevation(4);
+
+        LinearLayout.LayoutParams parametrosTarjeta = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT
         );
 
-        parametros.setMargins(0, 0, 0, 14);
-        tarjeta.setLayoutParams(parametros);
+        parametrosTarjeta.setMargins(0, 0, 0, 14);
+        tarjeta.setLayoutParams(parametrosTarjeta);
 
         return tarjeta;
+    }
+
+    private TextView crearTextoTitulo(String textoTitulo) {
+        TextView texto = new TextView(this);
+        texto.setText(textoTitulo);
+        texto.setTextSize(18);
+        texto.setTextColor(getResources().getColor(R.color.azul_oscuro_moderno));
+        texto.setTypeface(null, android.graphics.Typeface.BOLD);
+        texto.setPadding(0, 0, 0, 8);
+
+        return texto;
+    }
+
+    private TextView crearTextoDetalle(String textoDetalle) {
+        TextView texto = new TextView(this);
+        texto.setText(textoDetalle);
+        texto.setTextSize(14);
+        texto.setTextColor(getResources().getColor(R.color.texto_oscuro_moderno));
+        texto.setLineSpacing(4, 1);
+        texto.setPadding(0, 12, 0, 0);
+
+        return texto;
+    }
+
+    private TextView crearChipEstado(String estadoCita) {
+        TextView chip = new TextView(this);
+        chip.setText("Estado: " + estadoCita);
+        chip.setTextSize(13);
+        chip.setTypeface(null, android.graphics.Typeface.BOLD);
+        chip.setPadding(14, 8, 14, 8);
+
+        LinearLayout.LayoutParams parametros = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+        );
+        parametros.setMargins(0, 4, 0, 6);
+        chip.setLayoutParams(parametros);
+
+        if (estadoCita.equalsIgnoreCase("Finalizado")) {
+            chip.setTextColor(getResources().getColor(R.color.verde_positivo));
+            chip.setBackgroundResource(R.drawable.card_moderno_verde);
+        } else if (estadoCita.equalsIgnoreCase("Cancelado")) {
+            chip.setTextColor(getResources().getColor(R.color.rojo_negativo));
+            chip.setBackgroundResource(R.drawable.card_moderno_rojo);
+        } else {
+            chip.setTextColor(getResources().getColor(R.color.azul_moderno));
+            chip.setBackgroundResource(R.drawable.fondo_chip_moderno);
+        }
+
+        return chip;
     }
 
     private void mostrarDialogoCancelar(CitaApi cita) {
@@ -303,6 +368,9 @@ public class MisCitasActivity extends AppCompatActivity {
         return horaApi;
     }
 
+    private int dp(int valor) {
+        return (int) (valor * getResources().getDisplayMetrics().density);
+    }
     private static class CitaApi {
 
         private int idCita;
