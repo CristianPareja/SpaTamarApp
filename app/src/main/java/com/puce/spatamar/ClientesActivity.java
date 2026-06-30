@@ -1,5 +1,6 @@
 package com.puce.spatamar;
 
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -133,35 +134,93 @@ public class ClientesActivity extends AppCompatActivity {
         contenedorClientes.setVisibility(View.VISIBLE);
 
         for (ClienteApi cliente : listaClientes) {
-            TextView tarjetaCliente = crearTarjetaCliente(cliente);
+            LinearLayout tarjetaCliente = crearTarjetaCliente(cliente);
             contenedorClientes.addView(tarjetaCliente);
         }
     }
 
-    private TextView crearTarjetaCliente(ClienteApi cliente) {
-        TextView tarjeta = new TextView(this);
-
-        String informacion = "Nombre: " + cliente.getNombreCompleto() + "\n"
-                + "Teléfono: " + cliente.getTelefono() + "\n"
-                + "Correo: " + cliente.getCorreo() + "\n"
-                + "Usuario: " + cliente.getUsuario() + "\n"
-                + "Rol: " + cliente.getRol();
-
-        tarjeta.setText(informacion);
-        tarjeta.setTextSize(15);
-        tarjeta.setTextColor(getResources().getColor(android.R.color.black));
-        tarjeta.setPadding(18, 18, 18, 18);
-        tarjeta.setBackgroundResource(R.drawable.card_login);
+    private LinearLayout crearTarjetaCliente(ClienteApi cliente) {
+        LinearLayout tarjeta = new LinearLayout(this);
+        tarjeta.setOrientation(LinearLayout.VERTICAL);
+        tarjeta.setPadding(dp(18), dp(18), dp(18), dp(18));
+        tarjeta.setBackgroundResource(R.drawable.card_moderno);
+        tarjeta.setElevation(dp(4));
 
         LinearLayout.LayoutParams parametros = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT
         );
 
-        parametros.setMargins(0, 0, 0, 14);
+        parametros.setMargins(0, 0, 0, dp(14));
         tarjeta.setLayoutParams(parametros);
 
+        TextView nombre = new TextView(this);
+        nombre.setText(cliente.getNombreCompleto());
+        nombre.setTextSize(18);
+        nombre.setTypeface(null, Typeface.BOLD);
+        nombre.setTextColor(getResources().getColor(R.color.azul_oscuro_moderno));
+        nombre.setPadding(0, 0, 0, dp(8));
+
+        TextView estado = crearChipEstado(cliente.isEstado());
+
+        TextView detalle = new TextView(this);
+
+        String informacion = "Teléfono: " + validarTexto(cliente.getTelefono()) + "\n"
+                + "Correo: " + validarTexto(cliente.getCorreo()) + "\n"
+                + "Usuario: " + validarTexto(cliente.getUsuario()) + "\n"
+                + "Rol: " + validarTexto(cliente.getRol());
+
+        detalle.setText(informacion);
+        detalle.setTextSize(14);
+        detalle.setTextColor(getResources().getColor(R.color.texto_oscuro_moderno));
+        detalle.setLineSpacing(4, 1);
+        detalle.setPadding(0, dp(10), 0, 0);
+
+        tarjeta.addView(nombre);
+        tarjeta.addView(estado);
+        tarjeta.addView(detalle);
+
         return tarjeta;
+    }
+
+    private TextView crearChipEstado(boolean activo) {
+        TextView chip = new TextView(this);
+
+        if (activo) {
+            chip.setText("Estado: Activo");
+            chip.setTextColor(getResources().getColor(R.color.verde_positivo));
+            chip.setBackgroundResource(R.drawable.card_moderno_verde);
+        } else {
+            chip.setText("Estado: Inactivo");
+            chip.setTextColor(getResources().getColor(R.color.rojo_negativo));
+            chip.setBackgroundResource(R.drawable.card_moderno_rojo);
+        }
+
+        chip.setTextSize(13);
+        chip.setTypeface(null, Typeface.BOLD);
+        chip.setPadding(dp(12), dp(7), dp(12), dp(7));
+
+        LinearLayout.LayoutParams parametros = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+        );
+
+        parametros.setMargins(0, 0, 0, dp(6));
+        chip.setLayoutParams(parametros);
+
+        return chip;
+    }
+
+    private String validarTexto(String texto) {
+        if (texto == null || texto.trim().isEmpty()) {
+            return "No registrado";
+        }
+
+        return texto;
+    }
+
+    private int dp(int valor) {
+        return (int) (valor * getResources().getDisplayMetrics().density);
     }
 
     private static class ClienteApi {
@@ -199,7 +258,13 @@ public class ClientesActivity extends AppCompatActivity {
         }
 
         public String getNombreCompleto() {
-            return nombre + " " + apellido;
+            String nombreCompleto = (nombre + " " + apellido).trim();
+
+            if (nombreCompleto.isEmpty()) {
+                return "Cliente sin nombre";
+            }
+
+            return nombreCompleto;
         }
 
         public String getTelefono() {
