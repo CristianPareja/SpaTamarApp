@@ -148,20 +148,14 @@
                 android:textSize="18sp"
                 android:textStyle="bold" />
 
-            <EditText
-                android:id="@+id/edtUsuarioRegistro"
+            <TextView
+                android:id="@+id/txtAyudaUsuarioAutomatico"
                 android:layout_width="match_parent"
-                android:layout_height="54dp"
-                android:layout_marginTop="14dp"
-                android:background="@drawable/edittext_login"
-                android:hint="Usuario máximo 10 caracteres"
-                android:inputType="text"
-                android:maxLength="10"
-                android:paddingLeft="14dp"
-                android:paddingRight="14dp"
-                android:textColor="@color/texto_oscuro_moderno"
-                android:textColorHint="@color/gris_moderno"
-                android:textSize="14sp" />
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="El usuario se generará automáticamente con el texto antes del @ del correo."
+                android:textColor="@color/gris_moderno"
+                android:textSize="12sp" />
 
             <EditText
                 android:id="@+id/edtClaveRegistro"
@@ -170,20 +164,6 @@
                 android:layout_marginTop="12dp"
                 android:background="@drawable/edittext_login"
                 android:hint="Contraseña: Ej. Spa123@"
-                android:inputType="textPassword"
-                android:paddingLeft="14dp"
-                android:paddingRight="14dp"
-                android:textColor="@color/texto_oscuro_moderno"
-                android:textColorHint="@color/gris_moderno"
-                android:textSize="14sp" />
-
-            <EditText
-                android:id="@+id/edtConfirmarClaveRegistro"
-                android:layout_width="match_parent"
-                android:layout_height="54dp"
-                android:layout_marginTop="12dp"
-                android:background="@drawable/edittext_login"
-                android:hint="Confirmar contraseña"
                 android:inputType="textPassword"
                 android:paddingLeft="14dp"
                 android:paddingRight="14dp"

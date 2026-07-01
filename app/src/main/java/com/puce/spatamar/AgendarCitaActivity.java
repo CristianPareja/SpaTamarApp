@@ -59,6 +59,9 @@ public class AgendarCitaActivity extends AppCompatActivity {
 
     private static final String ZONA_HORARIA_ECUADOR = "America/Guayaquil";
 
+    private static final int HORA_APERTURA = 8;
+    private static final int HORA_CIERRE = 19;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -263,20 +266,40 @@ public class AgendarCitaActivity extends AppCompatActivity {
 
         Calendar calendarioEcuador = obtenerCalendarioEcuador();
 
-        int hora = calendarioEcuador.get(Calendar.HOUR_OF_DAY);
-        int minuto = calendarioEcuador.get(Calendar.MINUTE);
+        int horaInicial = calendarioEcuador.get(Calendar.HOUR_OF_DAY);
+        int minutoInicial = calendarioEcuador.get(Calendar.MINUTE);
+
+        if (horaInicial < HORA_APERTURA || horaInicial > HORA_CIERRE) {
+            horaInicial = HORA_APERTURA;
+            minutoInicial = 0;
+        }
 
         TimePickerDialog selectorHora = new TimePickerDialog(
                 this,
                 (view, hourOfDay, minuteSelected) -> {
+
+                    if (!horaEstaDentroDelHorario(hourOfDay, minuteSelected)) {
+                        horaSeleccionada = -1;
+                        minutoSeleccionado = -1;
+                        edtHoraCita.setText("");
+
+                        Toast.makeText(
+                                AgendarCitaActivity.this,
+                                "El horario de atención es de 08:00 a 19:00. Seleccione una hora válida.",
+                                Toast.LENGTH_LONG
+                        ).show();
+
+                        return;
+                    }
+
                     horaSeleccionada = hourOfDay;
                     minutoSeleccionado = minuteSelected;
 
                     String horaTexto = String.format("%02d:%02d", hourOfDay, minuteSelected);
                     edtHoraCita.setText(horaTexto);
                 },
-                hora,
-                minuto,
+                horaInicial,
+                minutoInicial,
                 true
         );
 
@@ -336,6 +359,15 @@ public class AgendarCitaActivity extends AppCompatActivity {
             return;
         }
 
+        if (!horaEstaDentroDelHorario(horaSeleccionada, minutoSeleccionado)) {
+            Toast.makeText(
+                    this,
+                    "El horario de atención es de 08:00 a 19:00. Seleccione una hora válida.",
+                    Toast.LENGTH_LONG
+            ).show();
+            return;
+        }
+
         if (!fechaYHoraSonValidas()) {
             Toast.makeText(this, "No puede agendar una cita en una fecha u hora pasada", Toast.LENGTH_LONG).show();
             return;
@@ -357,6 +389,22 @@ public class AgendarCitaActivity extends AppCompatActivity {
                 observaciones,
                 idServicio
         );
+    }
+
+    private boolean horaEstaDentroDelHorario(int hora, int minuto) {
+        if (hora < HORA_APERTURA) {
+            return false;
+        }
+
+        if (hora > HORA_CIERRE) {
+            return false;
+        }
+
+        if (hora == HORA_CIERRE && minuto > 0) {
+            return false;
+        }
+
+        return true;
     }
 
     private void registrarCitaApi(String nombreParaCita,
@@ -406,7 +454,6 @@ public class AgendarCitaActivity extends AppCompatActivity {
                             + "Hora: " + hora + "\n"
                             + "Estado: En curso\n"
                             + "Observaciones: " + observaciones;
-
 
                     new AlertDialog.Builder(AgendarCitaActivity.this)
                             .setTitle("Cita registrada")

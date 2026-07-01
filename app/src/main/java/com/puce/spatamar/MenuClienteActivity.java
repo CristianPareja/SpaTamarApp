@@ -21,6 +21,8 @@ import org.json.JSONObject;
 public class MenuClienteActivity extends AppCompatActivity {
 
     TextView txtCampanitaRecordatorio;
+    TextView txtSaludoCliente;
+    TextView txtDescripcionCliente;
 
     AppCompatButton btnServiciosCliente;
     AppCompatButton btnPerfilCliente;
@@ -37,6 +39,8 @@ public class MenuClienteActivity extends AppCompatActivity {
         setContentView(R.layout.activity_menu_cliente);
 
         txtCampanitaRecordatorio = findViewById(R.id.txtCampanitaRecordatorio);
+        txtSaludoCliente = findViewById(R.id.txtSaludoCliente);
+        txtDescripcionCliente = findViewById(R.id.txtDescripcionCliente);
 
         btnServiciosCliente = findViewById(R.id.btnServiciosCliente);
         btnPerfilCliente = findViewById(R.id.btnPerfilCliente);
@@ -46,6 +50,7 @@ public class MenuClienteActivity extends AppCompatActivity {
 
         requestQueue = Volley.newRequestQueue(this);
 
+        cargarDatosBienvenida();
         actualizarCampanitaDesdeApi();
 
         txtCampanitaRecordatorio.setOnClickListener(new View.OnClickListener() {
@@ -102,7 +107,23 @@ public class MenuClienteActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        cargarDatosBienvenida();
         actualizarCampanitaDesdeApi();
+    }
+
+    private void cargarDatosBienvenida() {
+        String nombreCliente = "cliente";
+
+        if (SesionUsuario.haySesionActiva()) {
+            nombreCliente = SesionUsuario.getNombre();
+
+            if (nombreCliente == null || nombreCliente.trim().isEmpty()) {
+                nombreCliente = "cliente";
+            }
+        }
+
+        txtSaludoCliente.setText("Hola, " + nombreCliente);
+        txtDescripcionCliente.setText("Agenda tu cita y nosotros nos encargamos de tu cuidado personal.");
     }
 
     private void actualizarCampanitaDesdeApi() {

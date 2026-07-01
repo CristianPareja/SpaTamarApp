@@ -22,7 +22,7 @@ import java.nio.charset.StandardCharsets;
 public class RegistroActivity extends AppCompatActivity {
 
     EditText edtNombreRegistro, edtApellidoRegistro, edtTelefonoRegistro, edtCorreoRegistro;
-    EditText edtUsuarioRegistro, edtClaveRegistro, edtConfirmarClaveRegistro;
+    EditText edtClaveRegistro;
     AppCompatButton btnRegistrarUsuario, btnVolverRegistro;
 
     RequestQueue requestQueue;
@@ -30,7 +30,6 @@ public class RegistroActivity extends AppCompatActivity {
     private final String REGEX_SOLO_LETRAS = "^[A-Za-zÁÉÍÓÚáéíóúÑñ\\s]+$";
     private final String REGEX_TELEFONO = "^09[0-9]{8}$";
     private final String REGEX_CORREO = "^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$";
-    private final String REGEX_USUARIO = "^[A-Za-z0-9]{1,10}$";
     private final String REGEX_CLAVE = "^(?=.*[A-Z])(?=.*\\d)(?=.*[!@#$%^&*()_\\-+=.,;:¿?¡])[A-Za-z\\d!@#$%^&*()_\\-+=.,;:¿?¡]{6,}$";
 
     @Override
@@ -42,9 +41,7 @@ public class RegistroActivity extends AppCompatActivity {
         edtApellidoRegistro = findViewById(R.id.edtApellidoRegistro);
         edtTelefonoRegistro = findViewById(R.id.edtTelefonoRegistro);
         edtCorreoRegistro = findViewById(R.id.edtCorreoRegistro);
-        edtUsuarioRegistro = findViewById(R.id.edtUsuarioRegistro);
         edtClaveRegistro = findViewById(R.id.edtClaveRegistro);
-        edtConfirmarClaveRegistro = findViewById(R.id.edtConfirmarClaveRegistro);
 
         btnRegistrarUsuario = findViewById(R.id.btnRegistrarUsuario);
         btnVolverRegistro = findViewById(R.id.btnVolverRegistro);
@@ -73,9 +70,7 @@ public class RegistroActivity extends AppCompatActivity {
         String apellido = edtApellidoRegistro.getText().toString().trim();
         String telefono = edtTelefonoRegistro.getText().toString().trim();
         String correo = edtCorreoRegistro.getText().toString().trim();
-        String usuario = edtUsuarioRegistro.getText().toString().trim();
         String clave = edtClaveRegistro.getText().toString().trim();
-        String confirmarClave = edtConfirmarClaveRegistro.getText().toString().trim();
 
         if (nombre.isEmpty()) {
             edtNombreRegistro.setError("Ingrese el nombre");
@@ -125,15 +120,11 @@ public class RegistroActivity extends AppCompatActivity {
             return;
         }
 
-        if (usuario.isEmpty()) {
-            edtUsuarioRegistro.setError("Ingrese un usuario");
-            edtUsuarioRegistro.requestFocus();
-            return;
-        }
+        String usuario = generarUsuarioDesdeCorreo(correo);
 
-        if (!usuario.matches(REGEX_USUARIO)) {
-            edtUsuarioRegistro.setError("El usuario debe tener máximo 10 caracteres y solo letras o números");
-            edtUsuarioRegistro.requestFocus();
+        if (usuario.isEmpty()) {
+            edtCorreoRegistro.setError("No se pudo generar el usuario desde el correo");
+            edtCorreoRegistro.requestFocus();
             return;
         }
 
@@ -149,19 +140,17 @@ public class RegistroActivity extends AppCompatActivity {
             return;
         }
 
-        if (confirmarClave.isEmpty()) {
-            edtConfirmarClaveRegistro.setError("Confirme la contraseña");
-            edtConfirmarClaveRegistro.requestFocus();
-            return;
-        }
-
-        if (!clave.equals(confirmarClave)) {
-            edtConfirmarClaveRegistro.setError("Las contraseñas no coinciden");
-            edtConfirmarClaveRegistro.requestFocus();
-            return;
-        }
-
         registrarUsuarioApi(nombre, apellido, telefono, correo, usuario, clave);
+    }
+
+    private String generarUsuarioDesdeCorreo(String correo) {
+        int posicionArroba = correo.indexOf("@");
+
+        if (posicionArroba <= 0) {
+            return "";
+        }
+
+        return correo.substring(0, posicionArroba).trim();
     }
 
     private void registrarUsuarioApi(String nombre,
@@ -221,8 +210,8 @@ public class RegistroActivity extends AppCompatActivity {
 
                         Toast.makeText(
                                 RegistroActivity.this,
-                                "Registro realizado correctamente",
-                                Toast.LENGTH_SHORT
+                                "Registro realizado correctamente. Usuario generado: " + usuarioRespuesta,
+                                Toast.LENGTH_LONG
                         ).show();
 
                         Intent intent = new Intent(RegistroActivity.this, MenuClienteActivity.class);

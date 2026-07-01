@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
+
     <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:usesCleartextTraffic="true"
         android:allowBackup="true"
@@ -12,46 +14,87 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.SpaTamarApp">
-        <activity android:name=".PerfilClienteActivity" />
-        <activity android:name=".RecuperarClaveActivity" />
+
+        <activity
+            android:name=".PerfilClienteActivity"
+            android:windowSoftInputMode="adjustResize" />
+
+        <activity
+            android:name=".RecuperarClaveActivity"
+            android:windowSoftInputMode="adjustResize" />
+
         <activity
             android:name=".MisCitasActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
+
         <activity
             android:name=".AgendarCitaActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
+
         <activity
             android:name=".ServiciosClienteActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
+
         <activity
             android:name=".RegistroActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
+
         <activity
             android:name=".ServiciosActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
+
         <activity
             android:name=".ClientesActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
+
         <activity
             android:name=".MenuAdministradorActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
+
         <activity
             android:name=".MenuClienteActivity"
-            android:exported="false" />
-        <activity android:name=".CuentasPendientesActivity" />
-        <activity android:name=".CitasAdminActivity" />
-        <activity android:name=".CuentasCobrarAdminActivity" />
-        <activity android:name=".CuentasPagarAdminActivity" />
-        <activity android:name=".SimulacionProyeccionActivity" />
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
+
+        <activity
+            android:name=".CuentasPendientesActivity"
+            android:windowSoftInputMode="adjustResize" />
+
+        <activity
+            android:name=".CitasAdminActivity"
+            android:windowSoftInputMode="adjustResize" />
+
+        <activity
+            android:name=".CuentasCobrarAdminActivity"
+            android:windowSoftInputMode="adjustResize" />
+
+        <activity
+            android:name=".CuentasPagarAdminActivity"
+            android:windowSoftInputMode="adjustResize" />
+
+        <activity
+            android:name=".SimulacionProyeccionActivity"
+            android:windowSoftInputMode="adjustResize" />
+
         <activity
             android:name=".MainActivity"
-            android:exported="true">
+            android:exported="true"
+            android:windowSoftInputMode="adjustResize">
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
         </activity>
+
     </application>
 
 </manifest>

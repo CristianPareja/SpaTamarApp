@@ -40,15 +40,6 @@
                     android:textSize="28sp"
                     android:textStyle="bold" />
 
-                <TextView
-                    android:id="@+id/txtSubtituloCliente"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
-                    android:text="Bienvenido a tu panel de cliente"
-                    android:textColor="@color/gris_moderno"
-                    android:textSize="15sp" />
-
             </LinearLayout>
 
             <TextView
@@ -96,6 +87,7 @@
                 android:orientation="vertical">
 
                 <TextView
+                    android:id="@+id/txtSaludoCliente"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Hola, cliente"
@@ -104,10 +96,11 @@
                     android:textStyle="bold" />
 
                 <TextView
+                    android:id="@+id/txtDescripcionCliente"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="6dp"
-                    android:text="Desde aquí puedes revisar servicios, agendar citas, consultar tus cuentas pendientes y actualizar tu perfil."
+                    android:text="Agenda tu cita y nosotros nos encargamos de tu cuidado personal."
                     android:textColor="@color/texto_oscuro_moderno"
                     android:textSize="14sp" />
 
@@ -213,51 +206,6 @@
                 android:textColor="@color/azul_oscuro_moderno"
                 android:textSize="13sp"
                 android:textStyle="bold" />
-
-        </LinearLayout>
-
-        <!-- RECORDATORIO -->
-        <LinearLayout
-            android:id="@+id/cardRecordatorioCliente"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="18dp"
-            android:background="@drawable/card_moderno_naranja"
-            android:elevation="4dp"
-            android:orientation="horizontal"
-            android:padding="18dp">
-
-            <ImageView
-                android:layout_width="46dp"
-                android:layout_height="46dp"
-                android:background="@drawable/fondo_icono_rojo"
-                android:padding="10dp"
-                android:src="@drawable/ic_bell_moderno" />
-
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="14dp"
-                android:layout_weight="1"
-                android:orientation="vertical">
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Recordatorios"
-                    android:textColor="@color/naranja_alerta"
-                    android:textSize="18sp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="6dp"
-                    android:text="Consulta la campanita para revisar si tienes citas pendientes."
-                    android:textColor="@color/texto_oscuro_moderno"
-                    android:textSize="14sp" />
-
-            </LinearLayout>
 
         </LinearLayout>
 
