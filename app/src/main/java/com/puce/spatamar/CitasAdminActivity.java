@@ -24,6 +24,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.TimeZone;
 
 public class CitasAdminActivity extends AppCompatActivity {
 
@@ -48,6 +49,8 @@ public class CitasAdminActivity extends AppCompatActivity {
     private boolean busquedaClienteActiva = false;
     private String textoBusquedaCliente = "";
 
+    private static final String ZONA_HORARIA_ECUADOR = "America/Guayaquil";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -67,7 +70,7 @@ public class CitasAdminActivity extends AppCompatActivity {
         btnMostrarHoyCitas = findViewById(R.id.btnMostrarHoyCitas);
         btnVolverCitasAdmin = findViewById(R.id.btnVolverCitasAdmin);
 
-        fechaSeleccionada = Calendar.getInstance();
+        fechaSeleccionada = obtenerCalendarioEcuador();
         requestQueue = Volley.newRequestQueue(this);
         listaCitasAdmin = new ArrayList<>();
 
@@ -111,7 +114,7 @@ public class CitasAdminActivity extends AppCompatActivity {
                 textoBusquedaCliente = "";
                 edtBuscarClienteCitas.setText("");
 
-                fechaSeleccionada = Calendar.getInstance();
+                fechaSeleccionada = obtenerCalendarioEcuador();
                 cargarCitasPorFechaApi();
             }
         });
@@ -219,7 +222,8 @@ public class CitasAdminActivity extends AppCompatActivity {
                         formatearFecha(citaJson.optString("fecha", "")),
                         formatearHora(citaJson.optString("hora", "")),
                         citaJson.optString("estado", ""),
-                        citaJson.optString("observaciones", "Sin observaciones")
+                        citaJson.optString("observaciones", "Sin observaciones"),
+                        citaJson.optDouble("precio_servicio", 0.0)
                 );
 
                 listaCitasAdmin.add(cita);
@@ -280,6 +284,7 @@ public class CitasAdminActivity extends AppCompatActivity {
                 + "Teléfono: " + cita.getTelefono() + "\n"
                 + "Fecha: " + cita.getFecha() + "\n"
                 + "Hora: " + cita.getHora() + "\n"
+                + "Valor referencial: $" + String.format("%.2f", cita.getPrecioServicio()) + "\n"
                 + "Observaciones: " + cita.getObservaciones();
 
         informacion.setText(texto);
@@ -312,6 +317,15 @@ public class CitasAdminActivity extends AppCompatActivity {
             btnFinalizar.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    if (!citaPuedeFinalizarse(cita.getFecha())) {
+                        Toast.makeText(
+                                CitasAdminActivity.this,
+                                "No puede finalizar una cita futura. El servicio aún no se ha realizado.",
+                                Toast.LENGTH_LONG
+                        ).show();
+                        return;
+                    }
+
                     mostrarDialogoFinalizar(cita);
                 }
             });
@@ -376,16 +390,41 @@ public class CitasAdminActivity extends AppCompatActivity {
     }
 
     private void mostrarDialogoFinalizar(CitaAdminApi cita) {
+        LinearLayout contenedor = new LinearLayout(this);
+        contenedor.setOrientation(LinearLayout.VERTICAL);
+        contenedor.setPadding(dp(6), dp(8), dp(6), dp(4));
+
+        TextView txtValorReferencial = new TextView(this);
+        txtValorReferencial.setText("Valor referencial del servicio: $" + String.format("%.2f", cita.getPrecioServicio()));
+        txtValorReferencial.setTextSize(15);
+        txtValorReferencial.setTypeface(null, Typeface.BOLD);
+        txtValorReferencial.setTextColor(getResources().getColor(R.color.azul_oscuro_moderno));
+        txtValorReferencial.setPadding(0, 0, 0, dp(10));
+
+        TextView txtAyuda = new TextView(this);
+        txtAyuda.setText("Ingrese el valor pagado por el cliente. Si el pago es parcial, se generará automáticamente una cuenta por cobrar.");
+        txtAyuda.setTextSize(13);
+        txtAyuda.setTextColor(getResources().getColor(R.color.texto_oscuro_moderno));
+        txtAyuda.setPadding(0, 0, 0, dp(10));
+
         EditText inputValor = new EditText(this);
         inputValor.setHint("Valor pagado por el cliente");
         inputValor.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
         inputValor.setPadding(dp(16), dp(12), dp(16), dp(12));
         inputValor.setBackgroundResource(R.drawable.edittext_login);
 
+        if (cita.getPrecioServicio() > 0) {
+            inputValor.setText(String.format("%.2f", cita.getPrecioServicio()));
+            inputValor.setSelection(inputValor.getText().length());
+        }
+
+        contenedor.addView(txtValorReferencial);
+        contenedor.addView(txtAyuda);
+        contenedor.addView(inputValor);
+
         new AlertDialog.Builder(this)
                 .setTitle("Finalizar cita")
-                .setMessage("Ingrese el valor pagado por el cliente. Si el pago es parcial, el sistema generará automáticamente una cuenta por cobrar.")
-                .setView(inputValor)
+                .setView(contenedor)
                 .setPositiveButton("Finalizar", (dialog, which) -> {
                     String valorTexto = inputValor.getText().toString().trim();
 
@@ -405,6 +444,15 @@ public class CitasAdminActivity extends AppCompatActivity {
 
                     if (valorCobrado < 0) {
                         Toast.makeText(this, "El valor no puede ser negativo", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+
+                    if (cita.getPrecioServicio() > 0 && valorCobrado > cita.getPrecioServicio()) {
+                        Toast.makeText(
+                                this,
+                                "El valor pagado no puede ser mayor al valor referencial del servicio",
+                                Toast.LENGTH_LONG
+                        ).show();
                         return;
                     }
 
@@ -502,12 +550,50 @@ public class CitasAdminActivity extends AppCompatActivity {
         }
     }
 
+    private boolean citaPuedeFinalizarse(String fechaVisualCita) {
+        try {
+            String[] partesFecha = fechaVisualCita.split("/");
+
+            if (partesFecha.length != 3) {
+                return false;
+            }
+
+            int diaCita = Integer.parseInt(partesFecha[0]);
+            int mesCita = Integer.parseInt(partesFecha[1]) - 1;
+            int anioCita = Integer.parseInt(partesFecha[2]);
+
+            Calendar fechaCita = obtenerCalendarioEcuador();
+            fechaCita.set(Calendar.YEAR, anioCita);
+            fechaCita.set(Calendar.MONTH, mesCita);
+            fechaCita.set(Calendar.DAY_OF_MONTH, diaCita);
+            fechaCita.set(Calendar.HOUR_OF_DAY, 0);
+            fechaCita.set(Calendar.MINUTE, 0);
+            fechaCita.set(Calendar.SECOND, 0);
+            fechaCita.set(Calendar.MILLISECOND, 0);
+
+            Calendar hoyEcuador = obtenerCalendarioEcuador();
+            hoyEcuador.set(Calendar.HOUR_OF_DAY, 0);
+            hoyEcuador.set(Calendar.MINUTE, 0);
+            hoyEcuador.set(Calendar.SECOND, 0);
+            hoyEcuador.set(Calendar.MILLISECOND, 0);
+
+            return !fechaCita.after(hoyEcuador);
+
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    private Calendar obtenerCalendarioEcuador() {
+        return Calendar.getInstance(TimeZone.getTimeZone(ZONA_HORARIA_ECUADOR));
+    }
+
     private String convertirFechaCalendarioVisual(Calendar calendario) {
         int dia = calendario.get(Calendar.DAY_OF_MONTH);
         int mes = calendario.get(Calendar.MONTH) + 1;
         int anio = calendario.get(Calendar.YEAR);
 
-        return dia + "/" + mes + "/" + anio;
+        return String.format("%02d/%02d/%04d", dia, mes, anio);
     }
 
     private String convertirFechaCalendarioApi(Calendar calendario) {
@@ -560,6 +646,7 @@ public class CitasAdminActivity extends AppCompatActivity {
         private String hora;
         private String estado;
         private String observaciones;
+        private double precioServicio;
 
         public CitaAdminApi(int idCita,
                             String nombreCliente,
@@ -568,7 +655,8 @@ public class CitasAdminActivity extends AppCompatActivity {
                             String fecha,
                             String hora,
                             String estado,
-                            String observaciones) {
+                            String observaciones,
+                            double precioServicio) {
 
             this.idCita = idCita;
             this.nombreCliente = nombreCliente;
@@ -578,6 +666,7 @@ public class CitasAdminActivity extends AppCompatActivity {
             this.hora = hora;
             this.estado = estado;
             this.observaciones = observaciones;
+            this.precioServicio = precioServicio;
         }
 
         public int getIdCita() {
@@ -610,6 +699,10 @@ public class CitasAdminActivity extends AppCompatActivity {
 
         public String getObservaciones() {
             return observaciones;
+        }
+
+        public double getPrecioServicio() {
+            return precioServicio;
         }
     }
 }

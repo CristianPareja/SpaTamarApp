@@ -22,6 +22,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.TimeZone;
 import java.util.Locale;
 
 public class MenuAdministradorActivity extends AppCompatActivity {
@@ -371,12 +372,12 @@ public class MenuAdministradorActivity extends AppCompatActivity {
     }
 
     private String obtenerFechaActual() {
-        Calendar calendario = Calendar.getInstance();
+        Calendar calendario = Calendar.getInstance(TimeZone.getTimeZone("America/Guayaquil"));
 
         int dia = calendario.get(Calendar.DAY_OF_MONTH);
         int mes = calendario.get(Calendar.MONTH) + 1;
         int anio = calendario.get(Calendar.YEAR);
 
-        return dia + "/" + mes + "/" + anio;
+        return String.format("%02d/%02d/%04d", dia, mes, anio);
     }
 }
