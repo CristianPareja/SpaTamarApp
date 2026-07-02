@@ -137,26 +137,6 @@
                 android:textColor="@color/texto_oscuro_moderno"
                 android:textColorHint="@color/gris_moderno"
                 android:textSize="14sp" />
-
-            <TextView
-                android:id="@+id/txtDatosAccesoRegistro"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="18dp"
-                android:text="Datos de acceso"
-                android:textColor="@color/azul_oscuro_moderno"
-                android:textSize="18sp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/txtAyudaUsuarioAutomatico"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:text="El usuario se generará automáticamente con el texto antes del @ del correo."
-                android:textColor="@color/gris_moderno"
-                android:textSize="12sp" />
-
             <EditText
                 android:id="@+id/edtClaveRegistro"
                 android:layout_width="match_parent"

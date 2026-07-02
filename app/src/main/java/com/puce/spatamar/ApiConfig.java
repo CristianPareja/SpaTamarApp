@@ -2,7 +2,7 @@ package com.puce.spatamar;
 
 public class ApiConfig {
 
-    public static final String BASE_URL = "http://192.168.100.115:3000/api";
+    public static final String BASE_URL = "https://spatamar-backend.onrender.com/api";
 
     public static final String URL_LOGIN = BASE_URL + "/usuarios/login";
     public static final String URL_REGISTRO = BASE_URL + "/usuarios";

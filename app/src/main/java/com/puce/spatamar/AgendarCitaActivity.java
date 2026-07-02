@@ -1,7 +1,8 @@
 package com.puce.spatamar;
 
 import android.app.DatePickerDialog;
-import android.app.TimePickerDialog;
+import android.widget.AdapterView;
+import android.widget.LinearLayout;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -264,46 +265,136 @@ public class AgendarCitaActivity extends AppCompatActivity {
             return;
         }
 
-        Calendar calendarioEcuador = obtenerCalendarioEcuador();
+        LinearLayout contenedor = new LinearLayout(this);
+        contenedor.setOrientation(LinearLayout.VERTICAL);
+        contenedor.setPadding(40, 20, 40, 10);
 
-        int horaInicial = calendarioEcuador.get(Calendar.HOUR_OF_DAY);
-        int minutoInicial = calendarioEcuador.get(Calendar.MINUTE);
+        TextView txtIndicacion = new TextView(this);
+        txtIndicacion.setText("Seleccione una hora disponible para la cita");
+        txtIndicacion.setTextSize(15);
+        txtIndicacion.setPadding(0, 0, 0, 16);
 
-        if (horaInicial < HORA_APERTURA || horaInicial > HORA_CIERRE) {
-            horaInicial = HORA_APERTURA;
-            minutoInicial = 0;
-        }
+        Spinner spinnerHora = new Spinner(this);
+        Spinner spinnerMinuto = new Spinner(this);
 
-        TimePickerDialog selectorHora = new TimePickerDialog(
+        ArrayList<String> horas = obtenerHorasDisponibles();
+        ArrayList<String> minutos = obtenerMinutosDisponibles(false);
+
+        ArrayAdapter<String> adapterHoras = new ArrayAdapter<>(
                 this,
-                (view, hourOfDay, minuteSelected) -> {
+                android.R.layout.simple_spinner_item,
+                horas
+        );
+        adapterHoras.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
-                    if (!horaEstaDentroDelHorario(hourOfDay, minuteSelected)) {
+        ArrayAdapter<String> adapterMinutos = new ArrayAdapter<>(
+                this,
+                android.R.layout.simple_spinner_item,
+                minutos
+        );
+        adapterMinutos.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        spinnerHora.setAdapter(adapterHoras);
+        spinnerMinuto.setAdapter(adapterMinutos);
+
+        spinnerHora.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                String horaTexto = spinnerHora.getSelectedItem().toString();
+
+                if (horaTexto.equals("19")) {
+                    ArrayAdapter<String> adapterMinutosCierre = new ArrayAdapter<>(
+                            AgendarCitaActivity.this,
+                            android.R.layout.simple_spinner_item,
+                            obtenerMinutosDisponibles(true)
+                    );
+                    adapterMinutosCierre.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                    spinnerMinuto.setAdapter(adapterMinutosCierre);
+                } else {
+                    ArrayAdapter<String> adapterMinutosNormal = new ArrayAdapter<>(
+                            AgendarCitaActivity.this,
+                            android.R.layout.simple_spinner_item,
+                            obtenerMinutosDisponibles(false)
+                    );
+                    adapterMinutosNormal.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                    spinnerMinuto.setAdapter(adapterMinutosNormal);
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
+        });
+
+        TextView txtHora = new TextView(this);
+        txtHora.setText("Hora");
+        txtHora.setTextSize(14);
+        txtHora.setPadding(0, 8, 0, 6);
+
+        TextView txtMinuto = new TextView(this);
+        txtMinuto.setText("Minuto");
+        txtMinuto.setTextSize(14);
+        txtMinuto.setPadding(0, 16, 0, 6);
+
+        contenedor.addView(txtIndicacion);
+        contenedor.addView(txtHora);
+        contenedor.addView(spinnerHora);
+        contenedor.addView(txtMinuto);
+        contenedor.addView(spinnerMinuto);
+
+        new AlertDialog.Builder(this)
+                .setTitle("Seleccionar hora")
+                .setView(contenedor)
+                .setPositiveButton("Aceptar", (dialog, which) -> {
+                    int hora = Integer.parseInt(spinnerHora.getSelectedItem().toString());
+                    int minuto = Integer.parseInt(spinnerMinuto.getSelectedItem().toString());
+
+                    if (!horaEstaDentroDelHorario(hora, minuto)) {
                         horaSeleccionada = -1;
                         minutoSeleccionado = -1;
                         edtHoraCita.setText("");
 
                         Toast.makeText(
                                 AgendarCitaActivity.this,
-                                "El horario de atención es de 08:00 a 19:00. Seleccione una hora válida.",
+                                "El horario de atención es de 08:00 a 19:00.",
                                 Toast.LENGTH_LONG
                         ).show();
-
                         return;
                     }
 
-                    horaSeleccionada = hourOfDay;
-                    minutoSeleccionado = minuteSelected;
+                    horaSeleccionada = hora;
+                    minutoSeleccionado = minuto;
 
-                    String horaTexto = String.format("%02d:%02d", hourOfDay, minuteSelected);
+                    String horaTexto = String.format("%02d:%02d", hora, minuto);
                     edtHoraCita.setText(horaTexto);
-                },
-                horaInicial,
-                minutoInicial,
-                true
-        );
+                })
+                .setNegativeButton("Cancelar", null)
+                .show();
+    }
+    private ArrayList<String> obtenerHorasDisponibles() {
+        ArrayList<String> horas = new ArrayList<>();
 
-        selectorHora.show();
+        for (int hora = HORA_APERTURA; hora <= HORA_CIERRE; hora++) {
+            horas.add(String.format("%02d", hora));
+        }
+
+        return horas;
+    }
+
+    private ArrayList<String> obtenerMinutosDisponibles(boolean esHoraCierre) {
+        ArrayList<String> minutos = new ArrayList<>();
+
+        if (esHoraCierre) {
+            minutos.add("00");
+            return minutos;
+        }
+
+        minutos.add("00");
+        minutos.add("15");
+        minutos.add("30");
+        minutos.add("45");
+
+        return minutos;
     }
 
     private void validarYRegistrarCitaApi() {
