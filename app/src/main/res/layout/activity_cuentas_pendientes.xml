@@ -43,19 +43,11 @@
                     android:id="@+id/txtTituloCuentasPendientes"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
                     android:text="Cuentas pendientes"
                     android:textColor="@color/azul_oscuro_moderno"
                     android:textSize="24sp"
                     android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/txtSubtituloCuentasPendientes"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
-                    android:text="Consulta tus valores pendientes por cancelar"
-                    android:textColor="@color/gris_moderno"
-                    android:textSize="14sp" />
 
             </LinearLayout>
 
@@ -104,15 +96,6 @@
                     android:textColor="@color/naranja_alerta"
                     android:textSize="22sp"
                     android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/txtDescripcionPendiente"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="6dp"
-                    android:text="Los saldos se generan automáticamente cuando existe un pago parcial de una cita."
-                    android:textColor="@color/texto_oscuro_moderno"
-                    android:textSize="13sp" />
 
             </LinearLayout>
 

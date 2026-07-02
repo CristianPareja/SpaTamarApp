@@ -43,19 +43,11 @@
                     android:id="@+id/txtTituloServiciosCliente"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
                     android:text="Servicios disponibles"
                     android:textColor="@color/azul_oscuro_moderno"
                     android:textSize="24sp"
                     android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/txtSubtituloServiciosCliente"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
-                    android:text="Elige un servicio para agendar tu cita"
-                    android:textColor="@color/gris_moderno"
-                    android:textSize="14sp" />
 
             </LinearLayout>
 
@@ -83,8 +75,9 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="12dp"
+                android:layout_marginTop="10dp"
                 android:layout_weight="1"
-                android:text="Toca una tarjeta para continuar con la reserva del servicio seleccionado."
+                android:text="Escoge tu servicio"
                 android:textColor="@color/texto_oscuro_moderno"
                 android:textSize="14sp" />
 

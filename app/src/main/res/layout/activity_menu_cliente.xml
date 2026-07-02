@@ -109,15 +109,6 @@
         </LinearLayout>
 
         <!-- ACCESOS RAPIDOS -->
-        <TextView
-            android:id="@+id/txtAccesosCliente"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp"
-            android:text="Accesos rápidos"
-            android:textColor="@color/azul_oscuro_moderno"
-            android:textSize="20sp"
-            android:textStyle="bold" />
 
         <!-- FILA 1 -->
         <LinearLayout

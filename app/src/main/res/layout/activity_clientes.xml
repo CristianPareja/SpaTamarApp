@@ -43,19 +43,11 @@
                     android:id="@+id/txtTituloClientes"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
                     android:text="Clientes registrados"
                     android:textColor="@color/azul_oscuro_moderno"
                     android:textSize="24sp"
                     android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/txtSubtituloClientes"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
-                    android:text="Consulta los clientes activos del Spa TAMAR"
-                    android:textColor="@color/gris_moderno"
-                    android:textSize="14sp" />
 
             </LinearLayout>
 
@@ -80,15 +72,6 @@
                 android:textColor="@color/morado_moderno"
                 android:textSize="21sp"
                 android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/txtNotaClientes"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:text="Esta sección es solo informativa. Los clientes se crean desde el registro de la aplicación."
-                android:textColor="@color/texto_oscuro_moderno"
-                android:textSize="14sp" />
 
         </LinearLayout>
 

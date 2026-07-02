@@ -43,52 +43,17 @@
                     android:id="@+id/txtTituloMisCitas"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Mis citas"
+                    android:layout_marginTop="10dp"
+                    android:text="Historial"
                     android:textColor="@color/azul_oscuro_moderno"
                     android:textSize="24sp"
                     android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/txtSubtituloMisCitas"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
-                    android:text="Consulta tus citas activas e historial"
-                    android:textColor="@color/gris_moderno"
-                    android:textSize="14sp" />
 
             </LinearLayout>
 
         </LinearLayout>
 
         <!-- INFO -->
-        <LinearLayout
-            android:id="@+id/cardInfoMisCitas"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
-            android:background="@drawable/card_moderno_verde"
-            android:elevation="4dp"
-            android:orientation="horizontal"
-            android:padding="16dp">
-
-            <ImageView
-                android:layout_width="42dp"
-                android:layout_height="42dp"
-                android:background="@drawable/fondo_icono_verde"
-                android:padding="9dp"
-                android:src="@drawable/ic_check_moderno" />
-
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="12dp"
-                android:layout_weight="1"
-                android:text="Las citas en curso aparecen en la parte superior. Las finalizadas o canceladas se muestran en el historial."
-                android:textColor="@color/texto_oscuro_moderno"
-                android:textSize="14sp" />
-
-        </LinearLayout>
 
         <!-- CITAS ACTUALES -->
         <TextView

@@ -43,19 +43,11 @@
                     android:id="@+id/txtTituloCuentasPagarAdmin"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
                     android:text="Cuentas por pagar"
                     android:textColor="@color/azul_oscuro_moderno"
                     android:textSize="24sp"
                     android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/txtSubtituloCuentasPagarAdmin"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
-                    android:text="Registra y controla los egresos del Spa TAMAR"
-                    android:textColor="@color/gris_moderno"
-                    android:textSize="14sp" />
 
             </LinearLayout>
 
@@ -172,15 +164,6 @@
                 android:textColor="@color/rojo_negativo"
                 android:textSize="21sp"
                 android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/txtNotaCuentasPagar"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:text="Los egresos registrados se descuentan automáticamente de la ganancia neta del dashboard."
-                android:textColor="@color/texto_oscuro_moderno"
-                android:textSize="14sp" />
 
         </LinearLayout>
 

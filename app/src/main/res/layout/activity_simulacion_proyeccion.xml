@@ -48,15 +48,6 @@
                     android:textSize="24sp"
                     android:textStyle="bold" />
 
-                <TextView
-                    android:id="@+id/txtSubtituloSimulacion"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
-                    android:text="Evalúa escenarios de ingresos, egresos y cobros pendientes"
-                    android:textColor="@color/gris_moderno"
-                    android:textSize="14sp" />
-
             </LinearLayout>
 
         </LinearLayout>

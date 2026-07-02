@@ -40,7 +40,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
-            android:text="Belleza, agenda y control de citas"
+            android:text="Agenda de citas"
             android:textColor="@color/gris_moderno"
             android:textSize="15sp" />
 
@@ -59,20 +59,11 @@
                 android:id="@+id/txtInicioSesion"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
                 android:text="Iniciar sesión"
                 android:textColor="@color/azul_oscuro_moderno"
                 android:textSize="22sp"
                 android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/txtDescripcionLogin"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:layout_marginBottom="18dp"
-                android:text="Ingrese sus credenciales para acceder a la aplicación."
-                android:textColor="@color/gris_moderno"
-                android:textSize="14sp" />
 
             <EditText
                 android:id="@+id/edtUsuario"
@@ -139,16 +130,6 @@
         </LinearLayout>
 
         <!-- TEXTO INFERIOR -->
-        <TextView
-            android:id="@+id/txtPieLogin"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="18dp"
-            android:layout_marginBottom="20dp"
-            android:text="Sistema de agenda y gestión financiera para Spa TAMAR"
-            android:textAlignment="center"
-            android:textColor="@color/gris_moderno"
-            android:textSize="13sp" />
 
     </LinearLayout>
 

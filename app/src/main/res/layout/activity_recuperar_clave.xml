@@ -36,22 +36,12 @@
             android:textSize="26sp"
             android:textStyle="bold" />
 
-        <TextView
-            android:id="@+id/txtSubtituloRecuperarClave"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="6dp"
-            android:layout_marginBottom="20dp"
-            android:text="Ingrese su correo, solicite el código y establezca una nueva contraseña segura."
-            android:textAlignment="center"
-            android:textColor="@color/gris_moderno"
-            android:textSize="14sp" />
-
         <!-- CARD PRINCIPAL -->
         <LinearLayout
             android:id="@+id/cardRecuperarClave"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
             android:background="@drawable/card_moderno"
             android:elevation="6dp"
             android:orientation="vertical"
@@ -66,15 +56,6 @@
                 android:textColor="@color/azul_oscuro_moderno"
                 android:textSize="18sp"
                 android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/txtDescripcionPasoCorreo"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:text="Se enviará un código de recuperación al correo registrado."
-                android:textColor="@color/gris_moderno"
-                android:textSize="13sp" />
 
             <EditText
                 android:id="@+id/edtCorreoRecuperacion"

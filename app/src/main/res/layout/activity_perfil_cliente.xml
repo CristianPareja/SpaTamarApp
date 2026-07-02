@@ -43,52 +43,17 @@
                     android:id="@+id/txtTituloPerfilCliente"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
                     android:text="Mi perfil"
                     android:textColor="@color/azul_oscuro_moderno"
                     android:textSize="24sp"
                     android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/txtSubtituloPerfilCliente"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
-                    android:text="Revisa y actualiza tus datos personales"
-                    android:textColor="@color/gris_moderno"
-                    android:textSize="14sp" />
 
             </LinearLayout>
 
         </LinearLayout>
 
         <!-- INFO -->
-        <LinearLayout
-            android:id="@+id/cardInfoPerfilCliente"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
-            android:background="@drawable/card_moderno_verde"
-            android:elevation="4dp"
-            android:orientation="horizontal"
-            android:padding="16dp">
-
-            <ImageView
-                android:layout_width="42dp"
-                android:layout_height="42dp"
-                android:background="@drawable/fondo_icono_verde"
-                android:padding="9dp"
-                android:src="@drawable/ic_check_moderno" />
-
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="12dp"
-                android:layout_weight="1"
-                android:text="Mantén tus datos actualizados para que tus citas y recordatorios se registren correctamente."
-                android:textColor="@color/texto_oscuro_moderno"
-                android:textSize="14sp" />
-
-        </LinearLayout>
 
         <!-- FORMULARIO -->
         <LinearLayout
