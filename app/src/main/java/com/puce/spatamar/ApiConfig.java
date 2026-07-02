@@ -21,6 +21,7 @@ public class ApiConfig {
 
     public static final String URL_CUENTAS_PAGAR = BASE_URL + "/cuentas-pagar";
 
+    public static final String URL_FINANZAS_RESUMEN_MENSUAL = BASE_URL + "/finanzas/resumen-mensual";
     public static final String URL_FINANZAS_RESUMEN = BASE_URL + "/finanzas/resumen";
     public static final String URL_FINANZAS_MOVIMIENTOS = BASE_URL + "/finanzas/movimientos";
 

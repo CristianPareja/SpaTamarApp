@@ -55,6 +55,8 @@ public class MenuAdministradorActivity extends AppCompatActivity {
     private RequestQueue requestQueue;
 
     private String textoPendientesAdmin = "No existen pendientes relevantes hasta ahora.";
+    private int anioResumenActual;
+    private int mesResumenActual;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -166,10 +168,18 @@ public class MenuAdministradorActivity extends AppCompatActivity {
     private void cargarDashboardApi() {
         String fechaActual = obtenerFechaActual();
         txtFechaDashboard.setText(fechaActual);
+        Calendar calendarioEcuador = Calendar.getInstance(TimeZone.getTimeZone("America/Guayaquil"));
+        int anioActual = calendarioEcuador.get(Calendar.YEAR);
+        int mesActual = calendarioEcuador.get(Calendar.MONTH) + 1;
+
+        String urlResumenMensual = ApiConfig.URL_FINANZAS_RESUMEN
+                .replace("/resumen", "/resumen-mensual")
+                + "?anio=" + anioActual
+                + "&mes=" + mesActual;
 
         JsonObjectRequest request = new JsonObjectRequest(
                 Request.Method.GET,
-                ApiConfig.URL_FINANZAS_RESUMEN,
+                urlResumenMensual,
                 null,
                 response -> {
                     try {
@@ -196,7 +206,7 @@ public class MenuAdministradorActivity extends AppCompatActivity {
                         }
 
                         txtDetalleFinancieroDashboard.setText(
-                                "Ingresos: $" + String.format(Locale.US, "%.2f", totalIngresos)
+                                "Resumen mensual | Ingresos: $" + String.format(Locale.US, "%.2f", totalIngresos)
                                         + " | Egresos: $" + String.format(Locale.US, "%.2f", totalEgresos)
                         );
 

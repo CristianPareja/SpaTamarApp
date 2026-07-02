@@ -136,7 +136,7 @@
                 android:id="@+id/txtTituloBusquedaCitas"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Búsqueda por cliente"
+                android:text="Búsqueda"
                 android:textColor="@color/azul_oscuro_moderno"
                 android:textSize="18sp"
                 android:textStyle="bold" />
@@ -160,7 +160,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="52dp"
                 android:background="@drawable/boton_principal"
-                android:text="Buscar cliente"
+                android:text="Buscar"
                 android:textAllCaps="false"
                 android:textColor="@color/blanco"
                 android:textSize="15sp"

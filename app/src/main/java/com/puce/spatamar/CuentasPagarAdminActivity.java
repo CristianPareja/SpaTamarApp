@@ -28,6 +28,8 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Locale;
 
+import androidx.appcompat.app.AlertDialog;
+
 public class CuentasPagarAdminActivity extends AppCompatActivity {
 
     private Spinner spinnerTipoEgreso;
@@ -513,6 +515,30 @@ public class CuentasPagarAdminActivity extends AppCompatActivity {
         btnEditar.setAllCaps(false);
         btnEditar.setBackgroundResource(R.drawable.boton_secundario_moderno);
 
+        AppCompatButton btnEliminar = new AppCompatButton(this);
+        btnEliminar.setText("Eliminar egreso");
+        btnEliminar.setTextSize(14);
+        btnEliminar.setTextColor(getResources().getColor(R.color.rojo_negativo));
+        btnEliminar.setAllCaps(false);
+        btnEliminar.setBackgroundResource(R.drawable.boton_cerrar_sesion_moderno);
+
+        LinearLayout.LayoutParams parametrosBotonEliminar = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                dp(48)
+        );
+
+        parametrosBotonEliminar.setMargins(0, dp(10), 0, 0);
+        btnEliminar.setLayoutParams(parametrosBotonEliminar);
+        btnEliminar.setMinHeight(dp(48));
+        btnEliminar.setPadding(dp(12), 0, dp(12), 0);
+
+        btnEliminar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                confirmarEliminarEgreso(cuenta);
+            }
+        });
+
         LinearLayout.LayoutParams parametrosBoton = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
                 dp(48)
@@ -535,6 +561,7 @@ public class CuentasPagarAdminActivity extends AppCompatActivity {
         tarjeta.addView(estado);
         tarjeta.addView(detalle);
         tarjeta.addView(btnEditar);
+        tarjeta.addView(btnEliminar);
 
         return tarjeta;
     }
@@ -637,7 +664,46 @@ public class CuentasPagarAdminActivity extends AppCompatActivity {
 
         return fechaApi;
     }
+    private void confirmarEliminarEgreso(CuentaPagarApi cuenta) {
+        new AlertDialog.Builder(this)
+                .setTitle("Eliminar egreso")
+                .setMessage("¿Está seguro de que desea eliminar este egreso? Ya no afectará la utilidad del mes.")
+                .setPositiveButton("Sí, eliminar", (dialog, which) -> eliminarCuentaPagarApi(cuenta))
+                .setNegativeButton("Cancelar", null)
+                .show();
+    }
 
+    private void eliminarCuentaPagarApi(CuentaPagarApi cuenta) {
+        String url = ApiConfig.URL_CUENTAS_PAGAR + "/" + cuenta.getIdCuentaPagar();
+
+        JsonObjectRequest request = new JsonObjectRequest(
+                Request.Method.DELETE,
+                url,
+                null,
+                response -> {
+                    Toast.makeText(
+                            CuentasPagarAdminActivity.this,
+                            "Egreso eliminado correctamente",
+                            Toast.LENGTH_SHORT
+                    ).show();
+
+                    if (modoEdicion && idCuentaEditar == cuenta.getIdCuentaPagar()) {
+                        limpiarFormulario();
+                    }
+
+                    cargarCuentasPagarApi();
+                },
+                error -> {
+                    Toast.makeText(
+                            CuentasPagarAdminActivity.this,
+                            "No se pudo eliminar el egreso",
+                            Toast.LENGTH_LONG
+                    ).show();
+                }
+        );
+
+        requestQueue.add(request);
+    }
     private void limpiarFormulario() {
         spinnerTipoEgreso.setSelection(0);
         edtFechaPagar.setText("");
