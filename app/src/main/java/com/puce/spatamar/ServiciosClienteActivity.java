@@ -114,14 +114,37 @@ public class ServiciosClienteActivity extends AppCompatActivity {
         if (listaServiciosActivos.isEmpty()) {
             TextView txtSinServicios = new TextView(this);
             txtSinServicios.setText("No existen servicios disponibles por el momento.");
-            txtSinServicios.setTextSize(16);
-            txtSinServicios.setPadding(20, 20, 20, 20);
+            txtSinServicios.setTextSize(15);
+            txtSinServicios.setTextColor(getResources().getColor(R.color.azul_oscuro_moderno));
+            txtSinServicios.setPadding(dp(18), dp(18), dp(18), dp(18));
+            txtSinServicios.setBackgroundResource(R.drawable.card_moderno);
+
+            LinearLayout.LayoutParams parametrosSinServicios = new LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT
+            );
+
+            parametrosSinServicios.setMargins(0, 0, 0, dp(18));
+            txtSinServicios.setLayoutParams(parametrosSinServicios);
+
             contenedorServiciosCliente.addView(txtSinServicios);
             return;
         }
 
         for (Servicio servicio : listaServiciosActivos) {
-            View tarjetaServicio = getLayoutInflater().inflate(R.layout.item_servicio_cliente, null);
+            View tarjetaServicio = getLayoutInflater().inflate(
+                    R.layout.item_servicio_cliente,
+                    contenedorServiciosCliente,
+                    false
+            );
+
+            LinearLayout.LayoutParams parametrosTarjeta = new LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT
+            );
+
+            parametrosTarjeta.setMargins(0, 0, 0, dp(18));
+            tarjetaServicio.setLayoutParams(parametrosTarjeta);
 
             TextView txtNombreServicio = tarjetaServicio.findViewById(R.id.txtNombreServicioCliente);
             TextView txtDescripcionServicio = tarjetaServicio.findViewById(R.id.txtDescripcionServicioCliente);
@@ -143,5 +166,9 @@ public class ServiciosClienteActivity extends AppCompatActivity {
 
             contenedorServiciosCliente.addView(tarjetaServicio);
         }
+    }
+
+    private int dp(int valor) {
+        return (int) (valor * getResources().getDisplayMetrics().density);
     }
 }
