@@ -29,6 +29,7 @@
                 android:layout_width="52dp"
                 android:layout_height="52dp"
                 android:background="@drawable/fondo_icono_morado"
+                android:contentDescription="Icono simulación"
                 android:padding="12dp"
                 android:src="@drawable/ic_simulation_moderno" />
 
@@ -43,6 +44,7 @@
                     android:id="@+id/txtTituloSimulacion"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
                     android:text="Simulación y proyección"
                     android:textColor="@color/azul_oscuro_moderno"
                     android:textSize="24sp"
@@ -111,7 +113,20 @@
 
         </LinearLayout>
 
-        <!-- FORMULARIO -->
+        <!-- BOTÓN NUEVA SIMULACIÓN -->
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btnMostrarFormularioSimulacion"
+            android:layout_width="match_parent"
+            android:layout_height="54dp"
+            android:layout_marginBottom="16dp"
+            android:background="@drawable/boton_principal"
+            android:text="Nueva simulación"
+            android:textAllCaps="false"
+            android:textColor="@color/blanco"
+            android:textSize="15sp"
+            android:textStyle="bold" />
+
+        <!-- FORMULARIO OCULTO -->
         <LinearLayout
             android:id="@+id/cardFormularioSimulacion"
             android:layout_width="match_parent"
@@ -120,7 +135,8 @@
             android:background="@drawable/card_moderno"
             android:elevation="4dp"
             android:orientation="vertical"
-            android:padding="18dp">
+            android:padding="18dp"
+            android:visibility="gone">
 
             <TextView
                 android:id="@+id/txtTituloEscenario"
@@ -269,37 +285,6 @@
                 android:textColor="@color/azul_moderno"
                 android:textSize="15sp"
                 android:textStyle="bold" />
-
-        </LinearLayout>
-
-        <!-- ALERTAS -->
-        <LinearLayout
-            android:id="@+id/cardAlertasSimulacion"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
-            android:background="@drawable/card_moderno"
-            android:elevation="4dp"
-            android:orientation="vertical"
-            android:padding="18dp">
-
-            <TextView
-                android:id="@+id/txtTituloAlertasSimulacion"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Alertas de escenario"
-                android:textColor="@color/azul_oscuro_moderno"
-                android:textSize="18sp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/txtAlertasSimulacion"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
-                android:text="Las alertas aparecerán después de calcular la simulación."
-                android:textColor="@color/texto_oscuro_moderno"
-                android:textSize="15sp" />
 
         </LinearLayout>
 

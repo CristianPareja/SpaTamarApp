@@ -3,6 +3,7 @@ package com.puce.spatamar;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -26,12 +27,14 @@ public class SimulacionProyeccionActivity extends AppCompatActivity {
     private TextView txtGananciaActual;
     private TextView txtResultadoSimulacion;
     private TextView txtRiesgoSimulacion;
-    private TextView txtAlertasSimulacion;
 
     private EditText edtVariacionIngresos;
     private EditText edtIncrementoEgresos;
     private EditText edtPagosAtrasados;
 
+    private LinearLayout cardFormularioSimulacion;
+
+    private AppCompatButton btnMostrarFormularioSimulacion;
     private AppCompatButton btnCalcularSimulacion;
     private AppCompatButton btnLimpiarSimulacion;
     private AppCompatButton btnVolverSimulacion;
@@ -54,19 +57,31 @@ public class SimulacionProyeccionActivity extends AppCompatActivity {
         txtGananciaActual = findViewById(R.id.txtGananciaActual);
         txtResultadoSimulacion = findViewById(R.id.txtResultadoSimulacion);
         txtRiesgoSimulacion = findViewById(R.id.txtRiesgoSimulacion);
-        txtAlertasSimulacion = findViewById(R.id.txtAlertasSimulacion);
 
         edtVariacionIngresos = findViewById(R.id.edtVariacionIngresos);
         edtIncrementoEgresos = findViewById(R.id.edtIncrementoEgresos);
         edtPagosAtrasados = findViewById(R.id.edtPagosAtrasados);
 
+        cardFormularioSimulacion = findViewById(R.id.cardFormularioSimulacion);
+
+        btnMostrarFormularioSimulacion = findViewById(R.id.btnMostrarFormularioSimulacion);
         btnCalcularSimulacion = findViewById(R.id.btnCalcularSimulacion);
         btnLimpiarSimulacion = findViewById(R.id.btnLimpiarSimulacion);
         btnVolverSimulacion = findViewById(R.id.btnVolverSimulacion);
 
         requestQueue = Volley.newRequestQueue(this);
 
+        cardFormularioSimulacion.setVisibility(View.GONE);
+        btnMostrarFormularioSimulacion.setText("Nueva simulación");
+
         cargarDatosActualesApi();
+
+        btnMostrarFormularioSimulacion.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                alternarFormularioSimulacion();
+            }
+        });
 
         btnCalcularSimulacion.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -94,6 +109,26 @@ public class SimulacionProyeccionActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         cargarDatosActualesApi();
+    }
+
+    private void alternarFormularioSimulacion() {
+        if (cardFormularioSimulacion.getVisibility() == View.VISIBLE) {
+            cardFormularioSimulacion.setVisibility(View.GONE);
+            btnMostrarFormularioSimulacion.setText("Nueva simulación");
+        } else {
+            cardFormularioSimulacion.setVisibility(View.VISIBLE);
+            btnMostrarFormularioSimulacion.setText("Ocultar formulario");
+        }
+    }
+
+    private void mostrarFormularioSimulacion() {
+        cardFormularioSimulacion.setVisibility(View.VISIBLE);
+        btnMostrarFormularioSimulacion.setText("Ocultar formulario");
+    }
+
+    private void ocultarFormularioSimulacion() {
+        cardFormularioSimulacion.setVisibility(View.GONE);
+        btnMostrarFormularioSimulacion.setText("Nueva simulación");
     }
 
     private void cargarDatosActualesApi() {
@@ -166,18 +201,21 @@ public class SimulacionProyeccionActivity extends AppCompatActivity {
         if (variacionIngresosTexto.isEmpty()) {
             edtVariacionIngresos.setError("Ingrese la variación de ingresos");
             edtVariacionIngresos.requestFocus();
+            mostrarFormularioSimulacion();
             return;
         }
 
         if (incrementoEgresosTexto.isEmpty()) {
             edtIncrementoEgresos.setError("Ingrese el incremento de egresos");
             edtIncrementoEgresos.requestFocus();
+            mostrarFormularioSimulacion();
             return;
         }
 
         if (pagosAtrasadosTexto.isEmpty()) {
             edtPagosAtrasados.setError("Ingrese el porcentaje de pagos atrasados");
             edtPagosAtrasados.requestFocus();
+            mostrarFormularioSimulacion();
             return;
         }
 
@@ -191,18 +229,21 @@ public class SimulacionProyeccionActivity extends AppCompatActivity {
             pagosAtrasados = Double.parseDouble(pagosAtrasadosTexto);
         } catch (NumberFormatException e) {
             Toast.makeText(this, "Ingrese valores numéricos válidos", Toast.LENGTH_SHORT).show();
+            mostrarFormularioSimulacion();
             return;
         }
 
         if (incrementoEgresos < 0) {
             edtIncrementoEgresos.setError("El incremento de egresos no puede ser negativo");
             edtIncrementoEgresos.requestFocus();
+            mostrarFormularioSimulacion();
             return;
         }
 
         if (pagosAtrasados < 0 || pagosAtrasados > 100) {
             edtPagosAtrasados.setError("Ingrese un porcentaje entre 0 y 100");
             edtPagosAtrasados.requestFocus();
+            mostrarFormularioSimulacion();
             return;
         }
 
@@ -242,13 +283,15 @@ public class SimulacionProyeccionActivity extends AppCompatActivity {
                 + "Egresos proyectados: $" + String.format(Locale.US, "%.2f", egresosProyectados) + "\n"
                 + "Valor afectado por pagos atrasados: $" + String.format(Locale.US, "%.2f", valorAtrasado) + "\n"
                 + "Ingreso disponible estimado: $" + String.format(Locale.US, "%.2f", ingresoDisponible) + "\n"
-                + "Ganancia proyectada: $" + String.format(Locale.US, "%.2f", gananciaProyectada);
+                + "Ganancia proyectada: $" + String.format(Locale.US, "%.2f", gananciaProyectada) + "\n\n"
+                + "Análisis del escenario:\n"
+                + alertas;
 
         txtResultadoSimulacion.setText(resultado);
         txtRiesgoSimulacion.setText("Riesgo: " + riesgo);
-        txtAlertasSimulacion.setText(alertas);
 
         aplicarColorRiesgo(riesgo);
+        ocultarFormularioSimulacion();
     }
 
     private String calcularRiesgo(double gananciaProyectada,
@@ -342,6 +385,7 @@ public class SimulacionProyeccionActivity extends AppCompatActivity {
         txtRiesgoSimulacion.setText("Riesgo: sin calcular");
         txtRiesgoSimulacion.setTextColor(getResources().getColor(R.color.azul_moderno));
         txtRiesgoSimulacion.setBackgroundResource(R.drawable.fondo_chip_moderno);
-        txtAlertasSimulacion.setText("Las alertas aparecerán después de calcular la simulación.");
+
+        mostrarFormularioSimulacion();
     }
 }
