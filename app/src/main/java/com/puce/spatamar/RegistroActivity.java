@@ -22,7 +22,8 @@ import java.nio.charset.StandardCharsets;
 public class RegistroActivity extends AppCompatActivity {
 
     EditText edtNombreRegistro, edtApellidoRegistro, edtTelefonoRegistro, edtCorreoRegistro;
-    EditText edtClaveRegistro;
+    EditText edtClaveRegistro, edtConfirmarClaveRegistro;
+
     AppCompatButton btnRegistrarUsuario, btnVolverRegistro;
 
     RequestQueue requestQueue;
@@ -42,6 +43,7 @@ public class RegistroActivity extends AppCompatActivity {
         edtTelefonoRegistro = findViewById(R.id.edtTelefonoRegistro);
         edtCorreoRegistro = findViewById(R.id.edtCorreoRegistro);
         edtClaveRegistro = findViewById(R.id.edtClaveRegistro);
+        edtConfirmarClaveRegistro = findViewById(R.id.edtConfirmarClaveRegistro);
 
         btnRegistrarUsuario = findViewById(R.id.btnRegistrarUsuario);
         btnVolverRegistro = findViewById(R.id.btnVolverRegistro);
@@ -71,6 +73,7 @@ public class RegistroActivity extends AppCompatActivity {
         String telefono = edtTelefonoRegistro.getText().toString().trim();
         String correo = edtCorreoRegistro.getText().toString().trim();
         String clave = edtClaveRegistro.getText().toString().trim();
+        String confirmarClave = edtConfirmarClaveRegistro.getText().toString().trim();
 
         if (nombre.isEmpty()) {
             edtNombreRegistro.setError("Ingrese el nombre");
@@ -137,6 +140,18 @@ public class RegistroActivity extends AppCompatActivity {
         if (!clave.matches(REGEX_CLAVE)) {
             edtClaveRegistro.setError("Mínimo 6 caracteres, una mayúscula, un número y un carácter especial");
             edtClaveRegistro.requestFocus();
+            return;
+        }
+
+        if (confirmarClave.isEmpty()) {
+            edtConfirmarClaveRegistro.setError("Confirme la contraseña");
+            edtConfirmarClaveRegistro.requestFocus();
+            return;
+        }
+
+        if (!clave.equals(confirmarClave)) {
+            edtConfirmarClaveRegistro.setError("Las contraseñas no coinciden");
+            edtConfirmarClaveRegistro.requestFocus();
             return;
         }
 

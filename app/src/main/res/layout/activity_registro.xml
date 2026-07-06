@@ -30,6 +30,7 @@
                 android:layout_width="52dp"
                 android:layout_height="52dp"
                 android:background="@drawable/fondo_icono_morado"
+                android:contentDescription="Icono registro"
                 android:padding="12dp"
                 android:src="@drawable/ic_profile_moderno" />
 
@@ -129,6 +130,7 @@
                 android:textColor="@color/texto_oscuro_moderno"
                 android:textColorHint="@color/gris_moderno"
                 android:textSize="14sp" />
+
             <EditText
                 android:id="@+id/edtClaveRegistro"
                 android:layout_width="match_parent"
@@ -136,6 +138,20 @@
                 android:layout_marginTop="12dp"
                 android:background="@drawable/edittext_login"
                 android:hint="Contraseña: Ej. Spa123@"
+                android:inputType="textPassword"
+                android:paddingLeft="14dp"
+                android:paddingRight="14dp"
+                android:textColor="@color/texto_oscuro_moderno"
+                android:textColorHint="@color/gris_moderno"
+                android:textSize="14sp" />
+
+            <EditText
+                android:id="@+id/edtConfirmarClaveRegistro"
+                android:layout_width="match_parent"
+                android:layout_height="54dp"
+                android:layout_marginTop="12dp"
+                android:background="@drawable/edittext_login"
+                android:hint="Confirmar contraseña"
                 android:inputType="textPassword"
                 android:paddingLeft="14dp"
                 android:paddingRight="14dp"

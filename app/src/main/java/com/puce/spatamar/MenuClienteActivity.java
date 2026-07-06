@@ -225,7 +225,7 @@ public class MenuClienteActivity extends AppCompatActivity {
         } else {
             Toast.makeText(
                     MenuClienteActivity.this,
-                    "Tiene " + citasPendientesApi + " cita(s) pendiente(s). Revise la sección Mis citas e historial.",
+                    "Tiene " + citasPendientesApi + " cita(s) pendiente(s). Revise la sección Historial.",
                     Toast.LENGTH_LONG
             ).show();
         }
