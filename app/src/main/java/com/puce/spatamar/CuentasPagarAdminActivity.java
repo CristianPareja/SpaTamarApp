@@ -12,6 +12,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
 
@@ -28,8 +29,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Locale;
 
-import androidx.appcompat.app.AlertDialog;
-
 public class CuentasPagarAdminActivity extends AppCompatActivity {
 
     private Spinner spinnerTipoEgreso;
@@ -43,8 +42,10 @@ public class CuentasPagarAdminActivity extends AppCompatActivity {
     private TextView txtTotalCuentasPagar;
     private TextView txtSinCuentasPagar;
 
+    private LinearLayout cardFormularioCuentaPagar;
     private LinearLayout contenedorCuentasPagar;
 
+    private AppCompatButton btnMostrarFormularioEgreso;
     private AppCompatButton btnRegistrarCuentaPagar;
     private AppCompatButton btnVolverCuentasPagar;
 
@@ -64,6 +65,8 @@ public class CuentasPagarAdminActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cuentas_pagar_admin);
 
+        cardFormularioCuentaPagar = findViewById(R.id.cardFormularioCuentaPagar);
+
         spinnerTipoEgreso = findViewById(R.id.spinnerTipoEgreso);
 
         edtFechaPagar = findViewById(R.id.edtFechaPagar);
@@ -77,14 +80,25 @@ public class CuentasPagarAdminActivity extends AppCompatActivity {
 
         contenedorCuentasPagar = findViewById(R.id.contenedorCuentasPagar);
 
+        btnMostrarFormularioEgreso = findViewById(R.id.btnMostrarFormularioEgreso);
         btnRegistrarCuentaPagar = findViewById(R.id.btnRegistrarCuentaPagar);
         btnVolverCuentasPagar = findViewById(R.id.btnVolverCuentasPagar);
 
         requestQueue = Volley.newRequestQueue(this);
         listaCuentasPagar = new ArrayList<>();
 
+        cardFormularioCuentaPagar.setVisibility(View.GONE);
+        btnMostrarFormularioEgreso.setText("Nuevo egreso");
+
         cargarTiposEgreso();
         cargarCuentasPagarApi();
+
+        btnMostrarFormularioEgreso.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                alternarFormularioEgreso();
+            }
+        });
 
         edtFechaPagar.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -112,6 +126,41 @@ public class CuentasPagarAdminActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         cargarCuentasPagarApi();
+    }
+
+    private void alternarFormularioEgreso() {
+        if (cardFormularioCuentaPagar.getVisibility() == View.VISIBLE) {
+            cardFormularioCuentaPagar.setVisibility(View.GONE);
+            btnMostrarFormularioEgreso.setText("Nuevo egreso");
+
+            if (!modoEdicion) {
+                limpiarFormulario();
+            }
+        } else {
+            cardFormularioCuentaPagar.setVisibility(View.VISIBLE);
+
+            if (modoEdicion) {
+                btnMostrarFormularioEgreso.setText("Ocultar edición");
+            } else {
+                btnMostrarFormularioEgreso.setText("Ocultar formulario");
+            }
+        }
+    }
+
+    private void mostrarFormularioNuevoEgreso() {
+        limpiarFormulario();
+        cardFormularioCuentaPagar.setVisibility(View.VISIBLE);
+        btnMostrarFormularioEgreso.setText("Ocultar formulario");
+    }
+
+    private void mostrarFormularioEdicion() {
+        cardFormularioCuentaPagar.setVisibility(View.VISIBLE);
+        btnMostrarFormularioEgreso.setText("Ocultar edición");
+    }
+
+    private void ocultarFormularioEgreso() {
+        cardFormularioCuentaPagar.setVisibility(View.GONE);
+        btnMostrarFormularioEgreso.setText("Nuevo egreso");
     }
 
     private void cargarTiposEgreso() {
@@ -274,6 +323,7 @@ public class CuentasPagarAdminActivity extends AppCompatActivity {
                     ).show();
 
                     limpiarFormulario();
+                    ocultarFormularioEgreso();
                     cargarCuentasPagarApi();
                 },
                 error -> {
@@ -322,6 +372,7 @@ public class CuentasPagarAdminActivity extends AppCompatActivity {
                     ).show();
 
                     limpiarFormulario();
+                    ocultarFormularioEgreso();
                     cargarCuentasPagarApi();
                 },
                 error -> {
@@ -369,6 +420,7 @@ public class CuentasPagarAdminActivity extends AppCompatActivity {
                     ).show();
 
                     limpiarFormulario();
+                    ocultarFormularioEgreso();
                     cargarCuentasPagarApi();
                 },
                 error -> {
@@ -471,7 +523,7 @@ public class CuentasPagarAdminActivity extends AppCompatActivity {
                 LinearLayout.LayoutParams.WRAP_CONTENT
         );
 
-        parametrosTarjeta.setMargins(0, 0, 0, dp(14));
+        parametrosTarjeta.setMargins(0, 0, 0, dp(20));
         tarjeta.setLayoutParams(parametrosTarjeta);
 
         TextView titulo = new TextView(this);
@@ -522,23 +574,6 @@ public class CuentasPagarAdminActivity extends AppCompatActivity {
         btnEliminar.setAllCaps(false);
         btnEliminar.setBackgroundResource(R.drawable.boton_cerrar_sesion_moderno);
 
-        LinearLayout.LayoutParams parametrosBotonEliminar = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                dp(48)
-        );
-
-        parametrosBotonEliminar.setMargins(0, dp(10), 0, 0);
-        btnEliminar.setLayoutParams(parametrosBotonEliminar);
-        btnEliminar.setMinHeight(dp(48));
-        btnEliminar.setPadding(dp(12), 0, dp(12), 0);
-
-        btnEliminar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                confirmarEliminarEgreso(cuenta);
-            }
-        });
-
         LinearLayout.LayoutParams parametrosBoton = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
                 dp(48)
@@ -549,10 +584,27 @@ public class CuentasPagarAdminActivity extends AppCompatActivity {
         btnEditar.setMinHeight(dp(48));
         btnEditar.setPadding(dp(12), 0, dp(12), 0);
 
+        LinearLayout.LayoutParams parametrosBotonEliminar = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                dp(48)
+        );
+
+        parametrosBotonEliminar.setMargins(0, dp(10), 0, 0);
+        btnEliminar.setLayoutParams(parametrosBotonEliminar);
+        btnEliminar.setMinHeight(dp(48));
+        btnEliminar.setPadding(dp(12), 0, dp(12), 0);
+
         btnEditar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 cargarEgresoEnFormulario(cuenta);
+            }
+        });
+
+        btnEliminar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                confirmarEliminarEgreso(cuenta);
             }
         });
 
@@ -604,6 +656,8 @@ public class CuentasPagarAdminActivity extends AppCompatActivity {
 
         btnRegistrarCuentaPagar.setText("Actualizar egreso");
 
+        mostrarFormularioEdicion();
+
         Toast.makeText(
                 this,
                 "Modo edición activado. Modifique los datos y presione Actualizar egreso.",
@@ -642,6 +696,7 @@ public class CuentasPagarAdminActivity extends AppCompatActivity {
 
     private String obtenerFechaFormatoApi() {
         return String.format(
+                Locale.US,
                 "%04d-%02d-%02d",
                 anioSeleccionado,
                 mesSeleccionado + 1,
@@ -664,6 +719,7 @@ public class CuentasPagarAdminActivity extends AppCompatActivity {
 
         return fechaApi;
     }
+
     private void confirmarEliminarEgreso(CuentaPagarApi cuenta) {
         new AlertDialog.Builder(this)
                 .setTitle("Eliminar egreso")
@@ -689,6 +745,7 @@ public class CuentasPagarAdminActivity extends AppCompatActivity {
 
                     if (modoEdicion && idCuentaEditar == cuenta.getIdCuentaPagar()) {
                         limpiarFormulario();
+                        ocultarFormularioEgreso();
                     }
 
                     cargarCuentasPagarApi();
@@ -704,6 +761,7 @@ public class CuentasPagarAdminActivity extends AppCompatActivity {
 
         requestQueue.add(request);
     }
+
     private void limpiarFormulario() {
         spinnerTipoEgreso.setSelection(0);
         edtFechaPagar.setText("");
@@ -721,6 +779,12 @@ public class CuentasPagarAdminActivity extends AppCompatActivity {
         idCuentaEditar = 0;
 
         btnRegistrarCuentaPagar.setText("Registrar egreso");
+
+        btnMostrarFormularioEgreso.setText(
+                cardFormularioCuentaPagar.getVisibility() == View.VISIBLE
+                        ? "Ocultar formulario"
+                        : "Nuevo egreso"
+        );
     }
 
     private int dp(int valor) {
