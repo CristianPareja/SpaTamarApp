@@ -25,7 +25,13 @@ import java.util.Locale;
 public class ServiciosActivity extends AppCompatActivity {
 
     EditText edtNombreServicio, edtDescripcionServicio, edtPrecioServicio;
-    AppCompatButton btnGuardarServicio, btnLimpiarServicio, btnVolverServicios;
+
+    AppCompatButton btnMostrarFormularioServicio;
+    AppCompatButton btnGuardarServicio;
+    AppCompatButton btnLimpiarServicio;
+    AppCompatButton btnVolverServicios;
+
+    LinearLayout cardFormularioServicios;
     LinearLayout contenedorServiciosAdmin;
 
     RequestQueue requestQueue;
@@ -39,10 +45,13 @@ public class ServiciosActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_servicios);
 
+        cardFormularioServicios = findViewById(R.id.cardFormularioServicios);
+
         edtNombreServicio = findViewById(R.id.edtNombreServicio);
         edtDescripcionServicio = findViewById(R.id.edtDescripcionServicio);
         edtPrecioServicio = findViewById(R.id.edtPrecioServicio);
 
+        btnMostrarFormularioServicio = findViewById(R.id.btnMostrarFormularioServicio);
         btnGuardarServicio = findViewById(R.id.btnGuardarServicio);
         btnLimpiarServicio = findViewById(R.id.btnLimpiarServicio);
         btnVolverServicios = findViewById(R.id.btnVolverServicios);
@@ -52,7 +61,17 @@ public class ServiciosActivity extends AppCompatActivity {
         requestQueue = Volley.newRequestQueue(this);
         listaServicios = new ArrayList<>();
 
+        cardFormularioServicios.setVisibility(View.GONE);
+        btnMostrarFormularioServicio.setText("Nuevo servicio");
+
         cargarServiciosApi();
+
+        btnMostrarFormularioServicio.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                alternarFormularioServicio();
+            }
+        });
 
         btnGuardarServicio.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -74,6 +93,41 @@ public class ServiciosActivity extends AppCompatActivity {
                 finish();
             }
         });
+    }
+
+    private void alternarFormularioServicio() {
+        if (cardFormularioServicios.getVisibility() == View.VISIBLE) {
+            cardFormularioServicios.setVisibility(View.GONE);
+            btnMostrarFormularioServicio.setText("Nuevo servicio");
+
+            if (!modoEdicion) {
+                limpiarFormulario();
+            }
+        } else {
+            cardFormularioServicios.setVisibility(View.VISIBLE);
+
+            if (modoEdicion) {
+                btnMostrarFormularioServicio.setText("Ocultar edición");
+            } else {
+                btnMostrarFormularioServicio.setText("Ocultar formulario");
+            }
+        }
+    }
+
+    private void mostrarFormularioNuevoServicio() {
+        limpiarFormulario();
+        cardFormularioServicios.setVisibility(View.VISIBLE);
+        btnMostrarFormularioServicio.setText("Ocultar formulario");
+    }
+
+    private void mostrarFormularioEdicion() {
+        cardFormularioServicios.setVisibility(View.VISIBLE);
+        btnMostrarFormularioServicio.setText("Ocultar edición");
+    }
+
+    private void ocultarFormularioServicio() {
+        cardFormularioServicios.setVisibility(View.GONE);
+        btnMostrarFormularioServicio.setText("Nuevo servicio");
     }
 
     private void cargarServiciosApi() {
@@ -145,7 +199,8 @@ public class ServiciosActivity extends AppCompatActivity {
                     LinearLayout.LayoutParams.MATCH_PARENT,
                     LinearLayout.LayoutParams.WRAP_CONTENT
             );
-            parametros.setMargins(0, 0, 0, dp(14));
+
+            parametros.setMargins(0, 0, 0, dp(18));
             txtSinServicios.setLayoutParams(parametros);
 
             contenedorServiciosAdmin.addView(txtSinServicios);
@@ -153,7 +208,15 @@ public class ServiciosActivity extends AppCompatActivity {
         }
 
         for (Servicio servicio : listaServicios) {
-            View tarjetaServicio = getLayoutInflater().inflate(R.layout.item_servicio_admin, null);
+            View tarjetaServicio = getLayoutInflater().inflate(R.layout.item_servicio_admin, contenedorServiciosAdmin, false);
+
+            LinearLayout.LayoutParams parametrosTarjeta = new LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT
+            );
+
+            parametrosTarjeta.setMargins(0, 0, 0, dp(18));
+            tarjetaServicio.setLayoutParams(parametrosTarjeta);
 
             TextView txtNombre = tarjetaServicio.findViewById(R.id.txtNombreServicioAdmin);
             TextView txtDescripcion = tarjetaServicio.findViewById(R.id.txtDescripcionServicioAdmin);
@@ -273,6 +336,7 @@ public class ServiciosActivity extends AppCompatActivity {
                     ).show();
 
                     limpiarFormulario();
+                    ocultarFormularioServicio();
                     cargarServiciosApi();
                 },
                 error -> {
@@ -315,6 +379,7 @@ public class ServiciosActivity extends AppCompatActivity {
                     ).show();
 
                     limpiarFormulario();
+                    ocultarFormularioServicio();
                     cargarServiciosApi();
                 },
                 error -> {
@@ -377,6 +442,8 @@ public class ServiciosActivity extends AppCompatActivity {
         edtPrecioServicio.setText(String.format(Locale.US, "%.2f", servicio.getPrecio()));
 
         btnGuardarServicio.setText("Actualizar servicio");
+
+        mostrarFormularioEdicion();
     }
 
     private void limpiarFormulario() {
@@ -388,6 +455,11 @@ public class ServiciosActivity extends AppCompatActivity {
         edtPrecioServicio.setText("");
 
         btnGuardarServicio.setText("Guardar servicio");
+        btnMostrarFormularioServicio.setText(
+                cardFormularioServicios.getVisibility() == View.VISIBLE
+                        ? "Ocultar formulario"
+                        : "Nuevo servicio"
+        );
     }
 
     private int dp(int valor) {
