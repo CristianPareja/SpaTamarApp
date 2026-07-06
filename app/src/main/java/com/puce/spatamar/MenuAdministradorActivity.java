@@ -22,8 +22,8 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.TimeZone;
 import java.util.Locale;
+import java.util.TimeZone;
 
 public class MenuAdministradorActivity extends AppCompatActivity {
 
@@ -38,6 +38,8 @@ public class MenuAdministradorActivity extends AppCompatActivity {
     private TextView txtEstadoFinanciero;
     private TextView txtMensajeEstadoFinanciero;
 
+    private TextView txtMesResumenDashboard;
+
     private TextView txtServicioMasUtilizado;
     private TextView txtServicioMenosUtilizado;
 
@@ -47,6 +49,9 @@ public class MenuAdministradorActivity extends AppCompatActivity {
     private LinearLayout cardCitasHoyDashboard;
     private LinearLayout cardTotalCobroDashboard;
 
+    private AppCompatButton btnMesAnteriorDashboard;
+    private AppCompatButton btnMesSiguienteDashboard;
+
     private AppCompatButton btnServiciosAdmin;
     private AppCompatButton btnCuentasPagarAdmin;
     private AppCompatButton btnSimulacionProyeccionAdmin;
@@ -55,8 +60,9 @@ public class MenuAdministradorActivity extends AppCompatActivity {
     private RequestQueue requestQueue;
 
     private String textoPendientesAdmin = "No existen pendientes relevantes hasta ahora.";
-    private int anioResumenActual;
-    private int mesResumenActual;
+
+    private int anioResumen;
+    private int mesResumen;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,6 +80,8 @@ public class MenuAdministradorActivity extends AppCompatActivity {
         txtEstadoFinanciero = findViewById(R.id.txtEstadoFinanciero);
         txtMensajeEstadoFinanciero = findViewById(R.id.txtMensajeEstadoFinanciero);
 
+        txtMesResumenDashboard = findViewById(R.id.txtMesResumenDashboard);
+
         txtServicioMasUtilizado = findViewById(R.id.txtServicioMasUtilizado);
         txtServicioMenosUtilizado = findViewById(R.id.txtServicioMenosUtilizado);
 
@@ -83,6 +91,9 @@ public class MenuAdministradorActivity extends AppCompatActivity {
         cardCitasHoyDashboard = findViewById(R.id.cardCitasHoyDashboard);
         cardTotalCobroDashboard = findViewById(R.id.cardTotalCobroDashboard);
 
+        btnMesAnteriorDashboard = findViewById(R.id.btnMesAnteriorDashboard);
+        btnMesSiguienteDashboard = findViewById(R.id.btnMesSiguienteDashboard);
+
         btnServiciosAdmin = findViewById(R.id.btnServiciosAdmin);
         btnCuentasPagarAdmin = findViewById(R.id.btnCuentasPagarAdmin);
         btnSimulacionProyeccionAdmin = findViewById(R.id.btnSimulacionProyeccionAdmin);
@@ -90,7 +101,41 @@ public class MenuAdministradorActivity extends AppCompatActivity {
 
         requestQueue = Volley.newRequestQueue(this);
 
+        actualizarFechaDashboard();
+
+        Calendar calendarioEcuador = Calendar.getInstance(TimeZone.getTimeZone("America/Guayaquil"));
+        anioResumen = calendarioEcuador.get(Calendar.YEAR);
+        mesResumen = calendarioEcuador.get(Calendar.MONTH) + 1;
+
         cargarDashboardApi();
+
+        btnMesAnteriorDashboard.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mesResumen--;
+
+                if (mesResumen < 1) {
+                    mesResumen = 12;
+                    anioResumen--;
+                }
+
+                cargarDashboardApi();
+            }
+        });
+
+        btnMesSiguienteDashboard.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mesResumen++;
+
+                if (mesResumen > 12) {
+                    mesResumen = 1;
+                    anioResumen++;
+                }
+
+                cargarDashboardApi();
+            }
+        });
 
         txtCampanitaAdmin.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -162,20 +207,20 @@ public class MenuAdministradorActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+
+        actualizarFechaDashboard();
         cargarDashboardApi();
     }
 
     private void cargarDashboardApi() {
-        String fechaActual = obtenerFechaActual();
-        txtFechaDashboard.setText(fechaActual);
-        Calendar calendarioEcuador = Calendar.getInstance(TimeZone.getTimeZone("America/Guayaquil"));
-        int anioActual = calendarioEcuador.get(Calendar.YEAR);
-        int mesActual = calendarioEcuador.get(Calendar.MONTH) + 1;
+        actualizarFechaDashboard();
+
+        actualizarTextoMesResumen();
 
         String urlResumenMensual = ApiConfig.URL_FINANZAS_RESUMEN
                 .replace("/resumen", "/resumen-mensual")
-                + "?anio=" + anioActual
-                + "&mes=" + mesActual;
+                + "?anio=" + anioResumen
+                + "&mes=" + mesResumen;
 
         JsonObjectRequest request = new JsonObjectRequest(
                 Request.Method.GET,
@@ -301,7 +346,7 @@ public class MenuAdministradorActivity extends AppCompatActivity {
         txtTotalClientesDashboard.setText("0");
         txtGananciaNetaDashboard.setText("$0.00");
         txtGananciaNetaDashboard.setTextColor(getResources().getColor(R.color.azul_titulo));
-        txtDetalleFinancieroDashboard.setText("Ingresos: $0.00 | Egresos: $0.00");
+        txtDetalleFinancieroDashboard.setText("Resumen mensual | Ingresos: $0.00 | Egresos: $0.00");
 
         txtEstadoFinanciero.setText("Sin conexión con API");
         txtMensajeEstadoFinanciero.setText("No fue posible consultar el resumen financiero desde PostgreSQL.");
@@ -360,7 +405,7 @@ public class MenuAdministradorActivity extends AppCompatActivity {
         }
 
         if (gananciaNeta < 0) {
-            pendientes = pendientes + "• La ganancia neta actual es negativa.\n";
+            pendientes = pendientes + "• La ganancia neta mensual es negativa.\n";
         }
 
         if (pendientes.isEmpty()) {
@@ -381,6 +426,10 @@ public class MenuAdministradorActivity extends AppCompatActivity {
                 .show();
     }
 
+    private void actualizarFechaDashboard() {
+        txtFechaDashboard.setText(obtenerFechaActual());
+    }
+
     private String obtenerFechaActual() {
         Calendar calendario = Calendar.getInstance(TimeZone.getTimeZone("America/Guayaquil"));
 
@@ -388,6 +437,41 @@ public class MenuAdministradorActivity extends AppCompatActivity {
         int mes = calendario.get(Calendar.MONTH) + 1;
         int anio = calendario.get(Calendar.YEAR);
 
-        return String.format("%02d/%02d/%04d", dia, mes, anio);
+        return String.format(Locale.US, "%02d/%02d/%04d", dia, mes, anio);
+    }
+
+    private void actualizarTextoMesResumen() {
+        txtMesResumenDashboard.setText(obtenerNombreMes(mesResumen) + " " + anioResumen);
+    }
+
+    private String obtenerNombreMes(int mes) {
+        switch (mes) {
+            case 1:
+                return "Enero";
+            case 2:
+                return "Febrero";
+            case 3:
+                return "Marzo";
+            case 4:
+                return "Abril";
+            case 5:
+                return "Mayo";
+            case 6:
+                return "Junio";
+            case 7:
+                return "Julio";
+            case 8:
+                return "Agosto";
+            case 9:
+                return "Septiembre";
+            case 10:
+                return "Octubre";
+            case 11:
+                return "Noviembre";
+            case 12:
+                return "Diciembre";
+            default:
+                return "Mes";
+        }
     }
 }

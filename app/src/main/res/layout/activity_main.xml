@@ -16,14 +16,16 @@
 
         <!-- LOGO -->
         <ImageView
-            android:id="@+id/imgLogo"
-            android:layout_width="165dp"
-            android:layout_height="165dp"
-            android:layout_marginTop="28dp"
-            android:layout_marginBottom="10dp"
-            android:contentDescription="Logo Spa TAMAR"
+            android:id="@+id/imgLogoLogin"
+            android:layout_width="190dp"
+            android:layout_height="160dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="24dp"
+            android:layout_marginBottom="20dp"
+            android:adjustViewBounds="true"
             android:scaleType="fitCenter"
-            android:src="@drawable/logo_spa_tamar" />
+            android:src="@drawable/logo_spa_tamar_transparente"
+            android:contentDescription="Logo Spa TAMAR" />
 
         <!-- TITULO PRINCIPAL -->
         <TextView

@@ -21,57 +21,57 @@
             android:layout_marginBottom="18dp"
             android:background="@drawable/card_moderno"
             android:elevation="4dp"
-            android:orientation="horizontal"
-            android:padding="20dp">
+            android:orientation="vertical"
+            android:padding="14dp">
 
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:orientation="vertical">
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="135dp">
+
+                <ImageView
+                    android:id="@+id/imgLogoAdmin"
+                    android:layout_width="210dp"
+                    android:layout_height="105dp"
+                    android:layout_centerHorizontal="true"
+                    android:layout_alignParentTop="true"
+                    android:layout_marginTop="4dp"
+                    android:adjustViewBounds="true"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/logo_spa_tamar_transparente"
+                    android:contentDescription="Logo Spa TAMAR" />
 
                 <TextView
-                    android:id="@+id/txtTituloDashboardAdmin"
-                    android:layout_width="match_parent"
+                    android:id="@+id/txtCampanitaAdmin"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Spa TAMAR"
-                    android:textColor="@color/azul_oscuro_moderno"
-                    android:textSize="28sp"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentEnd="true"
+                    android:background="@drawable/fondo_chip_moderno"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:minWidth="54dp"
+                    android:paddingLeft="12dp"
+                    android:paddingTop="8dp"
+                    android:paddingRight="12dp"
+                    android:paddingBottom="8dp"
+                    android:text="🔔"
+                    android:textAlignment="center"
+                    android:textColor="@color/azul_moderno"
+                    android:textSize="20sp"
                     android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/txtFechaDashboard"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="14dp"
-                    android:background="@drawable/fondo_chip_moderno"
-                    android:paddingLeft="14dp"
-                    android:paddingTop="8dp"
-                    android:paddingRight="14dp"
-                    android:paddingBottom="8dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentBottom="true"
                     android:text="--/--/----"
-                    android:textColor="@color/azul_moderno"
-                    android:textSize="13sp"
-                    android:textStyle="bold" />
+                    android:textColor="@color/gris_moderno"
+                    android:textSize="12sp"
+                    android:textStyle="normal" />
 
-            </LinearLayout>
-
-            <TextView
-                android:id="@+id/txtCampanitaAdmin"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/fondo_chip_moderno"
-                android:clickable="true"
-                android:focusable="true"
-                android:paddingLeft="12dp"
-                android:paddingTop="8dp"
-                android:paddingRight="12dp"
-                android:paddingBottom="8dp"
-                android:text="🔔"
-                android:textAlignment="center"
-                android:textColor="@color/azul_moderno"
-                android:textSize="20sp"
-                android:textStyle="bold" />
+            </RelativeLayout>
 
         </LinearLayout>
 
@@ -220,6 +220,56 @@
                 android:text="Ganancia neta"
                 android:textColor="@color/gris_moderno"
                 android:textSize="14sp" />
+
+            <LinearLayout
+                android:id="@+id/filaSelectorMesDashboard"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="8dp"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:weightSum="3">
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/btnMesAnteriorDashboard"
+                    android:layout_width="0dp"
+                    android:layout_height="44dp"
+                    android:layout_marginEnd="6dp"
+                    android:layout_weight="0.7"
+                    android:background="@drawable/boton_secundario_moderno"
+                    android:text="←"
+                    android:textAllCaps="false"
+                    android:textColor="@color/azul_moderno"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/txtMesResumenDashboard"
+                    android:layout_width="0dp"
+                    android:layout_height="44dp"
+                    android:layout_weight="1.6"
+                    android:background="@drawable/fondo_chip_moderno"
+                    android:gravity="center"
+                    android:text="Julio 2026"
+                    android:textColor="@color/azul_moderno"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/btnMesSiguienteDashboard"
+                    android:layout_width="0dp"
+                    android:layout_height="44dp"
+                    android:layout_marginStart="6dp"
+                    android:layout_weight="0.7"
+                    android:background="@drawable/boton_secundario_moderno"
+                    android:text="→"
+                    android:textAllCaps="false"
+                    android:textColor="@color/azul_moderno"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
 
             <TextView
                 android:id="@+id/txtGananciaNetaDashboard"

@@ -23,7 +23,7 @@
             android:layout_marginBottom="12dp"
             android:contentDescription="Logo Spa TAMAR"
             android:scaleType="fitCenter"
-            android:src="@drawable/logo_spa_tamar" />
+            android:src="@drawable/logo_spa_tamar_transparente" />
 
         <!-- ENCABEZADO -->
         <TextView

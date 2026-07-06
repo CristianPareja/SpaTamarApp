@@ -18,11 +18,16 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.Calendar;
+import java.util.Locale;
+import java.util.TimeZone;
+
 public class MenuClienteActivity extends AppCompatActivity {
 
     TextView txtCampanitaRecordatorio;
     TextView txtSaludoCliente;
     TextView txtDescripcionCliente;
+    TextView txtFechaCliente;
 
     AppCompatButton btnServiciosCliente;
     AppCompatButton btnPerfilCliente;
@@ -41,6 +46,7 @@ public class MenuClienteActivity extends AppCompatActivity {
         txtCampanitaRecordatorio = findViewById(R.id.txtCampanitaRecordatorio);
         txtSaludoCliente = findViewById(R.id.txtSaludoCliente);
         txtDescripcionCliente = findViewById(R.id.txtDescripcionCliente);
+        txtFechaCliente = findViewById(R.id.txtFechaCliente);
 
         btnServiciosCliente = findViewById(R.id.btnServiciosCliente);
         btnPerfilCliente = findViewById(R.id.btnPerfilCliente);
@@ -50,6 +56,7 @@ public class MenuClienteActivity extends AppCompatActivity {
 
         requestQueue = Volley.newRequestQueue(this);
 
+        actualizarFechaCliente();
         cargarDatosBienvenida();
         actualizarCampanitaDesdeApi();
 
@@ -107,8 +114,24 @@ public class MenuClienteActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+
+        actualizarFechaCliente();
         cargarDatosBienvenida();
         actualizarCampanitaDesdeApi();
+    }
+
+    private void actualizarFechaCliente() {
+        txtFechaCliente.setText(obtenerFechaActual());
+    }
+
+    private String obtenerFechaActual() {
+        Calendar calendario = Calendar.getInstance(TimeZone.getTimeZone("America/Guayaquil"));
+
+        int dia = calendario.get(Calendar.DAY_OF_MONTH);
+        int mes = calendario.get(Calendar.MONTH) + 1;
+        int anio = calendario.get(Calendar.YEAR);
+
+        return String.format(Locale.US, "%02d/%02d/%04d", dia, mes, anio);
     }
 
     private void cargarDatosBienvenida() {
