@@ -7,7 +7,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
 
@@ -28,7 +27,6 @@ import java.util.TimeZone;
 public class MenuAdministradorActivity extends AppCompatActivity {
 
     private TextView txtFechaDashboard;
-    private TextView txtCampanitaAdmin;
 
     private TextView txtTotalClientesDashboard;
     private TextView txtCitasHoyDashboard;
@@ -59,8 +57,6 @@ public class MenuAdministradorActivity extends AppCompatActivity {
 
     private RequestQueue requestQueue;
 
-    private String textoPendientesAdmin = "No existen pendientes relevantes hasta ahora.";
-
     private int anioResumen;
     private int mesResumen;
 
@@ -70,7 +66,6 @@ public class MenuAdministradorActivity extends AppCompatActivity {
         setContentView(R.layout.activity_menu_administrador);
 
         txtFechaDashboard = findViewById(R.id.txtFechaDashboard);
-        txtCampanitaAdmin = findViewById(R.id.txtCampanitaAdmin);
 
         txtTotalClientesDashboard = findViewById(R.id.txtTotalClientesDashboard);
         txtCitasHoyDashboard = findViewById(R.id.txtCitasHoyDashboard);
@@ -134,13 +129,6 @@ public class MenuAdministradorActivity extends AppCompatActivity {
                 }
 
                 cargarDashboardApi();
-            }
-        });
-
-        txtCampanitaAdmin.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mostrarPendientesAdmin();
             }
         });
 
@@ -214,7 +202,6 @@ public class MenuAdministradorActivity extends AppCompatActivity {
 
     private void cargarDashboardApi() {
         actualizarFechaDashboard();
-
         actualizarTextoMesResumen();
 
         String urlResumenMensual = ApiConfig.URL_FINANZAS_RESUMEN
@@ -257,9 +244,7 @@ public class MenuAdministradorActivity extends AppCompatActivity {
 
                         cargarEstadisticasServicios(response);
                         cargarGraficoPastelServicios(response);
-
                         cargarEstadoFinanciero(gananciaNeta, totalIngresos, totalEgresos, totalPorCobrar);
-                        actualizarPendientesAdmin(citasHoy, totalPorCobrar, totalIngresos, totalEgresos, gananciaNeta);
 
                     } catch (JSONException e) {
                         Toast.makeText(
@@ -354,8 +339,6 @@ public class MenuAdministradorActivity extends AppCompatActivity {
         txtServicioMasUtilizado.setText("Más utilizado: Sin datos");
         txtServicioMenosUtilizado.setText("Menos utilizado: Sin datos");
 
-        txtCampanitaAdmin.setText("🔔");
-        textoPendientesAdmin = "No se pudo consultar la información de pendientes.";
         graficoPastelServicios.setDatos(new ArrayList<>());
     }
 
@@ -381,49 +364,6 @@ public class MenuAdministradorActivity extends AppCompatActivity {
             txtEstadoFinanciero.setTextColor(getResources().getColor(R.color.verde_positivo));
             txtMensajeEstadoFinanciero.setText("El negocio mantiene una ganancia positiva y un flujo financiero estable.");
         }
-    }
-
-    private void actualizarPendientesAdmin(int citasHoy,
-                                           double totalPorCobrar,
-                                           double totalIngresos,
-                                           double totalEgresos,
-                                           double gananciaNeta) {
-
-        String pendientes = "";
-
-        if (citasHoy > 0) {
-            pendientes = pendientes + "• " + citasHoy + " cita(s) pendiente(s) por atender hoy.\n";
-        }
-
-        if (totalPorCobrar > 0) {
-            pendientes = pendientes + "• $" + String.format(Locale.US, "%.2f", totalPorCobrar)
-                    + " pendientes por cobrar.\n";
-        }
-
-        if (totalEgresos > totalIngresos && totalEgresos > 0) {
-            pendientes = pendientes + "• Los egresos superan los ingresos registrados.\n";
-        }
-
-        if (gananciaNeta < 0) {
-            pendientes = pendientes + "• La ganancia neta mensual es negativa.\n";
-        }
-
-        if (pendientes.isEmpty()) {
-            pendientes = "No existen pendientes relevantes hasta ahora.";
-            txtCampanitaAdmin.setText("🔔");
-        } else {
-            txtCampanitaAdmin.setText("🔔 !");
-        }
-
-        textoPendientesAdmin = pendientes.trim();
-    }
-
-    private void mostrarPendientesAdmin() {
-        new AlertDialog.Builder(this)
-                .setTitle("Pendientes del panel")
-                .setMessage(textoPendientesAdmin)
-                .setPositiveButton("Aceptar", null)
-                .show();
     }
 
     private void actualizarFechaDashboard() {

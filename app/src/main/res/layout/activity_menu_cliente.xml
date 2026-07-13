@@ -32,33 +32,13 @@
                     android:id="@+id/imgLogoCliente"
                     android:layout_width="240dp"
                     android:layout_height="120dp"
-                    android:layout_centerHorizontal="true"
                     android:layout_alignParentTop="true"
+                    android:layout_centerHorizontal="true"
                     android:layout_marginTop="4dp"
                     android:adjustViewBounds="true"
+                    android:contentDescription="Logo Spa TAMAR"
                     android:scaleType="fitCenter"
-                    android:src="@drawable/logo_spa_tamar_transparente"
-                    android:contentDescription="Logo Spa TAMAR" />
-
-                <TextView
-                    android:id="@+id/txtCampanitaRecordatorio"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentTop="true"
-                    android:layout_alignParentEnd="true"
-                    android:background="@drawable/fondo_chip_moderno"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:minWidth="54dp"
-                    android:paddingLeft="12dp"
-                    android:paddingTop="8dp"
-                    android:paddingRight="12dp"
-                    android:paddingBottom="8dp"
-                    android:text="🔔"
-                    android:textAlignment="center"
-                    android:textColor="@color/azul_moderno"
-                    android:textSize="20sp"
-                    android:textStyle="bold" />
+                    android:src="@drawable/logo_spa_tamar_transparente" />
 
                 <TextView
                     android:id="@+id/txtFechaCliente"
@@ -121,8 +101,6 @@
             </LinearLayout>
 
         </LinearLayout>
-
-        <!-- ACCESOS RAPIDOS -->
 
         <!-- FILA 1 -->
         <LinearLayout

@@ -147,12 +147,6 @@ public class CuentasPagarAdminActivity extends AppCompatActivity {
         }
     }
 
-    private void mostrarFormularioNuevoEgreso() {
-        limpiarFormulario();
-        cardFormularioCuentaPagar.setVisibility(View.VISIBLE);
-        btnMostrarFormularioEgreso.setText("Ocultar formulario");
-    }
-
     private void mostrarFormularioEdicion() {
         cardFormularioCuentaPagar.setVisibility(View.VISIBLE);
         btnMostrarFormularioEgreso.setText("Ocultar edición");
@@ -203,7 +197,14 @@ public class CuentasPagarAdminActivity extends AppCompatActivity {
                     mesSeleccionado = month;
                     diaSeleccionado = dayOfMonth;
 
-                    String fechaSeleccionada = dayOfMonth + "/" + (month + 1) + "/" + year;
+                    String fechaSeleccionada = String.format(
+                            Locale.US,
+                            "%02d/%02d/%04d",
+                            dayOfMonth,
+                            month + 1,
+                            year
+                    );
+
                     edtFechaPagar.setText(fechaSeleccionada);
                 },
                 anio,
@@ -326,13 +327,7 @@ public class CuentasPagarAdminActivity extends AppCompatActivity {
                     ocultarFormularioEgreso();
                     cargarCuentasPagarApi();
                 },
-                error -> {
-                    Toast.makeText(
-                            CuentasPagarAdminActivity.this,
-                            "No se pudo registrar el egreso",
-                            Toast.LENGTH_LONG
-                    ).show();
-                }
+                error -> mostrarErrorVolley("No se pudo registrar el egreso", error)
         );
 
         requestQueue.add(request);
@@ -375,13 +370,7 @@ public class CuentasPagarAdminActivity extends AppCompatActivity {
                     ocultarFormularioEgreso();
                     cargarCuentasPagarApi();
                 },
-                error -> {
-                    Toast.makeText(
-                            CuentasPagarAdminActivity.this,
-                            "No se pudo registrar el egreso mensual",
-                            Toast.LENGTH_LONG
-                    ).show();
-                }
+                error -> mostrarErrorVolley("No se pudo registrar el egreso mensual", error)
         );
 
         requestQueue.add(request);
@@ -423,13 +412,7 @@ public class CuentasPagarAdminActivity extends AppCompatActivity {
                     ocultarFormularioEgreso();
                     cargarCuentasPagarApi();
                 },
-                error -> {
-                    Toast.makeText(
-                            CuentasPagarAdminActivity.this,
-                            "No se pudo actualizar el egreso",
-                            Toast.LENGTH_LONG
-                    ).show();
-                }
+                error -> mostrarErrorVolley("No se pudo actualizar el egreso", error)
         );
 
         requestQueue.add(request);
@@ -481,13 +464,7 @@ public class CuentasPagarAdminActivity extends AppCompatActivity {
                         ).show();
                     }
                 },
-                error -> {
-                    Toast.makeText(
-                            CuentasPagarAdminActivity.this,
-                            "No se pudo consultar egresos desde la API",
-                            Toast.LENGTH_LONG
-                    ).show();
-                }
+                error -> mostrarErrorVolley("No se pudo consultar egresos desde la API", error)
         );
 
         requestQueue.add(request);
@@ -750,16 +727,33 @@ public class CuentasPagarAdminActivity extends AppCompatActivity {
 
                     cargarCuentasPagarApi();
                 },
-                error -> {
-                    Toast.makeText(
-                            CuentasPagarAdminActivity.this,
-                            "No se pudo eliminar el egreso",
-                            Toast.LENGTH_LONG
-                    ).show();
-                }
+                error -> mostrarErrorVolley("No se pudo eliminar el egreso", error)
         );
 
         requestQueue.add(request);
+    }
+
+    private void mostrarErrorVolley(String mensajeBase, com.android.volley.VolleyError error) {
+        String mensaje = mensajeBase;
+
+        if (error.networkResponse != null) {
+            mensaje = mensaje + " - Código: " + error.networkResponse.statusCode;
+
+            try {
+                String respuestaServidor = new String(error.networkResponse.data, "UTF-8");
+                mensaje = mensaje + "\n" + respuestaServidor;
+            } catch (Exception e) {
+                mensaje = mensaje + "\nNo se pudo leer el error del servidor";
+            }
+        } else {
+            mensaje = mensaje + "\nSin respuesta del servidor";
+        }
+
+        Toast.makeText(
+                CuentasPagarAdminActivity.this,
+                mensaje,
+                Toast.LENGTH_LONG
+        ).show();
     }
 
     private void limpiarFormulario() {

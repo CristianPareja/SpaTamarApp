@@ -86,9 +86,9 @@ public class MainActivity extends AppCompatActivity {
         JSONObject datosLogin = new JSONObject();
 
         try {
-            datosLogin.put("usuarioOCorreo", usuarioOCorreo);
+            datosLogin.put("usuario", usuarioOCorreo);
             datosLogin.put("clave", clave);
-        } catch (JSONException e) {
+        } catch (JSONException e)  {
             Toast.makeText(this, "Error al preparar los datos de login", Toast.LENGTH_SHORT).show();
             return;
         }

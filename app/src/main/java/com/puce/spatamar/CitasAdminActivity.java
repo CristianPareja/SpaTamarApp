@@ -24,6 +24,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Locale;
 import java.util.TimeZone;
 
 public class CitasAdminActivity extends AppCompatActivity {
@@ -280,10 +281,12 @@ public class CitasAdminActivity extends AppCompatActivity {
         TextView estado = crearChipEstado(cita.getEstado());
 
         TextView informacion = new TextView(this);
+
         String texto = "Cliente: " + cita.getNombreCliente() + "\n"
                 + "Teléfono: " + cita.getTelefono() + "\n"
                 + "Fecha: " + cita.getFecha() + "\n"
                 + "Hora: " + cita.getHora() + "\n"
+                + "Valor del servicio: $" + String.format(Locale.US, "%.2f", cita.getPrecioServicio()) + "\n"
                 + "Observaciones: " + cita.getObservaciones();
 
         informacion.setText(texto);
@@ -389,41 +392,78 @@ public class CitasAdminActivity extends AppCompatActivity {
     }
 
     private void mostrarDialogoFinalizar(CitaAdminApi cita) {
+        LinearLayout contenedorDialogo = new LinearLayout(this);
+        contenedorDialogo.setOrientation(LinearLayout.VERTICAL);
+        contenedorDialogo.setPadding(dp(4), dp(8), dp(4), dp(4));
+
+        TextView txtServicio = new TextView(this);
+        txtServicio.setText("Servicio: " + cita.getServicio());
+        txtServicio.setTextSize(15);
+        txtServicio.setTextColor(getResources().getColor(R.color.texto_oscuro_moderno));
+        txtServicio.setPadding(dp(4), 0, dp(4), dp(6));
+
+        TextView txtPrecio = new TextView(this);
+        txtPrecio.setText("Valor del servicio: $" + String.format(Locale.US, "%.2f", cita.getPrecioServicio()));
+        txtPrecio.setTextSize(17);
+        txtPrecio.setTypeface(null, Typeface.BOLD);
+        txtPrecio.setTextColor(getResources().getColor(R.color.azul_oscuro_moderno));
+        txtPrecio.setPadding(dp(4), 0, dp(4), dp(12));
+
         EditText inputValor = new EditText(this);
         inputValor.setHint("Valor pagado por el cliente");
         inputValor.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
         inputValor.setPadding(dp(16), dp(12), dp(16), dp(12));
         inputValor.setBackgroundResource(R.drawable.edittext_login);
 
-        new AlertDialog.Builder(this)
+        contenedorDialogo.addView(txtServicio);
+        contenedorDialogo.addView(txtPrecio);
+        contenedorDialogo.addView(inputValor);
+
+        AlertDialog dialogo = new AlertDialog.Builder(this)
                 .setTitle("Finalizar cita")
-                .setView(inputValor)
-                .setPositiveButton("Finalizar", (dialog, which) -> {
-                    String valorTexto = inputValor.getText().toString().trim();
-
-                    if (valorTexto.isEmpty()) {
-                        Toast.makeText(this, "Debe ingresar el valor pagado", Toast.LENGTH_SHORT).show();
-                        return;
-                    }
-
-                    double valorCobrado;
-
-                    try {
-                        valorCobrado = Double.parseDouble(valorTexto);
-                    } catch (NumberFormatException e) {
-                        Toast.makeText(this, "Ingrese un valor válido", Toast.LENGTH_SHORT).show();
-                        return;
-                    }
-
-                    if (valorCobrado < 0) {
-                        Toast.makeText(this, "El valor no puede ser negativo", Toast.LENGTH_SHORT).show();
-                        return;
-                    }
-
-                    finalizarCitaApi(cita, valorCobrado);
-                })
+                .setView(contenedorDialogo)
+                .setPositiveButton("Finalizar", null)
                 .setNegativeButton("Cancelar", null)
-                .show();
+                .create();
+
+        dialogo.setOnShowListener(dialog -> {
+            dialogo.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(view -> {
+                String valorTexto = inputValor.getText().toString().trim();
+
+                if (valorTexto.isEmpty()) {
+                    Toast.makeText(this, "Debe ingresar el valor pagado", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                double valorCobrado;
+
+                try {
+                    valorCobrado = Double.parseDouble(valorTexto);
+                } catch (NumberFormatException e) {
+                    Toast.makeText(this, "Ingrese un valor válido", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                if (valorCobrado < 0) {
+                    Toast.makeText(this, "El valor no puede ser negativo", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                if (cita.getPrecioServicio() > 0 && valorCobrado > cita.getPrecioServicio()) {
+                    Toast.makeText(
+                            this,
+                            "El valor pagado no puede ser mayor al valor del servicio",
+                            Toast.LENGTH_LONG
+                    ).show();
+                    return;
+                }
+
+                dialogo.dismiss();
+                finalizarCitaApi(cita, valorCobrado);
+            });
+        });
+
+        dialogo.show();
     }
 
     private void finalizarCitaApi(CitaAdminApi cita, double valorCobrado) {
@@ -557,7 +597,7 @@ public class CitasAdminActivity extends AppCompatActivity {
         int mes = calendario.get(Calendar.MONTH) + 1;
         int anio = calendario.get(Calendar.YEAR);
 
-        return String.format("%02d/%02d/%04d", dia, mes, anio);
+        return String.format(Locale.US, "%02d/%02d/%04d", dia, mes, anio);
     }
 
     private String convertirFechaCalendarioApi(Calendar calendario) {
@@ -565,7 +605,7 @@ public class CitasAdminActivity extends AppCompatActivity {
         int mes = calendario.get(Calendar.MONTH) + 1;
         int anio = calendario.get(Calendar.YEAR);
 
-        return String.format("%04d-%02d-%02d", anio, mes, dia);
+        return String.format(Locale.US, "%04d-%02d-%02d", anio, mes, dia);
     }
 
     private String formatearFecha(String fechaApi) {
