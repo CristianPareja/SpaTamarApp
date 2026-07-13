@@ -1,0 +1,51 @@
+@startuml
+scale max 1600 width
+skinparam dpi 200
+skinparam shadowing false
+skinparam sequenceMessageAlign center
+skinparam responseMessageBelowArrow true
+
+title Diagrama de secuencia - Inicio de sesión y validación de rol
+
+actor "Usuario" as Usuario
+participant "Aplicación Android" as Android
+participant "API REST" as API
+participant "Controlador de usuarios" as Controlador
+database "Base de datos\nPostgreSQL" as BD
+
+Usuario -> Android : 1. Ingresa usuario/correo\ny contraseña
+activate Android
+
+Android -> API : 2. Envía solicitud de\ninicio de sesión
+activate API
+
+API -> Controlador : 3. Redirige a login\nde usuarios
+activate Controlador
+
+Controlador -> Controlador : 4. Valida campos\nobligatorios
+
+Controlador -> BD : 5. Consulta usuario por\ncorreo o usuario
+activate BD
+
+BD --> Controlador : 6. Devuelve datos del\nusuario y clave cifrada
+deactivate BD
+
+Controlador -> Controlador : 7. Verifica contraseña\ny estado
+Controlador -> Controlador : 8. Determina rol\ndel usuario
+
+Controlador --> API : 9. Retorna respuesta\nJSON
+deactivate Controlador
+
+API --> Android : 10. Envía resultado\na la app
+deactivate API
+
+alt Resultado exitoso
+    Android -> Android : 11. Si rol = cliente,\nabre MenuClienteActivity
+    Android -> Android : 11. Si rol = administrador,\nabre MenuAdministradorActivity
+else Credenciales incorrectas
+    Android -> Usuario : 12. Muestra mensaje\nde error
+end
+
+deactivate Android
+
+@enduml

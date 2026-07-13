@@ -1,0 +1,190 @@
+@startuml
+scale max 1800 width
+skinparam dpi 220
+title Diagrama de clases - Spa TAMAR App
+
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+skinparam class {
+    BackgroundColor #F5FBFF
+    BorderColor #0B3D78
+    ArrowColor #0B3D78
+}
+
+package "Frontend Android" {
+
+class MainActivity {
+    - edtUsuario
+    - edtClave
+    - requestQueue
+    + validarLogin()
+    + iniciarSesionApi()
+}
+
+class RegistroActivity {
+    + registrarUsuarioApi()
+    + validarCampos()
+}
+
+class MenuClienteActivity {
+    + cargarDatosBienvenida()
+    + actualizarFechaCliente()
+}
+
+class MenuAdministradorActivity {
+    + cargarDashboardApi()
+    + cargarEstadoFinanciero()
+}
+
+class ServiciosClienteActivity {
+    + cargarServiciosActivosApi()
+    + mostrarServicios()
+}
+
+class AgendarCitaActivity {
+    + cargarServiciosApi()
+    + guardarCitaApi()
+}
+
+class MisCitasActivity {
+    + cargarCitasApi()
+    + cancelarCita()
+}
+
+class PerfilClienteActivity {
+    + cargarPerfil()
+    + actualizarPerfil()
+}
+
+class CitasAdminActivity {
+    + cargarCitasPorFechaApi()
+    + finalizarCitaApi()
+    + cancelarCitaApi()
+}
+
+class CuentasCobrarAdminActivity {
+    + cargarCuentas()
+    + marcarComoPagado()
+}
+
+class CuentasPagarAdminActivity {
+    + cargarCuentasPagarApi()
+    + registrarEgreso()
+    + eliminarEgreso()
+}
+
+class ClientesActivity {
+    + cargarClientesRegistradosApi()
+}
+
+class ServiciosActivity {
+    + cargarServiciosApi()
+    + guardarServicio()
+}
+
+class SimulacionProyeccionActivity {
+    + calcularSimulacion()
+}
+
+class RecuperarClaveActivity {
+    + solicitarCodigo()
+    + restablecerClave()
+}
+
+}
+
+package "Clases de apoyo" {
+
+class ApiConfig {
+    + BASE_URL
+    + URL_LOGIN
+    + URL_SERVICIOS
+    + URL_CITAS
+    + URL_FINANZAS
+}
+
+class SesionUsuario {
+    - idUsuario
+    - nombre
+    - correo
+    - rol
+    + iniciarSesion()
+    + cerrarSesion()
+    + haySesionActiva()
+}
+
+class PerfilUsuario {
+    - nombre
+    - telefono
+    - correo
+}
+
+class Servicio {
+    - idServicio
+    - nombre
+    - descripcion
+    - precio
+    - activo
+}
+
+class Cita {
+    - idCita
+    - cliente
+    - servicio
+    - fecha
+    - hora
+    - estado
+}
+
+class CuentaCobrar {
+    - idCuenta
+    - concepto
+    - fecha
+    - valorPendiente
+    - estado
+}
+
+class CuentaPagar {
+    - idCuenta
+    - tipoEgreso
+    - fecha
+    - valor
+    - recurrente
+}
+
+class MovimientoFinanciero {
+    - idMovimiento
+    - tipo
+    - categoria
+    - fecha
+    - valor
+}
+
+}
+
+MainActivity ..> ApiConfig : usa
+RegistroActivity ..> ApiConfig : usa
+ServiciosClienteActivity ..> ApiConfig : usa
+AgendarCitaActivity ..> ApiConfig : usa
+MisCitasActivity ..> ApiConfig : usa
+PerfilClienteActivity ..> ApiConfig : usa
+CitasAdminActivity ..> ApiConfig : usa
+CuentasCobrarAdminActivity ..> ApiConfig : usa
+CuentasPagarAdminActivity ..> ApiConfig : usa
+MenuAdministradorActivity ..> ApiConfig : usa
+RecuperarClaveActivity ..> ApiConfig : usa
+
+MainActivity ..> SesionUsuario : inicia sesión
+MenuClienteActivity ..> SesionUsuario : consulta sesión
+MenuAdministradorActivity ..> SesionUsuario : consulta sesión
+
+ServiciosClienteActivity ..> Servicio
+AgendarCitaActivity ..> Servicio
+AgendarCitaActivity ..> Cita
+MisCitasActivity ..> Cita
+CitasAdminActivity ..> Cita
+CuentasCobrarAdminActivity ..> CuentaCobrar
+CuentasPagarAdminActivity ..> CuentaPagar
+MenuAdministradorActivity ..> MovimientoFinanciero
+
+@enduml

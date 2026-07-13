@@ -1,0 +1,52 @@
+@startuml
+scale max 1600 width
+skinparam dpi 200
+skinparam shadowing false
+skinparam sequenceMessageAlign center
+skinparam responseMessageBelowArrow true
+
+title Diagrama de secuencia - Agendamiento de cita
+
+actor "Cliente" as Cliente
+participant "Aplicación Android" as Android
+participant "API REST" as API
+participant "Controlador de citas" as Controlador
+database "Base de datos\nPostgreSQL" as BD
+
+Cliente -> Android : 1. Selecciona servicio\ny completa datos
+activate Android
+
+Android -> API : 2. Envía solicitud\nPOST /api/citas
+activate API
+
+API -> Controlador : 3. Redirige la solicitud\nal controlador de citas
+activate Controlador
+
+Controlador -> Controlador : 4. Valida campos\nobligatorios
+
+Controlador -> BD : 5. Consulta disponibilidad\ny cruces
+activate BD
+
+BD --> Controlador : 6. Responde si existe\no no conflicto
+deactivate BD
+
+alt Existe cruce de horario o fecha/hora inválida
+    Controlador --> API : Devuelve mensaje\nde error
+    API --> Android : Responde error\na la aplicación
+    Android -> Cliente : 11. Muestra mensaje:\nNo es posible registrar la cita
+else No existe conflicto
+    Controlador -> BD : 7. Registra la cita
+    activate BD
+    BD --> Controlador : 8. Confirma inserción
+    deactivate BD
+
+    Controlador --> API : 9. Devuelve respuesta\nJSON de éxito
+    API --> Android : 10. Responde a la\naplicación
+    Android -> Cliente : 11. Muestra mensaje:\nCita registrada correctamente
+end
+
+deactivate Controlador
+deactivate API
+deactivate Android
+
+@enduml
